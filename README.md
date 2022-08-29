@@ -13,4 +13,6 @@ This project will generally involve cross development over mobile and web, skill
 
 Lindsay Wilde, Ethan Christensen, Hope Welch, Kolby Kunz
 
+<a href="https://github.com/KolbyRKunz/Let-s-Meet"> Link to the Web App Repo </a>
+
 <h2>ARCHITECTURE/LAYOUT?</h2>
