@@ -15,6 +15,6 @@ Lindsay Wilde, Ethan Christensen, Hope Welch, Kolby Kunz
 
 <a href="https://github.com/KolbyRKunz/Let-s-Meet"> Link to the Web App Repo </a>
 
-<a href="https://letsmeetteam10.weebly.com/"> Link to our team website </a>
+<a href="https://lets-meet-team10.herokuapp.com/"> Link to our team website </a>
 
 <h2>ARCHITECTURE/LAYOUT?</h2>
