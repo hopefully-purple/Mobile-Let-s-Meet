@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
-import { Button, Alert, Text, StatusBar, SafeAreaView, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import {
+  Button,
+  Alert,
+  Text,
+  StatusBar,
+  SafeAreaView,
+  StyleSheet,
+} from 'react-native';
 // import HttpExample from './http_example.js'
 // import Demo from './demo.js'
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
-import { LocaleConfig } from 'react-native-calendars';
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import {LocaleConfig} from 'react-native-calendars';
 import Colors from '../assets/styles/colors';
 import createEventPopup from './createEventPopup';
 //import { Button, View } from 'react-native';
-
 
 //TODO: In Calendar, can't get the selected day background to changecolor like advertised
 
@@ -28,12 +34,33 @@ LocaleConfig.locales['fr'] = {
     'September',
     'October',
     'November',
-    'December'
+    'December',
   ],
-  monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
-  dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  monthNamesShort: [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'June',
+    'Jul',
+    'Aug',
+    'Sept',
+    'Oct',
+    'Nov',
+    'Dec',
+  ],
+  dayNames: [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ],
   dayNamesShort: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-  today: "Today"
+  today: 'Today',
 };
 LocaleConfig.defaultLocale = 'fr';
 
@@ -41,7 +68,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.DD_CREAM,
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   outputContainer: {
     color: Colors.DD_RED_2,
@@ -51,7 +78,7 @@ const styles = StyleSheet.create({
     borderWidth: 15,
     borderColor: Colors.DD_RED_2,
     backgroundColor: Colors.DD_CREAM,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   text: {
     fontSize: 25,
@@ -62,21 +89,21 @@ const styles = StyleSheet.create({
     //marginBottom: 50,
     paddingHorizontal: 90,
     position: 'relative',
-    flexWrap: 'wrap'
-  }
+    flexWrap: 'wrap',
+  },
 });
 
-const TempOutputBox = (props) => {
+const TempOutputBox = props => {
   return (
-    <Text style={styles.outputContainer}>{props.day.dateString} was selected</Text>
+    <Text style={styles.outputContainer}>
+      {props.day.dateString} was selected
+    </Text>
   );
-}
+};
 
-const CalendarTitle = (props) => {
-  return (
-    <Text style={styles.text}>{props.groupName} Schedule</Text>
-  );
-}
+const CalendarTitle = props => {
+  return <Text style={styles.text}>{props.groupName} Schedule</Text>;
+};
 
 //Keep for posterity just in case we need another button to interact with navigator
 // function HomeScreen({ navigation }) {
@@ -90,8 +117,6 @@ const CalendarTitle = (props) => {
 //   );
 // }
 
-
-
 const initialMarkedDateList = []; //this is where we will plug in all the stuff from database
 
 function HomeScreen(props) {
@@ -99,7 +124,7 @@ function HomeScreen(props) {
   const [markedDateList, setMarkedDateList] = useState(initialMarkedDateList);
   const [mark, setMark] = useState({});
 
-//TODO: none of this is gonna make sense until I relearn about life cycle and how states and hooks work.
+  //TODO: none of this is gonna make sense until I relearn about life cycle and how states and hooks work.
 
   // let nextDate = [
   //   selectedDay.dateString,
@@ -132,8 +157,8 @@ function HomeScreen(props) {
     const newMarkedDateList = markedDateList.concat(selectedDay.dateString);
     setMarkedDateList(newMarkedDateList);
     setMark(markDatesInList(markedDateList));
-    console.log("(handleAdd)markedDateList: " + markedDateList);
-    console.log("(handleAdd)mark: " + mark);
+    console.log('(handleAdd)markedDateList: ' + markedDateList);
+    console.log('(handleAdd)mark: ' + mark);
     // nextDate.push(selectedDay.dateString + '');
     // console.log(nextDate);
     // nextDate.forEach(day => {
@@ -150,25 +175,29 @@ function HomeScreen(props) {
     //     }
     //   }
     // });
-    Alert.alert("Event on " + selectedDay.dateString + " created");
-
+    Alert.alert('Event on ' + selectedDay.dateString + ' created');
   }
 
   function markDatesInList() {
-    console.log("from function markDatesInlist: selectedDay = " + selectedDay.dateString);
+    console.log(
+      'from function markDatesInlist: selectedDay = ' + selectedDay.dateString,
+    );
     let mark = {};
     markedDateList.forEach(day => {
-      console.log("from function markDatesInList (in foreach loop) day in given list " + day);
+      console.log(
+        'from function markDatesInList (in foreach loop) day in given list ' +
+          day,
+      );
       if (day == selectedDay.dateString) {
         mark[day] = {
           selected: true,
-          selectedColor: Colors.DD_RED_3
+          selectedColor: Colors.DD_RED_3,
         };
       } else {
         mark[day] = {
           marked: true,
-          dotColor: Colors.DD_RED_3
-        }
+          dotColor: Colors.DD_RED_3,
+        };
       }
     });
 
@@ -182,11 +211,10 @@ function HomeScreen(props) {
         onDayPress={day => {
           console.log('selected day', day);
           setSelectedDay(day);
-          console.log("on day press, selectedDay = " + selectedDay.dateString);
+          console.log('on day press, selectedDay = ' + selectedDay.dateString);
           //console.log("set Mark and call function");
           //setMark(markDatesInList(markedDateList));
         }}
-
         // Handler which gets executed on day long press. Default = undefined
         onDayLongPress={day => {
           console.log('selected day', day);
@@ -206,7 +234,6 @@ function HomeScreen(props) {
         //markedDates={mark}
 
         markedDates={markDatesInList()}
-
         // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
         monthFormat={'MMMM'}
         // Handler which gets executed when visible month changes in calendar. Default = undefined
@@ -258,7 +285,7 @@ function HomeScreen(props) {
           // textDayHeaderFontWeight: '300',
           textDayFontSize: 20,
           textMonthFontSize: 40,
-          textDayHeaderFontSize: 24
+          textDayHeaderFontSize: 24,
         }}
         style={{
           //borderWidth: 10, //def need to do fancy stuff to make that look good
@@ -267,24 +294,24 @@ function HomeScreen(props) {
           paddingBottom: 10,
           //marginBottom: 50,
           //position: 'absolute',
-          width: 390
+          width: 390,
         }}
       />
       {/* look below to see sources for this
        <Navigator /> */}
       <TempOutputBox day={selectedDay} />
       <Button
-        title='Create Event'
+        title="Create Event"
         color={Colors.DD_RED_2}
         onPress={handleAddToMarkedDateList}
       />
     </SafeAreaView>
   );
-};
+}
 
 HomeScreen.defaultProps = {
-  groupName: "My"
-}
+  groupName: 'My',
+};
 
 export default HomeScreen;
 
@@ -292,11 +319,6 @@ export default HomeScreen;
 //https://www.youtube.com/watch?v=EaNCi8o8H0A&ab_channel=TheNetNinja
 //https://github.com/iamshaunjp/react-native-tutorial/tree/lesson-24
 //https://reactnavigation.org/docs/drawer-navigator
-
-
-
-
-
 
 //https://www.npmjs.com/package/react-native-calendars this is the calendar ap
 // export default function App() {
@@ -507,15 +529,3 @@ export default HomeScreen;
 //     </SafeAreaView>
 //   );
 // };
-
-
-
-
-
-
-
-
-
-
-
-
