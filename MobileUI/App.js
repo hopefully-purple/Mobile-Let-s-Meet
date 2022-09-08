@@ -3,6 +3,7 @@ import { Button, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './screens/HomeScreen';
+import LoginScreen from './screens/LoginScreen';
 import { Text, StatusBar, SafeAreaView, StyleSheet } from 'react-native';
 import Colors from './assets/styles/colors';
 
@@ -63,7 +64,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Drawer.Navigator 
-      initialRouteName="Home"
+      initialRouteName="Login"
       screenOptions={{
         drawerType: 'front',
         drawerActiveBackgroundColor: Colors.DD_CREAM,
@@ -108,6 +109,13 @@ export default function App() {
         <Drawer.Screen 
           name="Settings" 
           component={SettingsScreen} 
+          options={{
+            headerShown: false
+          }}
+        />
+        <Drawer.Screen 
+          name="Login" 
+          component={LoginScreen} 
           options={{
             headerShown: false
           }}
