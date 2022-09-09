@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function LoginScreen() {
+function LoginScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.screenContainer}>
@@ -66,7 +66,7 @@ function LoginScreen() {
           style={styles.userPassword}
           placeholderTextColor={Colors.DD_LIGHT_GRAY}
         />
-        <Button title="Go!" />
+        <Button title="Go!" onPress={() => navigation.navigate('My Schedule')}/>
       </View>
     </SafeAreaView>
   );
