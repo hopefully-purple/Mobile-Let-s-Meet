@@ -16,18 +16,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 29,
-    height: 200,
+    height: 35,
     width: 120,
-    paddingLeft: 166,
-    padddingTop: 649,
+    marginLeft: 166,
+    marginRight: 194,
+    marginTop: 46,
     backgroundColor: Colors.DD_LIGHT_GRAY
   },
   text: {
     fontSize: 16,
     lineHeight: 21,
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color: 'white',
+    // fontWeight: 'bold',
+    // letterSpacing: 0.25,
+    color: Colors.DD_RED_3,
   },
 });
 

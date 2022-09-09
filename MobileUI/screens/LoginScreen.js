@@ -24,7 +24,28 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: Colors.DD_RED_2,
     textAlign: 'center',
-  }
+    marginBottom: 46,
+  },
+  userEmail: {
+    height: 51,
+    width: 260,
+    marginLeft: 57,
+    marginRight: 60,
+    marginTop: 62,
+    backgroundColor: Colors.DD_RED_2,
+    paddingLeft: 17,
+    color: Colors.DD_LIGHT_GRAY
+  },
+  userPassword: {
+    height: 51,
+    width: 260,
+    marginLeft: 56,
+    marginRight: 60,
+    marginTop: 37,
+    backgroundColor: Colors.DD_RED_2,
+    paddingLeft: 17,
+    color: Colors.DD_LIGHT_GRAY
+  },
 });
 
 function LoginScreen() {
@@ -35,9 +56,17 @@ function LoginScreen() {
         <Text style={styles.defaultScreentext}>
           No account? Click to sign up
         </Text>
-        <TextInput placeholder="Email" />
-        <TextInput placeholder="password" />
-        <Button title='Go!' />
+        <TextInput
+          placeholder="Email"
+          style={styles.userEmail}
+          placeholderTextColor={Colors.DD_LIGHT_GRAY}
+        />
+        <TextInput
+          placeholder="Password"
+          style={styles.userPassword}
+          placeholderTextColor={Colors.DD_LIGHT_GRAY}
+        />
+        <Button title="Go!" />
       </View>
     </SafeAreaView>
   );
