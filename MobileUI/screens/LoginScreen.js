@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
-  Alert,
+  //Alert,
   Text,
-  StatusBar,
+  //StatusBar,
   SafeAreaView,
   StyleSheet,
   View,
@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import Colors from '../assets/styles/colors';
 import Button from '../assets/components/CustomButton';
+import {LogStateContext} from '../App';
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
     marginTop: 62,
     backgroundColor: Colors.DD_RED_2,
     paddingLeft: 17,
-    color: Colors.DD_LIGHT_GRAY
+    color: Colors.DD_LIGHT_GRAY,
   },
   userPassword: {
     height: 51,
@@ -44,11 +45,13 @@ const styles = StyleSheet.create({
     marginTop: 37,
     backgroundColor: Colors.DD_RED_2,
     paddingLeft: 17,
-    color: Colors.DD_LIGHT_GRAY
+    color: Colors.DD_LIGHT_GRAY,
   },
 });
 
-function LoginScreen({ navigation }) {
+const LoginScreen = ({navigation}) => {
+  const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
+
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.screenContainer}>
@@ -66,11 +69,17 @@ function LoginScreen({ navigation }) {
           style={styles.userPassword}
           placeholderTextColor={Colors.DD_LIGHT_GRAY}
         />
-        <Button title="Go!" onPress={() => navigation.navigate('My Schedule')}/>
+        <Button
+          title="Go!"
+          onPress={() => {
+            navigation.navigate('My Schedule');
+            setIsLoggedIn(true);
+          }}
+        />
       </View>
     </SafeAreaView>
   );
-}
+};
 
 // LoginScreen.defaultProps = {
 //   groupName: "My"

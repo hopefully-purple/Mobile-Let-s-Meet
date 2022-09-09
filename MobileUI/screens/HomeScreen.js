@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  Button,
-  Alert,
-  Text,
-  StatusBar,
-  SafeAreaView,
-  StyleSheet,
-} from 'react-native';
+import {Button, Alert, Text, SafeAreaView, StyleSheet} from 'react-native';
 // import HttpExample from './http_example.js'
 // import Demo from './demo.js'
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
