@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   defaultScreentext: {
     fontSize: 25,
     fontWeight: '500',
-    color: Colors.DD_RED_2,
+    color: Colors.DD_RED_3,
     textAlign: 'center',
     marginBottom: 46,
   },
