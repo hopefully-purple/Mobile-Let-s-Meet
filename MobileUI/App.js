@@ -88,41 +88,52 @@ const App = () => {
               backgroundColor: Colors.DD_CREAM,
             },
           }}>
-          <Drawer.Screen
-            name="Profile"
-            component={ProfileScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
+          {isLoggedIn && (
+            <Drawer.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+          )}
           <Drawer.Screen
             name="My Schedule"
             component={HomeScreen}
             options={{
               headerShown: false,
+              drawerItemStyle: {
+                height: isLoggedIn ? 55 : 0,
+              },
             }}
           />
-          <Drawer.Screen
-            name="Groups"
-            component={GroupsScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Drawer.Screen
-            name="Friends"
-            component={FriendsScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Drawer.Screen
-            name="Settings"
-            component={SettingsScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
+          {isLoggedIn && (
+            <Drawer.Screen
+              name="Groups"
+              component={GroupsScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+          )}
+          {isLoggedIn && (
+            <Drawer.Screen
+              name="Friends"
+              component={FriendsScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+          )}
+          {isLoggedIn && (
+            <Drawer.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+          )}
           <Drawer.Screen
             name={'Login'}
             component={LoggingScreen}
