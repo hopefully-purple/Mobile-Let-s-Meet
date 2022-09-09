@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react';
 import {
-  //Alert,
+  Alert,
   Text,
   //StatusBar,
   SafeAreaView,
@@ -51,6 +51,11 @@ const styles = StyleSheet.create({
 
 const LoginScreen = ({navigation}) => {
   const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
+  navigation.addListener('drawerItemPress', () => {
+    if (isLoggedIn) {
+      setIsLoggedIn(false);
+    }
+  });
 
   return (
     <SafeAreaView style={styles.screenContainer}>

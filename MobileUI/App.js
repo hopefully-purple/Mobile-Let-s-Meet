@@ -4,7 +4,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
-import {Text, StyleSheet} from 'react-native';
+import {Text, StyleSheet, Alert} from 'react-native';
 import Colors from './assets/styles/colors';
 
 const styles = StyleSheet.create({
@@ -64,10 +64,10 @@ function LoggingScreen({navigation}) {
 
 const Drawer = createDrawerNavigator();
 
-export const LogStateContext = createContext(true);
+export const LogStateContext = createContext(false);
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState();
 
   let loginName = isLoggedIn ? 'Log Out' : 'Log In';
 
