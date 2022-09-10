@@ -50,10 +50,16 @@ const styles = StyleSheet.create({
 });
 
 const LoginScreen = ({navigation}) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
+  this.emailInput = React.createRef();
+  this.passwordInput = React.createRef();
   navigation.addListener('drawerItemPress', () => {
     if (isLoggedIn) {
       setIsLoggedIn(false);
+      this.emailInput.current.clear();
+      this.passwordInput.current.clear();
     }
   });
 
@@ -68,17 +74,22 @@ const LoginScreen = ({navigation}) => {
           placeholder="Email"
           style={styles.userEmail}
           placeholderTextColor={Colors.DD_LIGHT_GRAY}
+          onChangeText={newText => setEmail(newText)}
+          ref={this.emailInput}
         />
         <TextInput
           placeholder="Password"
           style={styles.userPassword}
           placeholderTextColor={Colors.DD_LIGHT_GRAY}
+          onChangeText={newText => setPassword(newText)}
+          ref={this.passwordInput}
         />
         <Button
           title="Go!"
           onPress={() => {
             navigation.navigate('My Schedule');
             setIsLoggedIn(true);
+            Alert.alert('Email: ' + email + ' Password: ' + password);
           }}
         />
       </View>
