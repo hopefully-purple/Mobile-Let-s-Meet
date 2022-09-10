@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
   Alert,
   Text,
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 46,
   },
-  userEmail: {
+  userName: {
     height: 51,
     width: 260,
     marginLeft: 57,
@@ -50,18 +50,56 @@ const styles = StyleSheet.create({
 });
 
 const LoginScreen = ({navigation}) => {
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [err, setErr] = useState('');
   const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
-  this.emailInput = React.createRef();
+
+  this.nameInput = React.createRef();
   this.passwordInput = React.createRef();
+
   navigation.addListener('drawerItemPress', () => {
     if (isLoggedIn) {
       setIsLoggedIn(false);
-      this.emailInput.current.clear();
+      this.nameInput.current.clear();
       this.passwordInput.current.clear();
     }
   });
+
+  const handleLogInButton = async () => {
+    setIsLoading(true);
+    try {
+      // So what needs to change is we need to send name and pass, and get the token.
+      const response = await fetch('https://reqres.in/api/users', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: 'John Smith',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      console.log('result is: ', JSON.stringify(result, null, 4));
+
+      setName(result);
+    } catch (err) {
+      setErr(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+    Alert.alert('User Name: ' + name + ' Password: ' + password);
+    setIsLoggedIn(true);
+    navigation.navigate('My Schedule');
+  };
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -71,11 +109,11 @@ const LoginScreen = ({navigation}) => {
           No account? Click to sign up
         </Text>
         <TextInput
-          placeholder="Email"
-          style={styles.userEmail}
+          placeholder="User Name"
+          style={styles.userName}
           placeholderTextColor={Colors.DD_LIGHT_GRAY}
-          onChangeText={newText => setEmail(newText)}
-          ref={this.emailInput}
+          onChangeText={newText => setName(newText)}
+          ref={this.nameInput}
         />
         <TextInput
           placeholder="Password"
@@ -84,14 +122,9 @@ const LoginScreen = ({navigation}) => {
           onChangeText={newText => setPassword(newText)}
           ref={this.passwordInput}
         />
-        <Button
-          title="Go!"
-          onPress={() => {
-            navigation.navigate('My Schedule');
-            setIsLoggedIn(true);
-            Alert.alert('Email: ' + email + ' Password: ' + password);
-          }}
-        />
+        <Button title="Go!" onPress={() => handleLogInButton()} />
+        {isLoading && <Text style={styles.defaultScreentext}>Loading...</Text>}
+        {err && <Text style={styles.defaultScreentext}>{err}</Text>}
       </View>
     </SafeAreaView>
   );
@@ -102,3 +135,63 @@ const LoginScreen = ({navigation}) => {
 // }
 
 export default LoginScreen;
+
+// import {useState} from 'react';
+
+// const App = () => {
+//   const [data, setData] = useState();
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [err, setErr] = useState('');
+
+//   const handleClick = async () => {
+//     setIsLoading(true);
+//     try {
+//       const response = await fetch('https://reqres.in/api/users', {
+//         method: 'POST',
+//         body: JSON.stringify({
+//           name: 'John Smith',
+//           job: 'manager',
+//         }),
+//         headers: {
+//           'Content-Type': 'application/json',
+//           Accept: 'application/json',
+//         },
+//       });
+
+//       if (!response.ok) {
+//         throw new Error(`Error! status: ${response.status}`);
+//       }
+
+//       const result = await response.json();
+
+//       console.log('result is: ', JSON.stringify(result, null, 4));
+
+//       setData(result);
+//     } catch (err) {
+//       setErr(err.message);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   console.log(data);
+
+//   return (
+//     <div>
+//       {err && <h2>{err}</h2>}
+
+//       <button onClick={handleClick}>Make request</button>
+
+//       {isLoading && <h2>Loading...</h2>}
+
+//       {data && (
+//         <div>
+//           <h2>Name: {data.name}</h2>
+//           <h2>Job: {data.job}</h2>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default App;
