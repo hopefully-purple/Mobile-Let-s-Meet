@@ -143,20 +143,25 @@ const App = () => {
               drawerLabel: loginName,
             }}
           />
-          <Drawer.Screen //need to hide somehow
+          <Drawer.Screen
             name={'Registration'}
             component={RegistrationScreen}
             options={{
               headerShown: false,
               drawerHideStatusBarOnOpen: true,
+              drawerItemStyle: {
+                height: 0,
+              },
             }}
           />
-          <Drawer.Screen //need to hide somehow
+          <Drawer.Screen
             name={'BaseRegistration'}
             component={BaseRegistration}
             options={{
-              headerShown: true,
-              drawerHideStatusBarOnOpen: true,
+              headerShown: false,
+              drawerItemStyle: {
+                height: 0,
+              },
             }}
           />
         </Drawer.Navigator>
