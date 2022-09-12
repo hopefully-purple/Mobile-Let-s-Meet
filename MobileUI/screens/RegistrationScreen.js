@@ -11,6 +11,7 @@ import {
 import Colors from '../assets/styles/colors';
 import Button from '../assets/components/CustomButton';
 import {LogStateContext} from '../App';
+// import {RegistrationStepContext} from './RegistrationFlow/BaseRegistration';
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -39,8 +40,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export const RegistrationStepContext = createContext(0);
-
 const RegistrationScreen = ({navigation}) => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -48,54 +47,54 @@ const RegistrationScreen = ({navigation}) => {
   //   const [isLoading, setIsLoading] = useState(false);
   //   const [err, setErr] = useState('');
   const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
-  const [step, setStep] = useState(0);
+  // const {step, setStep} = useContext(RegistrationStepContext);
 
   this.nameInput = React.createRef();
   this.passwordInput = React.createRef();
   this.emailInput = React.createRef();
 
-  //   if (step !== 0) {
-  //     setStep(0);
-  //   }
-  Alert.alert('step: ' + step);
   return (
-    <RegistrationStepContext.Provider value={{step, setStep}}>
-      <SafeAreaView style={styles.screenContainer}>
-        <View style={styles.screenContainer}>
-          <Text style={styles.defaultScreentext}>Sign up for</Text>
-          <Text style={styles.defaultScreentext}> Let's Meet</Text>
-          <TextInput
-            placeholder="User Name"
-            style={styles.userInput}
-            placeholderTextColor={Colors.DD_LIGHT_GRAY}
-            onChangeText={newText => setName(newText)}
-            ref={this.nameInput}
-          />
-          <TextInput
-            placeholder="Password"
-            style={styles.userInput}
-            placeholderTextColor={Colors.DD_LIGHT_GRAY}
-            onChangeText={newText => setPassword(newText)}
-            ref={this.passwordInput}
-          />
-          <TextInput
-            placeholder="Email"
-            style={styles.userInput}
-            placeholderTextColor={Colors.DD_LIGHT_GRAY}
-            onChangeText={newText => setEmail(newText)}
-            ref={this.emailInput}
-          />
-          <Button
-            title="Create Account"
-            onPress={() => {
-              navigation.navigate('BaseRegistration');
-            }}
-          />
-          {/* {isLoading && <Text style={styles.defaultScreentext}>Loading...</Text>}
+    <SafeAreaView style={styles.screenContainer}>
+      <View style={styles.screenContainer}>
+        <Text style={styles.defaultScreentext}>Sign up for</Text>
+        <Text style={styles.defaultScreentext}> Let's Meet</Text>
+        <TextInput
+          placeholder="User Name"
+          style={styles.userInput}
+          placeholderTextColor={Colors.DD_LIGHT_GRAY}
+          onChangeText={newText => setName(newText)}
+          ref={this.nameInput}
+        />
+        <TextInput
+          placeholder="Password"
+          style={styles.userInput}
+          placeholderTextColor={Colors.DD_LIGHT_GRAY}
+          onChangeText={newText => setPassword(newText)}
+          ref={this.passwordInput}
+        />
+        <TextInput
+          placeholder="Email"
+          style={styles.userInput}
+          placeholderTextColor={Colors.DD_LIGHT_GRAY}
+          onChangeText={newText => setEmail(newText)}
+          ref={this.emailInput}
+        />
+        <Button
+          title="Create Account"
+          onPress={() => {
+            // setStep(0);
+
+            //   if (step !== 0) {
+            //     setStep(0);
+            //   }
+            // Alert.alert('step: ' + step);
+            navigation.navigate('BaseRegistration');
+          }}
+        />
+        {/* {isLoading && <Text style={styles.defaultScreentext}>Loading...</Text>}
         {err && <Text style={styles.defaultScreentext}>{err}</Text>} */}
-        </View>
-      </SafeAreaView>
-    </RegistrationStepContext.Provider>
+      </View>
+    </SafeAreaView>
   );
 };
 

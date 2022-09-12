@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, createContext, useEffect} from 'react';
 import {
   Alert,
   Text,
@@ -11,7 +11,6 @@ import {
 import Colors from '../../assets/styles/colors';
 import Button from '../../assets/components/CustomButton';
 import {LogStateContext} from '../../App';
-import {RegistrationStepContext} from '../RegistrationScreen';
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -198,11 +197,14 @@ const Step31 = ({onClick}) => {
   );
 };
 
+export const RegistrationStepContext = createContext(0);
+
 const BaseRegistration = ({navigation}) => {
-  const {step, setStep} = useContext(RegistrationStepContext);
+  // const {step, setStep} = useContext(RegistrationStepContext);
+  const [step, setStep] = useState(0);
   const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
-  this.setStep(0);
-  Alert.alert('base step: ' + step);
+  // setStep(0);
+  // Alert.alert('base step: ' + step);
 
   return (
     <SafeAreaView style={styles.screenContainer}>
