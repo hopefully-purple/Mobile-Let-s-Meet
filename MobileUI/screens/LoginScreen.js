@@ -70,17 +70,23 @@ const LoginScreen = ({navigation}) => {
   const handleLogInButton = async () => {
     setIsLoading(true);
     try {
-      // So what needs to change is we need to send name and pass, and get the token.
-      const response = await fetch('https://reqres.in/api/users', {
-        method: 'POST',
-        body: JSON.stringify({
-          name: 'John Smith',
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
+      // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
+      // const response = await fetch('https://reqres.in/api/users', {
+      const response = await fetch(
+        'https://3b6b1870-81e4-424f-a57d-113afec85025.mock.pstmn.io/get',
+        {
+          // method: 'POST',
+          method: 'GET',
+          // body: JSON.stringify({
+          //   Username: name,
+          //   Password: password,
+          // }),
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`Error! status: ${response.status}`);
@@ -89,8 +95,7 @@ const LoginScreen = ({navigation}) => {
       const result = await response.json();
 
       console.log('result is: ', JSON.stringify(result, null, 4));
-
-      setName(result);
+      Alert.alert('result is: ', JSON.stringify(result, null, 4));
     } catch (err) {
       setErr(err.message);
     } finally {
