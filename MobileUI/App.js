@@ -6,6 +6,8 @@ import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import {Text, StyleSheet, Alert} from 'react-native';
 import Colors from './assets/styles/colors';
+import RegistrationScreen from './screens/RegistrationScreen';
+import BaseRegistration from './screens/RegistrationFlow/BaseRegistration';
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -29,7 +31,6 @@ function ProfileScreen({navigation}) {
       <Text style={styles.defaultScreentext}> This is my profile</Text>
       <Text style={styles.defaultScreentext}> QR code</Text>
       <Text style={styles.defaultScreentext}>
-        {' '}
         Swipe from the left to open navigation tool
       </Text>
     </View>
@@ -140,6 +141,22 @@ const App = () => {
             options={{
               headerShown: false,
               drawerLabel: loginName,
+            }}
+          />
+          <Drawer.Screen //need to hide somehow
+            name={'Registration'}
+            component={RegistrationScreen}
+            options={{
+              headerShown: false,
+              drawerHideStatusBarOnOpen: true,
+            }}
+          />
+          <Drawer.Screen //need to hide somehow
+            name={'BaseRegistration'}
+            component={BaseRegistration}
+            options={{
+              headerShown: true,
+              drawerHideStatusBarOnOpen: true,
             }}
           />
         </Drawer.Navigator>

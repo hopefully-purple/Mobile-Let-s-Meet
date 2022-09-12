@@ -11,6 +11,7 @@ import {
 import Colors from '../assets/styles/colors';
 import Button from '../assets/components/CustomButton';
 import {LogStateContext} from '../App';
+// import RegistrationScreen from './RegistrationScreen';
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -48,6 +49,10 @@ const styles = StyleSheet.create({
     color: Colors.DD_LIGHT_GRAY,
   },
 });
+
+// function handleCreateAccount() {
+//   return <RegistrationScreen />;
+// }
 
 const LoginScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -110,7 +115,9 @@ const LoginScreen = ({navigation}) => {
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.screenContainer}>
         <Text style={styles.defaultScreentext}> Let's Meet</Text>
-        <Text style={styles.defaultScreentext}>
+        <Text
+          style={styles.defaultScreentext}
+          onPress={() => navigation.navigate('Registration')}>
           No account? Click to sign up
         </Text>
         <TextInput
