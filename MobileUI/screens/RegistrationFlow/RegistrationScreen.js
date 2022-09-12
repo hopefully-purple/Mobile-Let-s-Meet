@@ -8,9 +8,9 @@ import {
   View,
   TextInput,
 } from 'react-native';
-import Colors from '../assets/styles/colors';
-import Button from '../assets/components/CustomButton';
-import {LogStateContext} from '../App';
+import Colors from '../../assets/styles/colors';
+import Button from '../../assets/components/CustomButton';
+import {LogStateContext} from '../../App';
 // import {RegistrationStepContext} from './RegistrationFlow/BaseRegistration';
 
 const styles = StyleSheet.create({

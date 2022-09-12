@@ -6,7 +6,7 @@ import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import {Text, StyleSheet, Alert} from 'react-native';
 import Colors from './assets/styles/colors';
-import RegistrationScreen from './screens/RegistrationScreen';
+import RegistrationScreen from './screens/RegistrationFlow/RegistrationScreen';
 import BaseRegistration from './screens/RegistrationFlow/BaseRegistration';
 
 const styles = StyleSheet.create({
