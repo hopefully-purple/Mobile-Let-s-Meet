@@ -26,6 +26,10 @@ const styles = StyleSheet.create({
   },
 });
 
+const Drawer = createDrawerNavigator();
+
+export const LogStateContext = createContext(false);
+
 function ProfileScreen({navigation}) {
   return (
     <View style={styles.screenContainer}>
@@ -61,10 +65,14 @@ function SettingsScreen({navigation}) {
 }
 
 function LoggingScreen({navigation}) {
+  const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
+  // setIsLoggedIn(false);
+  console.log('go to login screen:' + isLoggedIn);
   return <LoginScreen navigation={navigation} />;
 }
 
-const clearAll = async () => {
+// Clears all contents in AsyncStorage
+export const clearAll = async () => {
   try {
     await AsyncStorage.clear();
   } catch (e) {
@@ -74,24 +82,100 @@ const clearAll = async () => {
   console.log('App: Done clearing');
 };
 
-const Drawer = createDrawerNavigator();
+// Gets the value stored with given username
+const getUsernameValue = async username => {
+  try {
+    const value = await AsyncStorage.getItem(username);
+    if (value !== null) {
+      console.log('getUsername: value=' + value);
+      return JSON.parse(value);
+    }
+  } catch (e) {
+    // read error
+    console.log('getUsername error: ' + e);
+  }
+  console.log('Done getting usesrname');
+  return null;
+};
 
-export const LogStateContext = createContext(false);
+const getAllKeys = async () => {
+  let keys = [];
+  try {
+    keys = await AsyncStorage.getAllKeys();
+    if (keys !== null) {
+      console.log(keys);
+      return keys;
+    }
+  } catch (e) {
+    // read key error
+    console.log('getAllKeys error: ' + e);
+  }
+
+  return keys;
+  // example console.log result:
+  // ['@MyApp_user', '@MyApp_key']
+};
+
+const userLoginHandling = async () => {
+  console.log('step 2.1: get all the keys');
+  let k = await getAllKeys();
+  console.log('step 2.2: check how many there are');
+  if (k.length === 1) {
+    //There are things that exist in storage
+    console.log('!!');
+    let user = await getUsernameValue(k[0]);
+    var exp = Date.parse(user.expiration);
+    var d1 = new Date();
+    var d = Date.parse(d1);
+    if (d < exp) {
+      //Need to change to >=
+      console.log(
+        'current date is past expiration. clear storage. landing screen Login',
+      );
+      clearAll();
+      // setIsLoggedIn(false);
+      return 'Login';
+    } else {
+      console.log(
+        'token has not expired yet, stay logged in and make landing screen Home',
+      );
+      // setIsLoggedIn(true);
+      return 'My Schedule';
+    }
+  } else if (k.length === 0) {
+    // Storage is empty. Meaning, user cannot be logged in. We want login landing
+    return 'Login';
+  }
+
+  console.log('step 2.3: end of userLoginHandling');
+};
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState();
 
+  console.log('step 1: declare landing');
+  let landing = 'Login';
   if (!isLoggedIn) {
-    clearAll();
+    console.log('step 2: not logged in, so call userLoginHandling');
+    landing = userLoginHandling();
+    console.log('step 3: landing is now ' + landing);
+    if (landing === 'My Schedule') {
+      setIsLoggedIn(true);
+      console.log('how often?');
+    } else if (landing === 'Login') {
+      setIsLoggedIn(false);
+      console.log('lsdkfjsldkfj');
+    }
   }
 
+  console.log('last step: set loginName');
   let loginName = isLoggedIn ? 'Log Out' : 'Log In';
 
   return (
     <LogStateContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
       <NavigationContainer>
         <Drawer.Navigator
-          initialRouteName={'Login'}
+          initialRouteName={landing}
           screenOptions={{
             drawerType: 'front',
             drawerActiveBackgroundColor: Colors.DD_CREAM,

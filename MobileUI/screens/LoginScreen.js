@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Colors from '../assets/styles/colors';
 import Button from '../assets/components/CustomButton';
-import {LogStateContext} from '../App';
+import {LogStateContext, clearAll} from '../App';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const styles = StyleSheet.create({
@@ -50,56 +50,28 @@ const styles = StyleSheet.create({
   },
 });
 
-const setStringToken = async value => {
+const setStringUsername = async (username, value) => {
   try {
-    await AsyncStorage.setItem('token', value);
+    await AsyncStorage.setItem(`${username}`, value);
   } catch (e) {
     // save error
     console.log('error : ' + e);
   }
 
-  console.log('Set token is done.');
+  console.log('Set username is done.');
 };
 
-const setStringExpiration = async value => {
-  try {
-    await AsyncStorage.setItem('expiration', value);
-  } catch (e) {
-    // save error
-    console.log('error : ' + e);
-  }
+const storeUserLoginInfo = async (name, password, postResult) => {
+  let loginInfo = {
+    token: postResult.token,
+    expiration: postResult.expiration,
+    password: password,
+  };
 
-  console.log('Set expiration is done.');
-};
-
-const getToken = async () => {
-  try {
-    const value = await AsyncStorage.getItem('token');
-    if (value !== null) {
-      console.log('getToken: value=' + value);
-      return value;
-    }
-  } catch (e) {
-    // read error
-    console.log('get token error: ' + e);
-  }
-  console.log('Done getting token');
-  return null;
-};
-
-const getExpiration = async () => {
-  try {
-    const value = await AsyncStorage.getItem('expiration');
-    if (value !== null) {
-      console.log('getExpiration: value=' + value);
-      return value;
-    }
-  } catch (e) {
-    // read error
-    console.log('getExpiration error: ' + e);
-  }
-  console.log('Done getting expiration');
-  return null;
+  await setStringUsername(name, JSON.stringify(loginInfo));
+  // let r = await getUsernameValue(name);
+  // r = JSON.parse(r);
+  // console.log('result of getting username: ' + r.password);
 };
 
 const LoginScreen = ({navigation}) => {
@@ -114,6 +86,10 @@ const LoginScreen = ({navigation}) => {
   //   console.log('we have already recieved a login token');
   //   setIsLoggedIn(true);
   // }
+  // if (isLoggedIn) {
+  //   setIsLoggedIn(false);
+  // }
+  // clearAll();
 
   this.nameInput = React.createRef();
   this.passwordInput = React.createRef();
@@ -152,14 +128,9 @@ const LoginScreen = ({navigation}) => {
 
       console.log('await response');
       const result1 = await response.json();
-      // console.log(result1);
-      const result = JSON.parse(JSON.stringify(result1));
-      const token = result.token;
-      const expiration = result.expiration;
-      console.log('token variable: ' + token);
-      await setStringToken(token);
-      console.log('expiration variable: ' + expiration);
-      await setStringExpiration(expiration);
+      console.log(result1);
+
+      await storeUserLoginInfo(name, password, result1);
 
       setIsLoading(false);
     } catch (err) {
