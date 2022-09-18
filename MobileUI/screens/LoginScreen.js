@@ -92,19 +92,20 @@ const LoginScreen = ({navigation}) => {
           }),
         },
       );
-      if (!response.ok) {
-        throw new Error(`Error! status: ${response.status}`);
-      }
+      // if (!response.ok) {
+      //   throw new Error(`Error! status: ${response.status}`);
+      // }
 
       console.log('await response');
-      const result = await response.json();
-      console.log('after response');
-      console.log('result is: ', JSON.stringify(result, null, 4));
-      Alert.alert('result is: ', JSON.stringify(result, null, 4));
-      if (result != null) {
-        console.log('Finally block. setIsLoading to false');
-        setIsLoading(false);
-      }
+      const result1 = await response.json();
+      console.log(result1);
+      const result = JSON.parse(JSON.stringify(result1));
+      const token = result.token;
+      const expiration = result.expiration;
+      console.log('token variable: ' + token);
+      console.log('expiration variable: ' + expiration);
+
+      setIsLoading(false);
     } catch (err) {
       setErr(err.message);
       console.log('set is loading false. Send an alert for this eror: ' + err);
@@ -113,18 +114,11 @@ const LoginScreen = ({navigation}) => {
     }
     // } finally {
     // }
-    //   if (!isLoading) {
-    //     console.log('inside if !isLoading');
-    //     Alert.alert('User Name: ' + name + ' Password: ' + password, [
-    //       {
-    //         text: 'OK',
-    //         onPress: () => {
-    //           console.log('OK Pressed');
-    //           setIsLoggedIn(true);
-    //           navigation.navigate('My Schedule');
-    //         },
-    //       },
-    //     ]);
+    if (!isLoading) {
+      console.log('no longer loading, set logged in true, pull up my schedule');
+      setIsLoggedIn(true);
+      navigation.navigate('My Schedule');
+    }
   };
 
   let title = "Let's Meet";
