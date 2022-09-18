@@ -73,42 +73,58 @@ const LoginScreen = ({navigation}) => {
   });
 
   const handleLogInButton = async () => {
+    console.log('setisloading to true');
     setIsLoading(true);
     try {
+      console.log('Sending Username: ' + name + ' Password: ' + password);
       // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
-      // const response = await fetch('https://reqres.in/api/users', {
       const response = await fetch(
-        'https://3b6b1870-81e4-424f-a57d-113afec85025.mock.pstmn.io/get',
+        'http://ec2-52-7-65-63.compute-1.amazonaws.com/Auth/Login',
         {
-          // method: 'POST',
-          method: 'GET',
-          // body: JSON.stringify({
-          //   Username: name,
-          //   Password: password,
-          // }),
+          method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
             Accept: 'application/json',
+            'Content-Type': 'application/json',
           },
+          body: JSON.stringify({
+            Username: name,
+            Password: password,
+          }),
         },
       );
-
       if (!response.ok) {
         throw new Error(`Error! status: ${response.status}`);
       }
 
+      console.log('await response');
       const result = await response.json();
-
+      console.log('after response');
       console.log('result is: ', JSON.stringify(result, null, 4));
       Alert.alert('result is: ', JSON.stringify(result, null, 4));
+      if (result != null) {
+        console.log('Finally block. setIsLoading to false');
+        setIsLoading(false);
+      }
     } catch (err) {
       setErr(err.message);
-    } finally {
+      console.log('set is loading false. Send an alert for this eror: ' + err);
       setIsLoading(false);
+      Alert.alert(err.message);
     }
-    Alert.alert('User Name: ' + name + ' Password: ' + password);
-    setIsLoggedIn(true);
-    navigation.navigate('My Schedule');
+    // } finally {
+    // }
+    //   if (!isLoading) {
+    //     console.log('inside if !isLoading');
+    //     Alert.alert('User Name: ' + name + ' Password: ' + password, [
+    //       {
+    //         text: 'OK',
+    //         onPress: () => {
+    //           console.log('OK Pressed');
+    //           setIsLoggedIn(true);
+    //           navigation.navigate('My Schedule');
+    //         },
+    //       },
+    //     ]);
   };
 
   let title = "Let's Meet";
@@ -127,6 +143,7 @@ const LoginScreen = ({navigation}) => {
           placeholderTextColor={Colors.DD_LIGHT_GRAY}
           onChangeText={newText => setName(newText)}
           ref={this.nameInput}
+          autoCapitalize="none"
         />
         <TextInput
           placeholder="Password"
@@ -134,6 +151,7 @@ const LoginScreen = ({navigation}) => {
           placeholderTextColor={Colors.DD_LIGHT_GRAY}
           onChangeText={newText => setPassword(newText)}
           ref={this.passwordInput}
+          autoCapitalize="none"
         />
         <Button title="Go!" onPress={() => handleLogInButton()} />
         {isLoading && <Text style={styles.defaultScreentext}>Loading...</Text>}
