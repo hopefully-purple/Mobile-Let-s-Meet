@@ -11,7 +11,7 @@ import {
 import Colors from '../assets/styles/colors';
 import Button from '../assets/components/CustomButton';
 import {LogStateContext} from '../App';
-// import RegistrationScreen from './RegistrationScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -50,9 +50,57 @@ const styles = StyleSheet.create({
   },
 });
 
-// function handleCreateAccount() {
-//   return <RegistrationScreen />;
-// }
+const setStringToken = async value => {
+  try {
+    await AsyncStorage.setItem('token', value);
+  } catch (e) {
+    // save error
+    console.log('error : ' + e);
+  }
+
+  console.log('Set token is done.');
+};
+
+const setStringExpiration = async value => {
+  try {
+    await AsyncStorage.setItem('expiration', value);
+  } catch (e) {
+    // save error
+    console.log('error : ' + e);
+  }
+
+  console.log('Set expiration is done.');
+};
+
+const getToken = async () => {
+  try {
+    const value = await AsyncStorage.getItem('token');
+    if (value !== null) {
+      console.log('getToken: value=' + value);
+      return value;
+    }
+  } catch (e) {
+    // read error
+    console.log('get token error: ' + e);
+  }
+  console.log('Done getting token');
+  return null;
+};
+
+const getExpiration = async () => {
+  try {
+    const value = await AsyncStorage.getItem('expiration');
+    if (value !== null) {
+      console.log('getExpiration: value=' + value);
+      return value;
+    }
+  } catch (e) {
+    // read error
+    console.log('getExpiration error: ' + e);
+  }
+  console.log('Done getting expiration');
+  return null;
+};
 
 const LoginScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -61,14 +109,20 @@ const LoginScreen = ({navigation}) => {
   const [err, setErr] = useState('');
   const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
 
+  // if (getToken() !== null) {
+  //   // Meaning we have already logged in
+  //   console.log('we have already recieved a login token');
+  //   setIsLoggedIn(true);
+  // }
+
   this.nameInput = React.createRef();
   this.passwordInput = React.createRef();
 
   navigation.addListener('drawerItemPress', () => {
     if (isLoggedIn) {
       setIsLoggedIn(false);
-      this.nameInput.current.clear();
       this.passwordInput.current.clear();
+      this.nameInput.current.clear();
     }
   });
 
@@ -98,12 +152,14 @@ const LoginScreen = ({navigation}) => {
 
       console.log('await response');
       const result1 = await response.json();
-      console.log(result1);
+      // console.log(result1);
       const result = JSON.parse(JSON.stringify(result1));
       const token = result.token;
       const expiration = result.expiration;
       console.log('token variable: ' + token);
+      await setStringToken(token);
       console.log('expiration variable: ' + expiration);
+      await setStringExpiration(expiration);
 
       setIsLoading(false);
     } catch (err) {

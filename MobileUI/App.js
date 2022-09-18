@@ -8,6 +8,7 @@ import {Text, StyleSheet, Alert} from 'react-native';
 import Colors from './assets/styles/colors';
 import RegistrationScreen from './screens/RegistrationFlow/RegistrationScreen';
 import BaseRegistration from './screens/RegistrationFlow/BaseRegistration';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -63,12 +64,26 @@ function LoggingScreen({navigation}) {
   return <LoginScreen navigation={navigation} />;
 }
 
+const clearAll = async () => {
+  try {
+    await AsyncStorage.clear();
+  } catch (e) {
+    // clear error
+  }
+
+  console.log('App: Done clearing');
+};
+
 const Drawer = createDrawerNavigator();
 
 export const LogStateContext = createContext(false);
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState();
+
+  if (!isLoggedIn) {
+    clearAll();
+  }
 
   let loginName = isLoggedIn ? 'Log Out' : 'Log In';
 
