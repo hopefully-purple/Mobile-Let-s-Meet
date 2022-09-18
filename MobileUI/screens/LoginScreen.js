@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   Alert,
   Text,
@@ -111,10 +111,11 @@ const LoginScreen = ({navigation}) => {
     navigation.navigate('My Schedule');
   };
 
+  let title = "Let's Meet";
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.screenContainer}>
-        <Text style={styles.defaultScreentext}> Let's Meet</Text>
+        <Text style={styles.defaultScreentext}>{title}</Text>
         <Text
           style={styles.defaultScreentext}
           onPress={() => navigation.navigate('Registration')}>
@@ -136,7 +137,7 @@ const LoginScreen = ({navigation}) => {
         />
         <Button title="Go!" onPress={() => handleLogInButton()} />
         {isLoading && <Text style={styles.defaultScreentext}>Loading...</Text>}
-        {err && <Text style={styles.defaultScreentext}>{err}</Text>}
+        {{err} && <Text style={styles.defaultScreentext}>{err}</Text>}
       </View>
     </SafeAreaView>
   );
