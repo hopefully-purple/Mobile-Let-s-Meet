@@ -15,6 +15,8 @@ target 'MobileUI' do
 
   pod 'RNSweetAlert', :path => '../node_modules/react-native-sweet-alert'
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-async-storage/async-storage'
+
   target 'MobileUITests' do
     inherit! :complete
     # Pods for testing
