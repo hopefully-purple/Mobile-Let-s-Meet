@@ -1,75 +1,7 @@
-import React, {useState, createContext, useContext} from 'react';
-import {View} from 'react-native';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {NavigationContainer} from '@react-navigation/native';
-import HomeScreen from './screens/HomeScreen';
-import LoginScreen from './screens/LoginScreen';
-import {Text, StyleSheet, Alert} from 'react-native';
-import Colors from './assets/styles/colors';
-import RegistrationScreen from './screens/RegistrationFlow/RegistrationScreen';
-import BaseRegistration from './screens/RegistrationFlow/BaseRegistration';
+import React, {useState, createContext, useContext, useEffect} from 'react';
+import Navigation from './screens/Navigation/Navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.DD_CREAM,
-    color: Colors.DD_RED_2,
-  },
-  defaultScreentext: {
-    fontSize: 25,
-    fontWeight: '500',
-    color: Colors.DD_RED_2,
-    textAlign: 'center',
-  },
-});
-
-const Drawer = createDrawerNavigator();
-
-export const LogStateContext = createContext(false);
-
-function ProfileScreen({navigation}) {
-  return (
-    <View style={styles.screenContainer}>
-      <Text style={styles.defaultScreentext}> This is my profile</Text>
-      <Text style={styles.defaultScreentext}> QR code</Text>
-      <Text style={styles.defaultScreentext}>
-        Swipe from the left to open navigation tool
-      </Text>
-    </View>
-  );
-}
-
-function GroupsScreen({navigation}) {
-  return <HomeScreen groupName="Group" />;
-}
-
-function FriendsScreen({navigation}) {
-  return (
-    <View style={styles.screenContainer}>
-      <Text style={styles.defaultScreentext}> List of friends</Text>
-      <Text style={styles.defaultScreentext}> Add friends</Text>
-    </View>
-  );
-}
-function SettingsScreen({navigation}) {
-  return (
-    <View style={styles.screenContainer}>
-      <Text style={styles.defaultScreentext}>Change profile info</Text>
-      <Text style={styles.defaultScreentext}>Change password</Text>
-      <Text style={styles.defaultScreentext}>Change privacy settings</Text>
-    </View>
-  );
-}
-
-function LoggingScreen({navigation}) {
-  const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
-  // setIsLoggedIn(false);
-  console.log('go to login screen:' + isLoggedIn);
-  return <LoginScreen navigation={navigation} />;
-}
+import UserContext from './contexts/User';
 
 // Clears all contents in AsyncStorage
 export const clearAll = async () => {
@@ -77,6 +9,7 @@ export const clearAll = async () => {
     await AsyncStorage.clear();
   } catch (e) {
     // clear error
+    console.log('!!!! Error with clearing! > ' + e);
   }
 
   console.log('App: Done clearing');
@@ -116,161 +49,64 @@ const getAllKeys = async () => {
   // ['@MyApp_user', '@MyApp_key']
 };
 
-const userLoginHandling = async () => {
-  console.log('step 2.1: get all the keys');
+export async function isStorageEmpty() {
+  console.log(
+    'isStorageEmpty: Checking if storage is empty. Call getAllKeys()',
+  );
   let k = await getAllKeys();
-  console.log('step 2.2: check how many there are');
-  if (k.length === 1) {
+  if (k.length > 0) {
+    console.log('isStorageEmpty: No');
+    return false;
+  } else {
+    console.log('isStorageEmpty: Yes');
+    return true;
+  }
+}
+
+// export const CheckIsTokenExpired = async () => {
+export async function checkIsTokenExpired(name) {
+  console.log('checkIsTExp - step 2.1: Call isStorageEmpty');
+
+  let emptyStorage = await isStorageEmpty();
+  if (!emptyStorage) {
     //There are things that exist in storage
-    console.log('step 2.3: There is 1!!');
-    let user = await getUsernameValue(k[0]);
+    console.log(
+      'checkIsTExp - step 2.3: There are many!! Parse expiration and current date',
+    );
+
+    let user = await getUsernameValue(name);
+    console.log('checkIsTExp - step 2.4: user result=' + user);
     var exp = Date.parse(user.expiration);
     var d1 = new Date();
     var d = Date.parse(d1);
-    if (d < exp) {
-      //^Need to change to >= to figure out
-      // how to handle when that happens . . . . . . . .
-      console.log(
-        'current date is past expiration. clear storage. landing screen Login',
-      );
-      clearAll();
-      // setIsLoggedIn(false);
-      return 'Login';
-    } else {
-      console.log(
-        'token has not expired yet, stay logged in and make landing screen Home',
-      );
-      // setIsLoggedIn(true);
-      return 'My Schedule';
-    }
-  } else if (k.length === 0) {
-    // Storage is empty. Meaning, user cannot be logged in. We want login landing
-    console.log('step2.3 alternate: there are none. return login');
-    return 'Login';
-  }
 
-  console.log('step 2.4: end of userLoginHandling');
+    console.log(
+      'checkIsTExp - step 2.5: Check if current date is past expiration',
+    );
+    if (d >= exp) {
+      console.log('checkIsTExp - Token is expired.');
+      return true;
+    } else {
+      console.log('checkIsTExp - Token is not expired');
+      return false;
+    }
+  } else {
+    // There is nothing stored. Need to login. return true
+    console.log('checkIsTExp - step 2.6: nothing is stored, return true');
+    return true;
+  }
+}
+
+const user = {
+  name: 'Kwame',
+  favorites: ['avocado', 'carrot'],
 };
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState();
-
-  console.log('step 1: declare landing');
-  let landing = 'Login';
-  if (!isLoggedIn) {
-    console.log('step 2: not logged in, so call userLoginHandling');
-    landing = userLoginHandling();
-    console.log('step 3: landing is now ' + landing);
-    if (landing === 'My Schedule') {
-      setIsLoggedIn(true);
-      console.log('how often?');
-    } else if (landing === 'Login') {
-      setIsLoggedIn(false);
-      console.log('lsdkfjsldkfj');
-    } else {
-      console.log('default to login');
-      landing = 'Login';
-    }
-  }
-
-  console.log('last step: set loginName');
-  let loginName = isLoggedIn ? 'Log Out' : 'Log In';
-
   return (
-    <LogStateContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
-      <NavigationContainer>
-        <Drawer.Navigator
-          initialRouteName={landing}
-          screenOptions={{
-            drawerType: 'front',
-            drawerActiveBackgroundColor: Colors.DD_CREAM,
-            drawerActiveTintColor: Colors.DD_RED_3,
-            drawerInactiveTintColor: Colors.DD_LIGHT_GRAY,
-            drawerLabelStyle: {
-              fontSize: 24,
-            },
-            drawerStyle: {
-              backgroundColor: Colors.DD_CREAM,
-            },
-          }}>
-          {isLoggedIn && (
-            <Drawer.Screen
-              name="Profile"
-              component={ProfileScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          )}
-          <Drawer.Screen
-            name="My Schedule"
-            component={HomeScreen}
-            options={{
-              headerShown: false,
-              drawerItemStyle: {
-                height: isLoggedIn ? 55 : 0,
-              },
-            }}
-          />
-          {isLoggedIn && (
-            <Drawer.Screen
-              name="Groups"
-              component={GroupsScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          )}
-          {isLoggedIn && (
-            <Drawer.Screen
-              name="Friends"
-              component={FriendsScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          )}
-          {isLoggedIn && (
-            <Drawer.Screen
-              name="Settings"
-              component={SettingsScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          )}
-          <Drawer.Screen
-            name={'Login'}
-            component={LoggingScreen}
-            options={{
-              headerShown: false,
-              drawerLabel: loginName,
-            }}
-          />
-          <Drawer.Screen
-            name={'Registration'}
-            component={RegistrationScreen}
-            options={{
-              headerShown: false,
-              drawerHideStatusBarOnOpen: true,
-              drawerItemStyle: {
-                height: 0,
-              },
-            }}
-          />
-          <Drawer.Screen
-            name={'BaseRegistration'}
-            component={BaseRegistration}
-            options={{
-              headerShown: false,
-              drawerItemStyle: {
-                height: 0,
-              },
-            }}
-          />
-        </Drawer.Navigator>
-      </NavigationContainer>
-    </LogStateContext.Provider>
+    <UserContext.Provider value={user}>
+      <Navigation />
+    </UserContext.Provider>
   );
 };
 

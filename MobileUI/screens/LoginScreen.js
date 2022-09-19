@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, createContext} from 'react';
 import {
   Alert,
   Text,
@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import Colors from '../assets/styles/colors';
 import Button from '../assets/components/CustomButton';
-import {LogStateContext, clearAll} from '../App';
+// import {LogStateContext, clearAll} from '../App';
+import LogStateContext from '../contexts/LoginState';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const styles = StyleSheet.create({
@@ -74,8 +75,10 @@ const storeUserLoginInfo = async (name, password, postResult) => {
   // console.log('result of getting username: ' + r.password);
 };
 
+export const UsernameContext = createContext('');
+
 const LoginScreen = ({navigation}) => {
-  const [name, setName] = useState('');
+  const [name, setName] = useState();
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState('');
@@ -91,14 +94,22 @@ const LoginScreen = ({navigation}) => {
   // }
   // clearAll();
 
+  //!!!! TO DO NEXT!!!!
+  // Here, we check if user already exists and if token is expired
+  // IF user has already logged in and token is not expired, navigate to my schedule!!!!!
+
   this.nameInput = React.createRef();
   this.passwordInput = React.createRef();
 
-  navigation.addListener('drawerItemPress', () => {
+  navigation.addListener('drawerItemPress', async () => {
     if (isLoggedIn) {
+      console.log(
+        'LoginScreen: setIsLoggedIn(false), clear inputs, clear storage',
+      );
       setIsLoggedIn(false);
       this.passwordInput.current.clear();
       this.nameInput.current.clear();
+      // await clearAll();
     }
   });
 
@@ -150,35 +161,39 @@ const LoginScreen = ({navigation}) => {
 
   let title = "Let's Meet";
   return (
-    <SafeAreaView style={styles.screenContainer}>
-      <View style={styles.screenContainer}>
-        <Text style={styles.defaultScreentext}>{title}</Text>
-        <Text
-          style={styles.defaultScreentext}
-          onPress={() => navigation.navigate('Registration')}>
-          No account? Click to sign up
-        </Text>
-        <TextInput
-          placeholder="User Name"
-          style={styles.userName}
-          placeholderTextColor={Colors.DD_LIGHT_GRAY}
-          onChangeText={newText => setName(newText)}
-          ref={this.nameInput}
-          autoCapitalize="none"
-        />
-        <TextInput
-          placeholder="Password"
-          style={styles.userPassword}
-          placeholderTextColor={Colors.DD_LIGHT_GRAY}
-          onChangeText={newText => setPassword(newText)}
-          ref={this.passwordInput}
-          autoCapitalize="none"
-        />
-        <Button title="Go!" onPress={() => handleLogInButton()} />
-        {isLoading && <Text style={styles.defaultScreentext}>Loading...</Text>}
-        {{err} && <Text style={styles.defaultScreentext}>{err}</Text>}
-      </View>
-    </SafeAreaView>
+    <UsernameContext.Provider value={{name, setName}}>
+      <SafeAreaView style={styles.screenContainer}>
+        <View style={styles.screenContainer}>
+          <Text style={styles.defaultScreentext}>{title}</Text>
+          <Text
+            style={styles.defaultScreentext}
+            onPress={() => navigation.navigate('Registration')}>
+            No account? Click to sign up
+          </Text>
+          <TextInput
+            placeholder="User Name"
+            style={styles.userName}
+            placeholderTextColor={Colors.DD_LIGHT_GRAY}
+            onChangeText={newText => setName(newText)}
+            ref={this.nameInput}
+            autoCapitalize="none"
+          />
+          <TextInput
+            placeholder="Password"
+            style={styles.userPassword}
+            placeholderTextColor={Colors.DD_LIGHT_GRAY}
+            onChangeText={newText => setPassword(newText)}
+            ref={this.passwordInput}
+            autoCapitalize="none"
+          />
+          <Button title="Go!" onPress={() => handleLogInButton()} />
+          {isLoading && (
+            <Text style={styles.defaultScreentext}>Loading...</Text>
+          )}
+          {{err} && <Text style={styles.defaultScreentext}>{err}</Text>}
+        </View>
+      </SafeAreaView>
+    </UsernameContext.Provider>
   );
 };
 
