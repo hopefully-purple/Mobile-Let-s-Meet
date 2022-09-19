@@ -122,13 +122,14 @@ const userLoginHandling = async () => {
   console.log('step 2.2: check how many there are');
   if (k.length === 1) {
     //There are things that exist in storage
-    console.log('!!');
+    console.log('step 2.3: There is 1!!');
     let user = await getUsernameValue(k[0]);
     var exp = Date.parse(user.expiration);
     var d1 = new Date();
     var d = Date.parse(d1);
     if (d < exp) {
-      //Need to change to >=
+      //^Need to change to >= to figure out
+      // how to handle when that happens . . . . . . . .
       console.log(
         'current date is past expiration. clear storage. landing screen Login',
       );
@@ -144,10 +145,11 @@ const userLoginHandling = async () => {
     }
   } else if (k.length === 0) {
     // Storage is empty. Meaning, user cannot be logged in. We want login landing
+    console.log('step2.3 alternate: there are none. return login');
     return 'Login';
   }
 
-  console.log('step 2.3: end of userLoginHandling');
+  console.log('step 2.4: end of userLoginHandling');
 };
 
 const App = () => {
@@ -165,6 +167,9 @@ const App = () => {
     } else if (landing === 'Login') {
       setIsLoggedIn(false);
       console.log('lsdkfjsldkfj');
+    } else {
+      console.log('default to login');
+      landing = 'Login';
     }
   }
 
