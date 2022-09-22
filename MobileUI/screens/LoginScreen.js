@@ -55,12 +55,19 @@ const setStringUsername = async (username, value) => {
   // console.log('Set username in async storage is done.');
 };
 
-const storeUserLoginInfo = async (name, password, postResult) => {
-  let loginInfo = {
-    token: postResult.token,
-    expiration: postResult.expiration,
-    password: password,
-  };
+export const storeUserLoginInfo = async (name, password, postResult) => {
+  let loginInfo;
+  if (postResult.status !== '') {
+    loginInfo = {
+      password: password,
+    };
+  } else {
+    loginInfo = {
+      token: postResult.token,
+      expiration: postResult.expiration,
+      password: password,
+    };
+  }
 
   await setStringUsername(name, JSON.stringify(loginInfo));
 };

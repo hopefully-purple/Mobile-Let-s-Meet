@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import Colors from '../../assets/styles/colors';
 import Button from '../../assets/components/CustomButton';
-import {LogStateContext} from '../../App';
+// import {LogStateContext} from '../../App';
+import LogStateContext from '../../contexts/LoginState';
 
 const styles = StyleSheet.create({
   screenContainer: {

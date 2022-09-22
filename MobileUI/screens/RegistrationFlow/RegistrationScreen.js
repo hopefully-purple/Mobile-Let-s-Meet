@@ -1,17 +1,10 @@
 import React, {useState, useContext, createContext, useEffect} from 'react';
-import {
-  Alert,
-  Text,
-  //StatusBar,
-  SafeAreaView,
-  StyleSheet,
-  View,
-  TextInput,
-} from 'react-native';
+import {Text, SafeAreaView, StyleSheet, View, TextInput} from 'react-native';
 import Colors from '../../assets/styles/colors';
 import Button from '../../assets/components/CustomButton';
-import {LogStateContext} from '../../App';
-// import {RegistrationStepContext} from './RegistrationFlow/BaseRegistration';
+import {storeUserLoginInfo} from '../LoginScreen';
+import UserContext from '../../contexts/User';
+// import LogStateContext from '../../contexts/LoginState';
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -44,14 +37,62 @@ const RegistrationScreen = ({navigation}) => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  //   const [isLoading, setIsLoading] = useState(false);
-  //   const [err, setErr] = useState('');
-  const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
-  // const {step, setStep} = useContext(RegistrationStepContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const user = useContext(UserContext);
+  // const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
 
   this.nameInput = React.createRef();
   this.passwordInput = React.createRef();
   this.emailInput = React.createRef();
+
+  const handleCreateAccountButton = async () => {
+    // console.log('setisloading to true');
+    setIsLoading(true);
+    try {
+      // console.log('Sending Username: ' + name + ' Password: ' + password);
+      // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
+      const response = await fetch(
+        'http://ec2-52-7-65-63.compute-1.amazonaws.com/Auth/CreateUser',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            Username: name,
+            Email: email,
+            Password: password,
+          }),
+        },
+      );
+
+      // console.log('await response');
+      const result1 = await response.json();
+      // console.log(result1);
+
+      if (result1.status === 'Success') {
+        // Store info in async storage
+        await storeUserLoginInfo(name, password, result1);
+
+        // Store info in user context
+        user.name = name;
+        user.password = password;
+
+        setIsLoading(false);
+      }
+    } catch (err) {
+      // setErr(err.message);
+      console.log('set is loading false. Send an alert for this eror: ' + err);
+      throw err;
+    }
+
+    if (!isLoading) {
+      // console.log('no longer loading, set logged in true, pull up my schedule');
+      // setIsLoggedIn(true);
+      navigation.navigate('BaseRegistration');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -81,18 +122,9 @@ const RegistrationScreen = ({navigation}) => {
         />
         <Button
           title="Create Account"
-          onPress={() => {
-            // setStep(0);
-
-            //   if (step !== 0) {
-            //     setStep(0);
-            //   }
-            // Alert.alert('step: ' + step);
-            navigation.navigate('BaseRegistration');
-          }}
+          onPress={() => handleCreateAccountButton()}
         />
-        {/* {isLoading && <Text style={styles.defaultScreentext}>Loading...</Text>}
-        {err && <Text style={styles.defaultScreentext}>{err}</Text>} */}
+        {isLoading && <Text style={styles.defaultScreentext}>Loading...</Text>}
       </View>
     </SafeAreaView>
   );
