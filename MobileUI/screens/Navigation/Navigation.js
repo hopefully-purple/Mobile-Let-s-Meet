@@ -9,6 +9,7 @@ import Colors from '../../assets/styles/colors';
 import RegistrationScreen from '../RegistrationFlow/RegistrationScreen';
 import BaseRegistration from '../RegistrationFlow/BaseRegistration';
 import LogStateContext from '../../contexts/LoginState';
+import ProfileScreen from '../ProfileScreen';
 
 //Important links
 //https://reactnavigation.org/docs/drawer-based-navigation/
@@ -29,18 +30,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-function ProfileScreen({navigation}) {
-  return (
-    <View style={styles.screenContainer}>
-      <Text style={styles.defaultScreentext}> This is my profile</Text>
-      <Text style={styles.defaultScreentext}> QR code</Text>
-      <Text style={styles.defaultScreentext}>
-        Swipe from the left to open navigation tool
-      </Text>
-    </View>
-  );
-}
 
 function GroupsScreen({navigation}) {
   return <HomeScreen groupName="Group" />;
