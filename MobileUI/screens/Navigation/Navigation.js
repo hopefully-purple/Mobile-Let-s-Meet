@@ -71,28 +71,7 @@ const Drawer = createDrawerNavigator();
 
 export default function Navigation() {
   const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
-  //   const [landing, setLanding] = useState('Login');
-  //   const {name, setName} = useContext(UsernameContext);
 
-  // console.log('step 1: useEffect');
-  // First, make login setup
-
-  //   console.log('App step 1: check if name is already defined');
-  //   // setName('charlie');
-  //   if (name !== undefined) {
-  //     console.log('App step 1.1: name=' + name);
-  //   } else {
-  //     console.log('App step 1.1: name is undefinnned?');
-  //   }
-  //   useEffect(() => {
-  //     console.log('~~useEffect');
-  //     // check if storage is empty.
-  //     // if storage is not empty,
-  //     // check token expiration
-  //     // if token is not expired, my schedule set up
-  //   }, []);
-
-  //   console.log('last step: set loginName');
   let logScreenLabel = isLoggedIn ? 'Log Out' : 'Log In';
   let landing = isLoggedIn ? 'My Schedule' : 'Login';
   return (

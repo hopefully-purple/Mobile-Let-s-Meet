@@ -13,6 +13,7 @@ import Button from '../assets/components/CustomButton';
 // import {LogStateContext, clearAll} from '../App';
 import LogStateContext from '../contexts/LoginState';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LandInLogScreenContext from '../contexts/LandInLogScreen';
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -83,6 +84,7 @@ const LoginScreen = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState('');
   const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
+  const landInLog = useContext(LandInLogScreenContext);
 
   // if (getToken() !== null) {
   //   // Meaning we have already logged in
@@ -97,6 +99,12 @@ const LoginScreen = ({navigation}) => {
   //!!!! TO DO NEXT!!!!
   // Here, we check if user already exists and if token is expired
   // IF user has already logged in and token is not expired, navigate to my schedule!!!!!
+  if (!landInLog) {
+    console.log('LoginScreen: landInLog is false, navigate to schedule');
+    navigation.navigate('My Schedule');
+  } else {
+    console.log('LoginScreen: landInLog is true');
+  }
 
   this.nameInput = React.createRef();
   this.passwordInput = React.createRef();
