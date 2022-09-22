@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useState} from 'react';
 import {View} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
@@ -9,6 +9,10 @@ import Colors from '../../assets/styles/colors';
 import RegistrationScreen from '../RegistrationFlow/RegistrationScreen';
 import BaseRegistration from '../RegistrationFlow/BaseRegistration';
 import LogStateContext from '../../contexts/LoginState';
+
+//Important links
+//https://reactnavigation.org/docs/drawer-based-navigation/
+//https://reactnavigation.org/docs/drawer-navigator/
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -61,16 +65,13 @@ function SettingsScreen({navigation}) {
 }
 
 function LoggingScreen({navigation}) {
-  // const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
-  // setIsLoggedIn(false);
-  // console.log('go to login screen:' + isLoggedIn);
   return <LoginScreen navigation={navigation} />;
 }
 
 const Drawer = createDrawerNavigator();
 
 export default function Navigation() {
-  const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   let logScreenLabel = isLoggedIn ? 'Log Out' : 'Log In';
   let landing = isLoggedIn ? 'My Schedule' : 'Login';
