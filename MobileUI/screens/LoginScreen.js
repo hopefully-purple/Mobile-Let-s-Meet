@@ -248,6 +248,13 @@ const LoginScreen = ({navigation}) => {
     }
   };
 
+  const handleByPassButton = () => {
+    user.name = 'test';
+    user.password = 'Password1!';
+    setIsLoggedIn(true);
+    navigation.navigate('My Schedule');
+  };
+
   let title = "Let's Meet";
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -275,6 +282,7 @@ const LoginScreen = ({navigation}) => {
           autoCapitalize="none"
         />
         <Button title="Go!" onPress={() => handleLogInButton()} />
+        <Button title="Bypass login" onPress={() => handleByPassButton()} />
         {isLoading && <Text style={styles.defaultScreentext}>Loading...</Text>}
         {{err} && <Text style={styles.defaultScreentext}>{err}</Text>}
       </View>
