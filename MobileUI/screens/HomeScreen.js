@@ -8,13 +8,13 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-// import HttpExample from './http_example.js'
-// import Demo from './demo.js'
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
 import Colors from '../assets/styles/colors';
+import {calendarTheme} from '../assets/styles/calendarTheme';
 import createEventPopup from './createEventPopup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Card} from 'react-native-paper';
 
 //TODO: In Calendar, can't get the selected day background to changecolor like advertised
 
@@ -92,12 +92,16 @@ const styles = StyleSheet.create({
     position: 'relative',
     flexWrap: 'wrap',
   },
+  itemText: {
+    color: Colors.DD_DARK_GRAY,
+  },
   item: {
     flex: 1,
     borderRadius: 5,
     padding: 10,
     marginRight: 10,
     marginTop: 17,
+    backgroundColor: Colors.DD_CREAM,
   },
 });
 
@@ -142,9 +146,11 @@ function HomeScreen(props) {
     // const d = new Date().toISOString();
     // console.log(d);
     setItems({
-      '2012-05-22': [{name: 'item 1 - any js object'}, {name: 'item 2'}],
-      // '2012-05-22': [{name: 'item 2 - any js object'}],
-      // '2012-05-22': [{name: 'item 3 - any js object'}],
+      '2012-05-21': [{name: 'item -1 - any js object'}, {name: 'item 0!'}],
+      '2012-05-22': [{name: 'item 1 - any js object'}, {name: 'item 2!'}],
+      // '2012-05-23': [{name: 'item 3 - any js object'}, {name: 'item 4!'}],
+      '2012-05-23': [],
+      '2012-05-24': [{name: 'item 5 - any js object'}, {name: 'item 6!'}],
     });
     // setItems({
     //   '2012-05-22': [{name: 'item 1 - any js object'}],
@@ -152,22 +158,28 @@ function HomeScreen(props) {
     //   '2012-05-24': [],
     //   '2012-05-25': [{name: 'item 3 - any js object'}, {name: 'any js object'}],
     // });
+    // console.log(JSON.stringify(items));
+    // console.log(items.type);
   };
 
+  // eslint-disable-next-line prettier/prettier
+  // const EventItem = item => {
   const renderItem = item => {
-    console.log('item.name=' + item.name);
     return (
-      <TouchableOpacity style={styles.item}>
-        {/* <Card>
-          <Card.Content> */}
-        <View>
-          <Text>{item.name}</Text>
-        </View>
-        {/* </Card.Content>
-        </Card> */}
+      <TouchableOpacity
+        style={styles.item}
+        onPress={() => console.log(JSON.stringify(item))}>
+        <Card>
+          <Card.Content>
+            <View>
+              <Text style={styles.itemText}>{item.name}</Text>
+            </View>
+          </Card.Content>
+        </Card>
       </TouchableOpacity>
     );
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <CalendarTitle groupName={props.groupName} />
@@ -207,6 +219,7 @@ function HomeScreen(props) {
         // renderItem={(item, firstItemInDay) => {
         //   return <View />;
         // }}
+        // renderItem={({items}) => <EventItem item={items} />}
         renderItem={renderItem}
         // Specify how each date should be rendered. day can be undefined if the item is not first in that day
         // renderDay={(day, item) => {
@@ -225,22 +238,22 @@ function HomeScreen(props) {
         //   return <MyCustomList {...listProps} />;
         // }}
         // Specify what should be rendered instead of ActivityIndicator
-        // renderEmptyData={() => {
-        //   return <View />;
-        // }}
+        renderEmptyData={() => {
+          return <View />;
+        }}
         // Specify your item comparison function for increased performance
-        // rowHasChanged={(r1, r2) => {
-        //   return r1.text !== r2.text;
-        // }}
+        rowHasChanged={(r1, r2) => {
+          return r1.text !== r2.text;
+        }}
         // Hide knob button. Default = false
         // hideKnob={true}
         // When `true` and `hideKnob` prop is `false`, the knob will always be visible and the user will be able to drag the knob up and close the calendar. Default = false
         showClosingKnob={true}
         // By default, agenda dates are marked if they have at least one item, but you can override this if needed
         markedDates={{
-          '2012-05-16': {selected: true, marked: true},
-          '2012-05-17': {marked: true},
-          '2012-05-18': {disabled: true},
+          '2012-05-22': {selected: true, marked: true},
+          // '2012-05-17': {marked: true},
+          // '2012-05-18': {disabled: true},
         }}
         // If disabledByDefault={true} dates flagged as not disabled will be enabled. Default = false
         disabledByDefault={true}
@@ -251,47 +264,12 @@ function HomeScreen(props) {
         // Add a custom RefreshControl component, used to provide pull-to-refresh functionality for the ScrollView
         refreshControl={null}
         // Agenda theme
-        theme={{
-          // ...calendarTheme,
-          //           // backgroundColor: Colors.TEST_PURPLE, //dunno where this is supposed to show up
-          //           calendarBackground: Colors.DD_CREAM,
-          //           textSectionTitleColor: Colors.DD_CREAM,
-          //           // textSectionTitleDisabledColor: '#d9e1e8',
-          //           // selectedDayBackgroundColor: Colors.TEST_PURPLE,
-          //           // selectedDayTextColor: Colors.TEST_PURPLE,
-          //           todayTextColor: Colors.DD_LIGHT_GRAY, //meh suppper iffy on this one
-          //           dayTextColor: Colors.DD_RED_2,
-          //           // textDisabledColor: Colors.TEST_PURPLE,
-          //           dotColor: Colors.TEST_PURPLE,
-          //           //selectedDotColor: '#ffffff',
-          //           arrowColor: Colors.DD_CREAM,
-          //           // disabledArrowColor: '#d9e1e8',
-          //           monthTextColor: Colors.DD_CREAM, //does it do anything?
-          //           //indicatorColor: 'blue',
-          //           // textDayFontFamily: 'monospace',
-          //           // textMonthFontFamily: 'monospace',
-          //           // textDayHeaderFontFamily: 'monospace',
-          //           // textDayFontWeight: '300',
-          //           // textMonthFontWeight: 'bold',
-          //           // textDayHeaderFontWeight: '300',
-          //           textDayFontSize: 20,
-          //           textMonthFontSize: 40,
-          //           textDayHeaderFontSize: 24,
-          agendaDayTextColor: 'yellow',
-          agendaDayNumColor: 'green',
-          agendaTodayColor: 'red',
-          agendaKnobColor: 'blue',
-        }}
+        theme={calendarTheme.agenda}
         // Agenda container style
-        style={{
-          //borderWidth: 10, //def need to do fancy stuff to make that look good
-          //borderColor: Colors.DD_GRAY,
-          backgroundColor: Colors.DD_RED_2,
-          paddingBottom: 10,
-          //marginBottom: 50,
-          //position: 'absolute',
-          width: 390,
-        }}
+        style={{}}
+        // style={{
+        //   marginBottom: 50,
+        // }}
       />
     </SafeAreaView>
   );
