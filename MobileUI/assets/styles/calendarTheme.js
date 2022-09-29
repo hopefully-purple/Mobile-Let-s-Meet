@@ -3,20 +3,20 @@ import {StyleSheet} from 'react-native';
 
 export const calendarTheme = StyleSheet.create({
   agenda: {
-    calendarBackground: Colors.DD_CREAM, //works!
-    monthTextColor: Colors.DD_RED_2, //works!!
+    calendarBackground: Colors.DD_CREAM,
+    monthTextColor: Colors.DD_RED_2,
     dayTextColor: Colors.DD_RED_2,
     textSectionTitleColor: Colors.DD_MEDIUM_GRAY,
     textDisabledColor: Colors.DD_RED_2_LIGHT,
     selectedDayBackgroundColor: Colors.DD_RED_3,
     dotColor: Colors.DD_RED_1,
     agendaKnobColor: Colors.DD_LIGHT_GRAY,
+    // todayTextColor: Colors.DD_DARK_GRAY, // I think we are going to stay with blue
 
-    // todayTextColor: Colors.TEST_PURPLE,
+    // todayColor: Colors.TEST_GREEN,
     // ...calendarTheme,
     // textSectionTitleDisabledColor: '#d9e1e8',
     // selectedDayTextColor: Colors.TEST_PURPLE,
-    // todayTextColor: Colors.DD_LIGHT_GRAY, //meh suppper iffy on this one
     // selectedDotColor: '#ffffff',
     // arrowColor: Colors.DD_CREAM,
     // disabledArrowColor: '#d9e1e8',
@@ -30,7 +30,6 @@ export const calendarTheme = StyleSheet.create({
     // textDayFontSize: 20,
     // textMonthFontSize: 40,
     // textDayHeaderFontSize: 24,
-    // agendaDayTextColor: 'yellow',
     // agendaDayNumColor: Colors.TEST_GREEN,
     // agendaTodayColor: 'red',
   },

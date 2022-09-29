@@ -101,7 +101,15 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     marginTop: 17,
-    backgroundColor: Colors.DD_CREAM,
+  },
+  cardStyle: {
+    backgroundColor: Colors.DD_CREAM_LIGHT,
+    borderColor: Colors.DD_LIGHT_GRAY,
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    // borderBottomColor: Colors.TEST_BLUE,
   },
 });
 
@@ -138,7 +146,8 @@ const CalendarTitle = props => {
 // const initialMarkedDateList = []; //this is where we will plug in all the stuff from database
 
 function HomeScreen(props) {
-  const [selectedDay, setSelectedDay] = useState('2012-05-22');
+  const nowDate = '2022-09-28'; // TODO: figure out how to get a date.now properly formatted or if it will just take a date object
+  const [selectedDay, setSelectedDay] = useState(nowDate);
   // const [markedDateList, setMarkedDateList] = useState(initialMarkedDateList);
   // const [mark, setMark] = useState({});
   const [items, setItems] = useState({});
@@ -148,18 +157,14 @@ function HomeScreen(props) {
     // const d = new Date().toISOString();
     // console.log(d);
     setItems({
-      '2012-05-20': [],
-      '2012-05-21': [{name: 'item -1 - any js object'}, {name: 'item 0!'}],
-      '2012-05-22': [{name: 'item 1 - any js object'}, {name: 'item 2!'}],
-      '2012-05-23': [{name: 'item 3 - any js object'}, {name: 'item 4!'}],
-      // '2012-05-23': [],
-      '2012-05-24': [{name: 'item 5 - any js object'}, {name: 'item 6!'}],
-      '2012-05-25': [{name: 'item7 - any js object'}, {name: 'item 8!'}],
-      '2012-05-26': [],
-      '2012-05-27': [],
-      '2012-05-28': [],
-      '2012-05-29': [],
-      '2012-05-30': [],
+      '2022-09-24': [],
+      '2022-09-25': [],
+      '2022-09-26': [{name: 'item -1 - any js object'}, {name: 'item 0!'}],
+      '2022-09-27': [{name: 'item 1 - any js object'}, {name: 'item 2!'}],
+      '2022-09-28': [{name: 'item 3 - any js object'}, {name: 'item 4!'}],
+      '2022-09-29': [{name: 'item 5 - any js object'}, {name: 'item 6!'}],
+      '2022-09-30': [{name: 'item7 - any js object'}, {name: 'item 8!'}],
+      '2022-10-01': [],
     });
     // setItems({
     //   '2012-05-22': [{name: 'item 1 - any js object'}],
@@ -178,7 +183,7 @@ function HomeScreen(props) {
       <TouchableOpacity
         style={styles.item}
         onPress={() => console.log(JSON.stringify(item))}>
-        <Card>
+        <Card style={styles.cardStyle}>
           <Card.Content>
             <View>
               <Text style={styles.itemText}>{item.name}</Text>
