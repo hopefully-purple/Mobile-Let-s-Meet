@@ -146,11 +146,18 @@ function HomeScreen(props) {
     // const d = new Date().toISOString();
     // console.log(d);
     setItems({
+      '2012-05-20': [],
       '2012-05-21': [{name: 'item -1 - any js object'}, {name: 'item 0!'}],
       '2012-05-22': [{name: 'item 1 - any js object'}, {name: 'item 2!'}],
-      // '2012-05-23': [{name: 'item 3 - any js object'}, {name: 'item 4!'}],
-      '2012-05-23': [],
+      '2012-05-23': [{name: 'item 3 - any js object'}, {name: 'item 4!'}],
+      // '2012-05-23': [],
       '2012-05-24': [{name: 'item 5 - any js object'}, {name: 'item 6!'}],
+      '2012-05-25': [{name: 'item7 - any js object'}, {name: 'item 8!'}],
+      '2012-05-26': [],
+      '2012-05-27': [],
+      '2012-05-28': [],
+      '2012-05-29': [],
+      '2012-05-30': [],
     });
     // setItems({
     //   '2012-05-22': [{name: 'item 1 - any js object'}],
