@@ -142,6 +142,16 @@ const CalendarTitle = props => {
 //     </View>
 //   );
 // }
+const eventObject = {
+  eventID: '', //int
+  startTime: '', //DateTime
+  endTime: '', //DateTime
+  title: '',
+  location: '',
+  privacy: '',
+  users: [], // list of users
+  group: {}, //groupmodel object
+};
 
 // const initialMarkedDateList = []; //this is where we will plug in all the stuff from database
 
