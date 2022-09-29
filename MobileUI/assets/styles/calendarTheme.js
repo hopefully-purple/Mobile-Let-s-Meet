@@ -1,24 +1,25 @@
-import React from 'react';
 import Colors from './colors';
 import {StyleSheet} from 'react-native';
 
 export const calendarTheme = StyleSheet.create({
   agenda: {
+    calendarBackground: Colors.DD_CREAM, //works!
+    monthTextColor: Colors.DD_RED_2, //works!!
+    dayTextColor: Colors.DD_RED_2,
+    textSectionTitleColor: Colors.DD_MEDIUM_GRAY,
+    textDisabledColor: Colors.DD_RED_2_LIGHT,
+    selectedDayBackgroundColor: Colors.DD_RED_3,
+    dotColor: Colors.DD_RED_1,
+    agendaKnobColor: Colors.DD_LIGHT_GRAY,
+
+    // todayTextColor: Colors.TEST_PURPLE,
     // ...calendarTheme,
-    // backgroundColor: Colors.TEST_PURPLE, //dunno where this is supposed to show up
-    calendarBackground: Colors.DD_CREAM,
-    //textSectionTitleColor: Colors.DD_CREAM,
     // textSectionTitleDisabledColor: '#d9e1e8',
-    // selectedDayBackgroundColor: Colors.TEST_PURPLE,
     // selectedDayTextColor: Colors.TEST_PURPLE,
     // todayTextColor: Colors.DD_LIGHT_GRAY, //meh suppper iffy on this one
-    // dayTextColor: Colors.DD_RED_2,
-    // textDisabledColor: Colors.TEST_PURPLE,
-    // dotColor: Colors.TEST_PURPLE,
-    //selectedDotColor: '#ffffff',
+    // selectedDotColor: '#ffffff',
     // arrowColor: Colors.DD_CREAM,
     // disabledArrowColor: '#d9e1e8',
-    // monthTextColor: Colors.DD_CREAM, //does it do anything?
     //indicatorColor: 'blue',
     // textDayFontFamily: 'monospace',
     // textMonthFontFamily: 'monospace',
@@ -30,8 +31,7 @@ export const calendarTheme = StyleSheet.create({
     // textMonthFontSize: 40,
     // textDayHeaderFontSize: 24,
     // agendaDayTextColor: 'yellow',
-    // agendaDayNumColor: 'green',
+    // agendaDayNumColor: Colors.TEST_GREEN,
     // agendaTodayColor: 'red',
-    // agendaKnobColor: 'blue',
   },
 });

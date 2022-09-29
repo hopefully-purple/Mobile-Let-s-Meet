@@ -60,7 +60,7 @@ LocaleConfig.locales['fr'] = {
     'Friday',
     'Saturday',
   ],
-  dayNamesShort: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+  dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
   today: 'Today',
 };
 LocaleConfig.defaultLocale = 'fr';
@@ -81,13 +81,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.DD_CREAM,
     fontWeight: 'bold',
   },
-  text: {
+  calendarTitleText: {
     fontSize: 25,
     fontWeight: '500',
-    color: Colors.DD_RED_2,
+    color: Colors.DD_RED_3,
     textAlign: 'center',
-    //marginTop: 10,
-    //marginBottom: 50,
+    marginTop: 10,
+    marginBottom: 10,
     paddingHorizontal: 90,
     position: 'relative',
     flexWrap: 'wrap',
@@ -105,21 +105,23 @@ const styles = StyleSheet.create({
   },
 });
 
-const TempOutputBox = props => {
+// const TempOutputBox = props => {
+//   return (
+//     <Text style={styles.outputContainer}>
+//       {props.day.dateString} was selected
+//     </Text>
+//   );
+// };
+
+const CalendarTitle = props => {
   return (
-    <Text style={styles.outputContainer}>
-      {props.day.dateString} was selected
-    </Text>
+    <Text style={styles.calendarTitleText}>{props.groupName} Schedule</Text>
   );
 };
 
-const CalendarTitle = props => {
-  return <Text style={styles.text}>{props.groupName} Schedule</Text>;
-};
-
-const MyCustomList = ({listProps}) => {
-  return <Text>??</Text>;
-};
+// const MyCustomList = ({listProps}) => {
+//   return <Text>??</Text>;
+// };
 
 //Keep for posterity just in case we need another button to interact with navigator
 // function HomeScreen({ navigation }) {
@@ -216,9 +218,9 @@ function HomeScreen(props) {
         // Initially selected day
         selected={selectedDay}
         // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-        minDate={'2012-05-10'}
+        // minDate={'2012-05-10'}
         // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-        maxDate={'2012-05-30'}
+        // maxDate={'2012-05-30'}
         // Max amount of months allowed to scroll to the past. Default = 50
         pastScrollRange={50}
         // Max amount of months allowed to scroll to the future. Default = 50
@@ -264,7 +266,7 @@ function HomeScreen(props) {
         // '2012-05-18': {disabled: true},
         // }}
         // If disabledByDefault={true} dates flagged as not disabled will be enabled. Default = false
-        disabledByDefault={true}
+        // disabledByDefault={true}
         // If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality. Make sure to also set the refreshing prop correctly
         onRefresh={() => console.log('refreshing...')}
         // Set this true while waiting for new data from a refresh
