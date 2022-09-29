@@ -136,7 +136,7 @@ const MyCustomList = ({listProps}) => {
 // const initialMarkedDateList = []; //this is where we will plug in all the stuff from database
 
 function HomeScreen(props) {
-  // const [selectedDay, setSelectedDay] = useState('');
+  const [selectedDay, setSelectedDay] = useState('2012-05-22');
   // const [markedDateList, setMarkedDateList] = useState(initialMarkedDateList);
   // const [mark, setMark] = useState({});
   const [items, setItems] = useState({});
@@ -199,14 +199,15 @@ function HomeScreen(props) {
         }}
         // Callback that gets called on day press
         onDayPress={day => {
-          console.log('day pressed');
+          // console.log('day pressed=' + JSON.stringify(day));
+          setSelectedDay(day.dateString);
         }}
         // Callback that gets called when day changes while scrolling agenda list
         onDayChange={day => {
           console.log('day changed');
         }}
         // Initially selected day
-        selected={'2012-05-22'}
+        selected={selectedDay}
         // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
         minDate={'2012-05-10'}
         // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
@@ -250,11 +251,11 @@ function HomeScreen(props) {
         // When `true` and `hideKnob` prop is `false`, the knob will always be visible and the user will be able to drag the knob up and close the calendar. Default = false
         showClosingKnob={true}
         // By default, agenda dates are marked if they have at least one item, but you can override this if needed
-        markedDates={{
-          '2012-05-22': {selected: true, marked: true},
-          // '2012-05-17': {marked: true},
-          // '2012-05-18': {disabled: true},
-        }}
+        // markedDates={{
+        // '2012-05-22': {selected: true, marked: true},
+        // '2012-05-17': {marked: true},
+        // '2012-05-18': {disabled: true},
+        // }}
         // If disabledByDefault={true} dates flagged as not disabled will be enabled. Default = false
         disabledByDefault={true}
         // If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality. Make sure to also set the refreshing prop correctly
