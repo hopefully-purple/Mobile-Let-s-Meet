@@ -68,7 +68,7 @@ LocaleConfig.defaultLocale = 'fr';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.DD_CREAM,
+    backgroundColor: Colors.DD_RED_2,
     justifyContent: 'space-evenly',
   },
   outputContainer: {
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   calendarTitleText: {
     fontSize: 25,
     fontWeight: '500',
-    color: Colors.DD_RED_3,
+    color: Colors.DD_CREAM,
     textAlign: 'center',
     marginTop: 10,
     marginBottom: 10,
