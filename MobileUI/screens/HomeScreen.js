@@ -16,55 +16,6 @@ import createEventPopup from './createEventPopup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card} from 'react-native-paper';
 
-//TODO: In Calendar, can't get the selected day background to changecolor like advertised
-
-//About: There are two versions we could go with: plain old calendar or the agenda version
-//The agenda version has built in events and things that make it cool https://github.com/wix/react-native-calendars#agenda
-//Or we do our own thing with plain calendar
-
-LocaleConfig.locales['fr'] = {
-  monthNames: [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ],
-  monthNamesShort: [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'June',
-    'Jul',
-    'Aug',
-    'Sept',
-    'Oct',
-    'Nov',
-    'Dec',
-  ],
-  dayNames: [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ],
-  dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
-  today: 'Today',
-};
-LocaleConfig.defaultLocale = 'fr';
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -105,21 +56,12 @@ const styles = StyleSheet.create({
   cardStyle: {
     backgroundColor: Colors.DD_CREAM_LIGHT,
     borderColor: Colors.DD_LIGHT_GRAY,
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    // borderBottomColor: Colors.TEST_BLUE,
+    borderBottomWidth: 5,
+    borderTopWidth: 5,
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
   },
 });
-
-// const TempOutputBox = props => {
-//   return (
-//     <Text style={styles.outputContainer}>
-//       {props.day.dateString} was selected
-//     </Text>
-//   );
-// };
 
 const CalendarTitle = props => {
   return (
@@ -127,21 +69,7 @@ const CalendarTitle = props => {
   );
 };
 
-// const MyCustomList = ({listProps}) => {
-//   return <Text>??</Text>;
-// };
-
-//Keep for posterity just in case we need another button to interact with navigator
-// function HomeScreen({ navigation }) {
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Button
-//         onPress={() => navigation.navigate('Notifications')}
-//         title="Go to notifications"
-//       />
-//     </View>
-//   );
-// }
+//This is what is stored in the database. Might not necessarily be the result from get
 const eventObject = {
   eventID: '', //int
   startTime: '', //DateTime
@@ -153,50 +81,164 @@ const eventObject = {
   group: {}, //groupmodel object
 };
 
-// const initialMarkedDateList = []; //this is where we will plug in all the stuff from database
+// Or the EventModels/Mine get events action might return this object:
+// id = e.EventID,
+// title = e.Title,
+// start = e.StartTime.ToString("O"),
+// end = e.EndTime.ToString("O"),
+// location = e.Location,
+// color = e.Calendar.Color,
+// background = e.Calendar.Color,
+// backgroundColor = e.Calendar.Color,
+const uncertainVolleyballM = {
+  title: 'Volleyball',
+  start: 'Mon, 03 Oct 2022 8:35:00 MDT',
+  end: 'Mon, 03 Oct 2022 9:25:00 MDT',
+  location: 'HPR E 101',
+  color: '#8A56E6', //A nice purple
+  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
+};
+
+const uncertainVolleyballW = {
+  title: 'Volleyball',
+  start: 'Wed, 05 Oct 2022 8:35:00 MDT',
+  end: 'Wed, 05 Oct 2022 9:25:00 MDT',
+  location: 'HPR E 101',
+  color: '#8A56E6', //A nice purple
+  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
+};
+
+const uncertainCapstoneM = {
+  title: 'Capstone Project',
+  start: 'Mon, 03 Oct 2022 10:45:00 MDT',
+  end: 'Mon, 03 Oct 2022 11:35:00 MDT',
+  location: 'Discord',
+  color: '#F02F17', //A nice, bright, red
+  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
+};
+
+const uncertainCapstoneW = {
+  title: 'Capstone Project',
+  start: 'Wed, 05 Oct 2022 10:45:00 MDT',
+  end: 'Wed, 05 Oct 2022 11:35:00 MDT',
+  location: 'Discord',
+  color: '#F02F17', //A nice, bright, red
+  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
+};
+
+const uncertainNLPM = {
+  title: 'Natural Language Processing',
+  start: 'Mon, 03 Oct 2022 13:25:00 MDT',
+  end: 'Mon, 03 Oct 2022 14:45:00 MDT',
+  location: 'CTIHB 109',
+  color: '#F07F26', //A nice, bright, orange
+  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
+};
+
+const uncertainNLPW = {
+  title: 'Natural Language Processing',
+  start: 'Wed, 05 Oct 2022 13:25:00 MDT',
+  end: 'Wed, 05 Oct 2022 14:45:00 MDT',
+  location: 'CTIHB 109',
+  color: '#F07F26', //A nice, bright, orange
+  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
+};
+
+const uncertainAIT = {
+  title: 'Artificial Intelligence',
+  start: 'Tue, 04 Oct 2022 12:25:00 MDT',
+  end: 'Tue, 04 Oct 2022 13:45:00 MDT',
+  location: 'WEB L103',
+  color: '#1D4BD6', //A nice blue
+  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
+};
+
+const uncertainAITH = {
+  title: 'Artificial Intelligence',
+  start: 'Thu, 06 Oct 2022 12:25:00 MDT',
+  end: 'Thu, 06 Oct 2022 13:45:00 MDT',
+  location: 'WEB L103',
+  color: '#1D4BD6', //A nice blue
+  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
+};
+
+const uncertainBiologyT = {
+  title: 'Biology',
+  start: 'Tue, 04 Oct 2022 14:00:00 MDT',
+  end: 'Tue, 04 Oct 2022 15:20:00 MDT',
+  location: 'GC 1900',
+  color: '#0D852F', //A dark green
+  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
+};
+
+const uncertainBiologyTH = {
+  title: 'Biology',
+  start: 'Thu, 06 Oct 2022 14:00:00 MDT',
+  end: 'Thu, 06 Oct 2022 15:20:00 MDT',
+  location: 'GC 1900',
+  color: '#0D852F', //A dark green
+  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
+};
+
+const hardCodeUncertainItems = {
+  '2022-10-02': [],
+  '2022-10-03': [uncertainVolleyballM, uncertainCapstoneM, uncertainNLPM],
+  '2022-10-04': [uncertainAIT, uncertainBiologyT],
+  '2022-10-05': [uncertainVolleyballW, uncertainCapstoneW, uncertainNLPW],
+  '2022-10-06': [uncertainAITH, uncertainBiologyTH],
+  '2022-10-07': [],
+  '2022-10-08': [],
+};
+
+const originalDummyItems = {
+  '2022-10-01': [],
+  '2022-10-02': [],
+  '2022-10-03': [{name: 'item -1 - any js object'}, {name: 'item 0!'}],
+  '2022-10-04': [{name: 'item 1 - any js object'}, {name: 'item 2!'}],
+  '2022-10-05': [{name: 'item 3 - any js object'}, {name: 'item 4!'}],
+  '2022-10-06': [{name: 'item 5 - any js object'}, {name: 'item 6!'}],
+  '2022-10-07': [{name: 'item7 - any js object'}, {name: 'item 8!'}],
+  '2022-10-08': [],
+};
+
+function formatEventTime(s, e) {
+  let finalTimeString = '';
+  let date = new Date(s);
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  finalTimeString = `${hours}:${minutes}`;
+
+  date = new Date(e);
+  hours = date.getHours();
+  minutes = date.getMinutes();
+  finalTimeString += ` - ${hours}:${minutes}`;
+
+  return finalTimeString;
+}
 
 function HomeScreen(props) {
-  const nowDate = new Date().toUTCString(); // TODO: figure out how to get a date.now properly formatted or if it will just take a date object
+  const nowDate = new Date().toUTCString();
   const [selectedDay, setSelectedDay] = useState(nowDate);
-  // const [markedDateList, setMarkedDateList] = useState(initialMarkedDateList);
-  // const [mark, setMark] = useState({});
   const [items, setItems] = useState({});
 
   const loadItems = day => {
-    // console.log('day=', JSON.stringify(day));
-    // const d = new Date().toISOString();
-    // console.log(d);
-    setItems({
-      // '2022-10-01': [],
-      '2022-10-02': [],
-      '2022-10-03': [{name: 'item -1 - any js object'}, {name: 'item 0!'}],
-      '2022-10-04': [{name: 'item 1 - any js object'}, {name: 'item 2!'}],
-      '2022-10-05': [{name: 'item 3 - any js object'}, {name: 'item 4!'}],
-      '2022-10-06': [{name: 'item 5 - any js object'}, {name: 'item 6!'}],
-      '2022-10-07': [{name: 'item7 - any js object'}, {name: 'item 8!'}],
-      '2022-10-08': [],
-    });
-    // setItems({
-    //   '2012-05-22': [{name: 'item 1 - any js object'}],
-    //   '2012-05-23': [{name: 'item 2 - any js object', height: 80}],
-    //   '2012-05-24': [],
-    //   '2012-05-25': [{name: 'item 3 - any js object'}, {name: 'any js object'}],
-    // });
-    // console.log(JSON.stringify(items));
-    // console.log(items.type);
+    // setItems(originalDummyItems);
+    setItems(hardCodeUncertainItems);
   };
 
-  // eslint-disable-next-line prettier/prettier
-  // const EventItem = item => {
   const renderItem = item => {
+    const itemColor = item.color;
+    const time = formatEventTime(item.start, item.end);
     return (
       <TouchableOpacity
         style={styles.item}
         onPress={() => console.log(JSON.stringify(item))}>
-        <Card style={styles.cardStyle}>
+        <Card style={{...styles.cardStyle, borderColor: itemColor}}>
           <Card.Content>
             <View>
-              <Text style={styles.itemText}>{item.name}</Text>
+              <Text style={styles.itemText}>
+                {`${time}\n${item.title}\n${item.location}`}
+              </Text>
             </View>
           </Card.Content>
         </Card>
@@ -213,9 +255,6 @@ function HomeScreen(props) {
         // considered that the date in question is not yet loaded
         items={items}
         // Callback that gets called when items for a certain month should be loaded (month became visible)
-        // loadItemsForMonth={month => {
-        //   console.log('trigger items loading');
-        // }}
         loadItemsForMonth={loadItems}
         // Callback that fires when the calendar is opened or closed
         onCalendarToggled={calendarOpened => {
@@ -232,19 +271,11 @@ function HomeScreen(props) {
         }}
         // Initially selected day
         selected={selectedDay}
-        // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-        // minDate={'2012-05-10'}
-        // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-        // maxDate={'2012-05-30'}
         // Max amount of months allowed to scroll to the past. Default = 50
         pastScrollRange={50}
         // Max amount of months allowed to scroll to the future. Default = 50
         futureScrollRange={50}
         // Specify how each item should be rendered in agenda
-        // renderItem={(item, firstItemInDay) => {
-        //   return <View />;
-        // }}
-        // renderItem={({items}) => <EventItem item={items} />}
         renderItem={renderItem}
         // Specify how each date should be rendered. day can be undefined if the item is not first in that day
         // renderDay={(day, item) => {
@@ -254,14 +285,6 @@ function HomeScreen(props) {
         renderEmptyDate={() => {
           return <View />;
         }}
-        // Specify how agenda knob should look like
-        // renderKnob={() => {
-        //   return <View />;
-        // }}
-        // Override inner list with a custom implemented component
-        // renderList={listProps => {
-        //   return <MyCustomList {...listProps} />;
-        // }}
         // Specify what should be rendered instead of ActivityIndicator
         renderEmptyData={() => {
           return <View />;
@@ -270,18 +293,8 @@ function HomeScreen(props) {
         rowHasChanged={(r1, r2) => {
           return r1.text !== r2.text;
         }}
-        // Hide knob button. Default = false
-        // hideKnob={true}
         // When `true` and `hideKnob` prop is `false`, the knob will always be visible and the user will be able to drag the knob up and close the calendar. Default = false
         showClosingKnob={true}
-        // By default, agenda dates are marked if they have at least one item, but you can override this if needed
-        // markedDates={{
-        // '2012-05-22': {selected: true, marked: true},
-        // '2012-05-17': {marked: true},
-        // '2012-05-18': {disabled: true},
-        // }}
-        // If disabledByDefault={true} dates flagged as not disabled will be enabled. Default = false
-        // disabledByDefault={true}
         // If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality. Make sure to also set the refreshing prop correctly
         onRefresh={() => console.log('refreshing...')}
         // Set this true while waiting for new data from a refresh
@@ -292,204 +305,71 @@ function HomeScreen(props) {
         theme={calendarTheme.agenda}
         // Agenda container style
         style={{}}
-        // style={{
-        //   marginBottom: 50,
-        // }}
       />
     </SafeAreaView>
   );
 }
 
-//TODO: none of this is gonna make sense until I relearn about life cycle and how states and hooks work.
-
-// let nextDate = [
-//   selectedDay.dateString,
-//   '2022-04-29',
-//   '2022-04-04',
-//   '2022-04-5',
-//   '2022-04-06',
-//   '2022-04-05',
-// ];
-
-//let mark = markDatesInList(markedDateList, selectedDay);
-//let mark = {};
-
-// nextDate.forEach(day => {
-//   //console.log(day);
-//   if (day == selectedDay.dateString) {
-//     mark[day] = {
-//       selected: true,
-//       selectedColor: Colors.DD_RED_3
-//     };
-//   } else {
-//     mark[day] = {
-//       marked: true,
-//       dotColor: Colors.DD_RED_3
-//     }
-//   }
-// });
-
-// function handleAddToMarkedDateList() {
-//   const newMarkedDateList = markedDateList.concat(selectedDay.dateString);
-//   setMarkedDateList(newMarkedDateList);
-//   setMark(markDatesInList(markedDateList));
-//   console.log('(handleAdd)markedDateList: ' + markedDateList);
-//   console.log('(handleAdd)mark: ' + mark);
-//   // nextDate.push(selectedDay.dateString + '');
-//   // console.log(nextDate);
-//   // nextDate.forEach(day => {
-//   //   //console.log(day);
-//   //   if (day == selectedDay.dateString) {
-//   //     mark[day] = {
-//   //       selected: true,
-//   //       selectedColor: Colors.DD_RED_3
-//   //     };
-//   //   } else {
-//   //     mark[day] = {
-//   //       marked: true,
-//   //       dotColor: Colors.DD_RED_3
-//   //     }
-//   //   }
-//   // });
-//   Alert.alert('Event on ' + selectedDay.dateString + ' created');
-// }
-
-// function markDatesInList() {
-//   console.log(
-//     'from function markDatesInlist: selectedDay = ' + selectedDay.dateString,
-//   );
-//   let mark = {};
-//   markedDateList.forEach(day => {
-//     console.log(
-//       'from function markDatesInList (in foreach loop) day in given list ' +
-//         day,
-//     );
-//     if (day == selectedDay.dateString) {
-//       mark[day] = {
-//         selected: true,
-//         selectedColor: Colors.DD_RED_3,
-//       };
-//     } else {
-//       mark[day] = {
-//         marked: true,
-//         dotColor: Colors.DD_RED_3,
-//       };
-//     }
-//   });
-
-//   return mark;
-// }
-
-//   return (
-//     <SafeAreaView style={styles.container}>
-//       <CalendarTitle groupName={props.groupName} />
-//       <Calendar
-//         onDayPress={day => {
-//           console.log('selected day', day);
-//           setSelectedDay(day);
-//           console.log('on day press, selectedDay = ' + selectedDay.dateString);
-//           //console.log("set Mark and call function");
-//           //setMark(markDatesInList(markedDateList));
-//         }}
-//         // Handler which gets executed on day long press. Default = undefined
-//         onDayLongPress={day => {
-//           console.log('selected day', day);
-//         }}
-//         // markingType={'multi-dot'}
-//         // markedDates={{
-//         //   '2017-10-25': {dots: [vacation, massage, workout], selected: true, selectedColor: 'red'},
-//         //   '2017-10-26': {dots: [massage, workout], disabled: true}
-//         // }}
-//         // markedDates={{
-//         //   [selectedDay.dateString]: {
-//         //     selected: true,
-//         //     selectedColor: Colors.DD_RED_3
-//         //   }
-//         // }}
-
-//         //markedDates={mark}
-
-//         markedDates={markDatesInList()}
-//         // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
-//         monthFormat={'MMMM'}
-//         // Handler which gets executed when visible month changes in calendar. Default = undefined
-//         onMonthChange={month => {
-//           console.log('month changed', month);
-//         }}
-//         // Hide month navigation arrows. Default = false
-//         hideArrows={false}
-//         // Replace default arrows with custom ones (direction can be 'left' or 'right')
-//         //renderArrow={direction => <Arrow />}
-//         // Do not show days of other months in month page. Default = false
-//         hideExtraDays={true}
-//         // If hideArrows = false and hideExtraDays = false do not switch month when tapping on greyed out
-//         // day from another month that is visible in calendar page. Default = false
-//         disableMonthChange={true}
-//         // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday
-//         firstDay={0}
-//         // Hide day names. Default = false
-//         hideDayNames={false}
-//         // Show week numbers to the left. Default = false
-//         showWeekNumbers={false}
-//         // Handler which gets executed when press arrow icon left. It receive a callback can go back month
-//         onPressArrowLeft={subtractMonth => subtractMonth()}
-//         // Handler which gets executed when press arrow icon right. It receive a callback can go next month
-//         onPressArrowRight={addMonth => addMonth()}
-//         // Enable the option to swipe between months. Default = false
-//         enableSwipeMonths={true}
-//         theme={{
-//           // backgroundColor: Colors.TEST_PURPLE, //dunno where this is supposed to show up
-//           calendarBackground: Colors.DD_CREAM,
-//           textSectionTitleColor: Colors.DD_CREAM,
-//           // textSectionTitleDisabledColor: '#d9e1e8',
-//           // selectedDayBackgroundColor: Colors.TEST_PURPLE,
-//           // selectedDayTextColor: Colors.TEST_PURPLE,
-//           todayTextColor: Colors.DD_LIGHT_GRAY, //meh suppper iffy on this one
-//           dayTextColor: Colors.DD_RED_2,
-//           // textDisabledColor: Colors.TEST_PURPLE,
-//           dotColor: Colors.TEST_PURPLE,
-//           //selectedDotColor: '#ffffff',
-//           arrowColor: Colors.DD_CREAM,
-//           // disabledArrowColor: '#d9e1e8',
-//           monthTextColor: Colors.DD_CREAM, //does it do anything?
-//           //indicatorColor: 'blue',
-//           // textDayFontFamily: 'monospace',
-//           // textMonthFontFamily: 'monospace',
-//           // textDayHeaderFontFamily: 'monospace',
-//           // textDayFontWeight: '300',
-//           // textMonthFontWeight: 'bold',
-//           // textDayHeaderFontWeight: '300',
-//           textDayFontSize: 20,
-//           textMonthFontSize: 40,
-//           textDayHeaderFontSize: 24,
-//         }}
-//         style={{
-//           //borderWidth: 10, //def need to do fancy stuff to make that look good
-//           //borderColor: Colors.DD_GRAY,
-//           backgroundColor: Colors.DD_RED_2,
-//           paddingBottom: 10,
-//           //marginBottom: 50,
-//           //position: 'absolute',
-//           width: 390,
-//         }}
-//       />
-//       {/* look below to see sources for this
-//        <Navigator /> */}
-//       <TempOutputBox day={selectedDay} />
-//       <Button
-//         title="Create Event"
-//         color={Colors.DD_RED_2}
-//         onPress={handleAddToMarkedDateList}
-//       />
-//     </SafeAreaView>
-//   );
-// }
-
 HomeScreen.defaultProps = {
   groupName: 'My',
 };
 
+LocaleConfig.locales['fr'] = {
+  monthNames: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ],
+  monthNamesShort: [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'June',
+    'Jul',
+    'Aug',
+    'Sept',
+    'Oct',
+    'Nov',
+    'Dec',
+  ],
+  dayNames: [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ],
+  dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  today: 'Today',
+};
+LocaleConfig.defaultLocale = 'fr';
+
 export default HomeScreen;
+
+//Keep for posterity just in case we need another button to interact with navigator
+// function HomeScreen({ navigation }) {
+//   return (
+//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Button
+//         onPress={() => navigation.navigate('Notifications')}
+//         title="Go to notifications"
+//       />
+//     </View>
+//   );
+// }
 
 //Sources for trying to get drawer navigator to work
 //https://www.youtube.com/watch?v=EaNCi8o8H0A&ab_channel=TheNetNinja
@@ -497,136 +377,6 @@ export default HomeScreen;
 //https://reactnavigation.org/docs/drawer-navigator
 
 //https://www.npmjs.com/package/react-native-calendars this is the calendar ap
-// export default function App() {
-//   return (
-//     <SafeAreaView style={styles.container}>
-
-//       <Agenda
-//         // The list of items that have to be displayed in agenda. If you want to render item as empty date
-//         // the value of date key has to be an empty array []. If there exists no value for date key it is
-//         // considered that the date in question is not yet loaded
-//         items={{
-//           '2022-04-22': [{ name: 'item 1 - any js object' }],
-//           '2022-04-23': [{ name: 'item 2 - any js object', height: 10 }],
-//           '2022-04-24': [],
-//           '2022-04-25': [{ name: 'item 3 - any js object' }, { name: 'any js object' }]
-//         }}
-//         // Callback that gets called when items for a certain month should be loaded (month became visible)
-//         loadItemsForMonth={month => {
-//           console.log('trigger items loading');
-//         }}
-//         // Callback that fires when the calendar is opened or closed
-//         onCalendarToggled={calendarOpened => {
-//           console.log(calendarOpened);
-//         }}
-//         // Callback that gets called on day press
-//         onDayPress={day => {
-//           console.log('day pressed');
-//         }}
-//         // Callback that gets called when day changes while scrolling agenda list
-//         onDayChange={day => {
-//           console.log('day changed');
-//         }}
-//         current={'2022-04-22'}
-//         // Initially selected day
-//         //selected={'2012-05-16'}
-//         // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-//         //minDate={'2012-05-10'}
-//         // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-//         //maxDate={'2012-05-30'}
-//         // Max amount of months allowed to scroll to the past. Default = 50
-//         pastScrollRange={50}
-//         // Max amount of months allowed to scroll to the future. Default = 50
-//         futureScrollRange={50}
-//         // Specify how each item should be rendered in agenda
-//         renderItem={(item, firstItemInDay) => {
-//           //return <View />;
-//           return null;
-//         }}
-//         // Specify how each date should be rendered. day can be undefined if the item is not first in that day
-//         renderDay={(day, item) => {
-//           //return <View />;
-//           return null;
-//         }}
-//         // Specify how empty date content with no items should be rendered
-//         renderEmptyDate={() => {
-//           //return <View />;
-//           return null;
-//         }}
-//         // Specify how agenda knob should look like
-//         renderKnob={() => {
-//           //return <View />;
-//           return null;
-//         }}
-//         // Specify what should be rendered instead of ActivityIndicator
-//         renderEmptyData={() => {
-//           //return <View />;
-//           return null;
-//         }}
-//         // Specify your item comparison function for increased performance
-//         rowHasChanged={(r1, r2) => {
-//           return r1.text !== r2.text;
-//         }}
-//         // Hide knob button. Default = false
-//         hideKnob={false}
-//         // When `true` and `hideKnob` prop is `false`, the knob will always be visible and the user will be able to drag the knob up and close the calendar. Default = false
-//         showClosingKnob={true}
-//         // By default, agenda dates are marked if they have at least one item, but you can override this if needed
-//         markedDates={{
-//           '2022-04-16': { selected: true, marked: true },
-//           '2022-4-17': { marked: true },
-//           '2022-04-18': { disabled: true }
-//         }}
-//         // If disabledByDefault={true} dates flagged as not disabled will be enabled. Default = false
-//         disabledByDefault={true}
-//         // If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality. Make sure to also set the refreshing prop correctly
-//         onRefresh={() => console.log('refreshing...')}
-//         // Set this true while waiting for new data from a refresh
-//         refreshing={false}
-//         // Add a custom RefreshControl component, used to provide pull-to-refresh functionality for the ScrollView
-//         refreshControl={null}
-//         // Agenda theme
-//         theme={{
-//            backgroundColor: Colors.DD_RED_2, //dunno where this is supposed to show up
-//            calendarBackground: Colors.DD_RED_1,
-//            textSectionTitleColor: Colors.DD_CREAM,
-//           // textSectionTitleDisabledColor: '#d9e1e8',
-//            selectedDayBackgroundColor: Colors.DD_RED_3,
-//           // selectedDayTextColor: Colors.TEST_PURPLE,
-//            todayTextColor: Colors.DD_LIGHT_GRAY, //meh suppper iffy on this one
-//            dayTextColor: Colors.DD_RED_2,
-//           // textDisabledColor: Colors.TEST_PURPLE,
-//           // dotColor: Colors.TEST_PURPLE,
-//            selectedDotColor: Colors.DD_CREAM,
-//            arrowColor: Colors.DD_CREAM,
-//           // disabledArrowColor: '#d9e1e8',
-//            monthTextColor: Colors.DD_CREAM, //does it do anything?
-//            indicatorColor: 'blue',
-//           // textDayFontFamily: 'monospace',
-//           // textMonthFontFamily: 'monospace',
-//           // textDayHeaderFontFamily: 'monospace',
-//           // textDayFontWeight: '300',
-//           // textMonthFontWeight: 'bold',
-//           // textDayHeaderFontWeight: '300',
-//            textDayFontSize: 16,
-//            textMonthFontSize: 16,
-//            textDayHeaderFontSize: 16
-//         }}
-//         style={{
-//           //borderWidth: 10, //def need to do fancy stuff to make that look good
-//           //borderColor: Colors.DD_GRAY,
-//           backgroundColor: Colors.DD_RED_2
-//           //paddingBottom: 10
-//           //marginTop: 100
-//           //height: 350
-//         }}
-//       />
-
-//       {/* look below to see sources for this
-//       <Navigator /> */}
-//     </SafeAreaView>
-//   );
-// };
 
 //https://www.codegrepper.com/code-examples/javascript/react-native-calendar+selected+date
 //https://blog.expo.dev/5-easy-to-use-react-native-calendar-libraries-e830a97d5bf7
