@@ -156,7 +156,7 @@ const eventObject = {
 // const initialMarkedDateList = []; //this is where we will plug in all the stuff from database
 
 function HomeScreen(props) {
-  const nowDate = '2022-09-28'; // TODO: figure out how to get a date.now properly formatted or if it will just take a date object
+  const nowDate = new Date().toUTCString(); // TODO: figure out how to get a date.now properly formatted or if it will just take a date object
   const [selectedDay, setSelectedDay] = useState(nowDate);
   // const [markedDateList, setMarkedDateList] = useState(initialMarkedDateList);
   // const [mark, setMark] = useState({});
@@ -167,14 +167,14 @@ function HomeScreen(props) {
     // const d = new Date().toISOString();
     // console.log(d);
     setItems({
-      '2022-09-24': [],
-      '2022-09-25': [],
-      '2022-09-26': [{name: 'item -1 - any js object'}, {name: 'item 0!'}],
-      '2022-09-27': [{name: 'item 1 - any js object'}, {name: 'item 2!'}],
-      '2022-09-28': [{name: 'item 3 - any js object'}, {name: 'item 4!'}],
-      '2022-09-29': [{name: 'item 5 - any js object'}, {name: 'item 6!'}],
-      '2022-09-30': [{name: 'item7 - any js object'}, {name: 'item 8!'}],
-      '2022-10-01': [],
+      // '2022-10-01': [],
+      '2022-10-02': [],
+      '2022-10-03': [{name: 'item -1 - any js object'}, {name: 'item 0!'}],
+      '2022-10-04': [{name: 'item 1 - any js object'}, {name: 'item 2!'}],
+      '2022-10-05': [{name: 'item 3 - any js object'}, {name: 'item 4!'}],
+      '2022-10-06': [{name: 'item 5 - any js object'}, {name: 'item 6!'}],
+      '2022-10-07': [{name: 'item7 - any js object'}, {name: 'item 8!'}],
+      '2022-10-08': [],
     });
     // setItems({
     //   '2012-05-22': [{name: 'item 1 - any js object'}],
