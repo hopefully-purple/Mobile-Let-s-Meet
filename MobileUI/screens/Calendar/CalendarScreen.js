@@ -10,9 +10,8 @@ import {
 } from 'react-native';
 import {Agenda} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
-import Colors from '../assets/styles/colors';
-import {calendarTheme} from '../assets/styles/calendarTheme';
-import createEventPopup from './createEventPopup';
+import Colors from '../../assets/styles/colors';
+import {calendarTheme} from '../../assets/styles/calendarTheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card} from 'react-native-paper';
 
@@ -240,7 +239,7 @@ function formatEventTime(s, e) {
   return finalTimeString;
 }
 
-function HomeScreen(props) {
+function CalendarScreen(props) {
   const nowDate = new Date().toUTCString();
   const [selectedDay, setSelectedDay] = useState(nowDate);
   const [items, setItems] = useState({});
@@ -334,7 +333,7 @@ function HomeScreen(props) {
   );
 }
 
-HomeScreen.defaultProps = {
+CalendarScreen.defaultProps = {
   groupName: 'My',
 };
 
@@ -381,7 +380,7 @@ LocaleConfig.locales['fr'] = {
 };
 LocaleConfig.defaultLocale = 'fr';
 
-export default HomeScreen;
+export default CalendarScreen;
 
 //Keep for posterity just in case we need another button to interact with navigator
 // function HomeScreen({ navigation }) {

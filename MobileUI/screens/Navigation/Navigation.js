@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
-import HomeScreen from '../HomeScreen';
+import CalendarScreen from '../Calendar/CalendarScreen';
 import LoginScreen from '../LoginScreen';
 import {Text, StyleSheet} from 'react-native';
 import Colors from '../../assets/styles/colors';
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
 });
 
 function GroupsScreen({navigation}) {
-  return <HomeScreen groupName="Group" />;
+  return <CalendarScreen groupName="Group" />;
 }
 
 function FriendsScreen({navigation}) {
@@ -92,7 +92,7 @@ export default function Navigation() {
           )}
           <Drawer.Screen
             name="My Schedule"
-            component={HomeScreen}
+            component={CalendarScreen}
             options={{
               headerShown: false,
               drawerItemStyle: {
