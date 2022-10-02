@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import {
   Button,
-  Alert,
+  Image,
   Text,
   SafeAreaView,
   View,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import {Agenda} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
 import Colors from '../assets/styles/colors';
 import {calendarTheme} from '../assets/styles/calendarTheme';
@@ -32,17 +32,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.DD_CREAM,
     fontWeight: 'bold',
   },
-  calendarTitleText: {
-    fontSize: 25,
-    fontWeight: '500',
-    color: Colors.DD_CREAM,
-    textAlign: 'center',
-    marginTop: 10,
-    marginBottom: 10,
-    paddingHorizontal: 90,
-    position: 'relative',
-    flexWrap: 'wrap',
-  },
   itemText: {
     color: Colors.DD_DARK_GRAY,
   },
@@ -56,16 +45,51 @@ const styles = StyleSheet.create({
   cardStyle: {
     backgroundColor: Colors.DD_CREAM_LIGHT,
     borderColor: Colors.DD_LIGHT_GRAY,
-    borderBottomWidth: 5,
-    borderTopWidth: 5,
-    borderLeftWidth: 5,
-    borderRightWidth: 5,
+    borderWidth: 5,
+  },
+  floatingButtonStyle: {
+    fontSize: 25,
+    fontWeight: '500',
+    color: Colors.DD_CREAM,
+    borderColor: Colors.DD_CREAM,
+  },
+  calendarTitleText: {
+    fontSize: 25,
+    fontWeight: '500',
+    color: Colors.DD_CREAM,
+    marginTop: 10,
+    marginBottom: 10,
+    // paddingHorizontal: 90,
+    paddingHorizontal: 10,
+    textAlign: 'center',
+  },
+  calendarTitle: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'baseline',
   },
 });
 
 const CalendarTitle = props => {
   return (
-    <Text style={styles.calendarTitleText}>{props.groupName} Schedule</Text>
+    <View style={styles.calendarTitle}>
+      <Text style={styles.calendarTitleText}>{props.groupName} Schedule</Text>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => console.log('clicked!')}>
+        {/* <Image
+          //We are making FAB using TouchableOpacity with an image
+          //We are using online image here
+          source={{
+            uri: 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png',
+          }}
+          //You can use you project image Example below
+          //source={require('./images/float-add-icon.png')}
+          style={styles.floatingButtonStyle}
+        /> */}
+        <Text style={styles.floatingButtonStyle}>+</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
