@@ -5,25 +5,14 @@ import {Card} from 'react-native-paper';
 import {View, Text, Button} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import CalendarScreen from './CalendarScreen';
 
 function HomeScreen({navigation}) {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text style={{fontSize: 30}}>This is the home screen!</Text>
-      <Button
-        onPress={() => navigation.navigate('MyModal')}
-        title="Open Modal"
-      />
-    </View>
-  );
+  return <CalendarScreen groupName="My" navigation={navigation} />;
 }
 
-function DetailsScreen() {
-  return (
-    <View>
-      <Text>Details</Text>
-    </View>
-  );
+function GroupScreen({navigation}) {
+  return <CalendarScreen groupName="Group" navigation={navigation} />;
 }
 
 function ModalScreen({navigation}) {
@@ -37,12 +26,27 @@ function ModalScreen({navigation}) {
 
 const RootStack = createStackNavigator();
 
-export default function HomeRootStackScreen() {
+export default function HomeRootStackScreen(props) {
   return (
     <RootStack.Navigator>
       <RootStack.Group>
-        <RootStack.Screen name="Home" component={HomeScreen} />
-        <RootStack.Screen name="Details" component={DetailsScreen} />
+        {props.groupName ? (
+          <RootStack.Screen
+            name="Group"
+            component={GroupScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        ) : (
+          <RootStack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        )}
       </RootStack.Group>
       <RootStack.Group screenOptions={{presentation: 'modal'}}>
         <RootStack.Screen name="MyModal" component={ModalScreen} />
@@ -50,3 +54,7 @@ export default function HomeRootStackScreen() {
     </RootStack.Navigator>
   );
 }
+
+// HomeRootStackScreen.defaultProps = {
+//   groupName: 'My',
+// };

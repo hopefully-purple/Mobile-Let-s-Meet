@@ -75,7 +75,7 @@ const CalendarTitle = props => {
       <Text style={styles.calendarTitleText}>{props.groupName} Schedule</Text>
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => console.log('clicked!')}>
+        onPress={() => props.navigation.navigate('MyModal')}>
         {/* <Image
           //We are making FAB using TouchableOpacity with an image
           //We are using online image here
@@ -239,7 +239,8 @@ function formatEventTime(s, e) {
   return finalTimeString;
 }
 
-function CalendarScreen(props) {
+// function CalendarScreen(props) {
+const CalendarScreen = ({navigation, groupName}) => {
   const nowDate = new Date().toUTCString();
   const [selectedDay, setSelectedDay] = useState(nowDate);
   const [items, setItems] = useState({});
@@ -271,7 +272,7 @@ function CalendarScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CalendarTitle groupName={props.groupName} />
+      <CalendarTitle groupName={groupName} navigation={navigation} />
       <Agenda
         // The list of items that have to be displayed in agenda. If you want to render item as empty date
         // the value of date key has to be an empty array []. If there exists no value for date key it is
@@ -331,11 +332,12 @@ function CalendarScreen(props) {
       />
     </SafeAreaView>
   );
-}
-
-CalendarScreen.defaultProps = {
-  groupName: 'My',
 };
+
+// CalendarScreen.defaultProps = {
+//   groupName: 'My',
+//   navigation,
+// };
 
 LocaleConfig.locales['fr'] = {
   monthNames: [
