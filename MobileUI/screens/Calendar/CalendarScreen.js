@@ -103,7 +103,15 @@ const eventObject = {
 // location = e.Location,
 // color = e.Calendar.Color,
 
-const uncertainVolleyballM = {
+const septVolleyballM = {
+  title: 'Volleyball',
+  start: 'Mon, 26 Sep 2022 8:35:00 MDT',
+  end: 'Mon, 26 Sep 2022 9:25:00 MDT',
+  location: 'HPR E 101',
+  color: '#8A56E6', //A nice purple
+};
+
+const octVolleyballM = {
   title: 'Volleyball',
   start: 'Mon, 03 Oct 2022 8:35:00 MDT',
   end: 'Mon, 03 Oct 2022 9:25:00 MDT',
@@ -111,7 +119,7 @@ const uncertainVolleyballM = {
   color: '#8A56E6', //A nice purple
 };
 
-const uncertainVolleyballW = {
+const octVolleyballW = {
   title: 'Volleyball',
   start: 'Wed, 05 Oct 2022 8:35:00 MDT',
   end: 'Wed, 05 Oct 2022 9:25:00 MDT',
@@ -119,7 +127,7 @@ const uncertainVolleyballW = {
   color: '#8A56E6', //A nice purple
 };
 
-const uncertainCapstoneM = {
+const octCapstoneM = {
   title: 'Capstone Project',
   start: 'Mon, 03 Oct 2022 10:45:00 MDT',
   end: 'Mon, 03 Oct 2022 11:35:00 MDT',
@@ -127,7 +135,7 @@ const uncertainCapstoneM = {
   color: '#F02F17', //A nice, bright, red
 };
 
-const uncertainCapstoneW = {
+const octCapstoneW = {
   title: 'Capstone Project',
   start: 'Wed, 05 Oct 2022 10:45:00 MDT',
   end: 'Wed, 05 Oct 2022 11:35:00 MDT',
@@ -135,7 +143,7 @@ const uncertainCapstoneW = {
   color: '#F02F17', //A nice, bright, red
 };
 
-const uncertainNLPM = {
+const octNLPM = {
   title: 'Natural Language Processing',
   start: 'Mon, 03 Oct 2022 13:25:00 MDT',
   end: 'Mon, 03 Oct 2022 14:45:00 MDT',
@@ -143,7 +151,7 @@ const uncertainNLPM = {
   color: '#F07F26', //A nice, bright, orange
 };
 
-const uncertainNLPW = {
+const octNLPW = {
   title: 'Natural Language Processing',
   start: 'Wed, 05 Oct 2022 13:25:00 MDT',
   end: 'Wed, 05 Oct 2022 14:45:00 MDT',
@@ -151,7 +159,7 @@ const uncertainNLPW = {
   color: '#F07F26', //A nice, bright, orange
 };
 
-const uncertainAIT = {
+const octAIT = {
   title: 'Artificial Intelligence',
   start: 'Tue, 04 Oct 2022 12:25:00 MDT',
   end: 'Tue, 04 Oct 2022 13:45:00 MDT',
@@ -159,7 +167,7 @@ const uncertainAIT = {
   color: '#1D4BD6', //A nice blue
 };
 
-const uncertainAITH = {
+const octAITH = {
   title: 'Artificial Intelligence',
   start: 'Thu, 06 Oct 2022 12:25:00 MDT',
   end: 'Thu, 06 Oct 2022 13:45:00 MDT',
@@ -167,7 +175,7 @@ const uncertainAITH = {
   color: '#1D4BD6', //A nice blue
 };
 
-const uncertainBiologyT = {
+const octBiologyT = {
   title: 'Biology',
   start: 'Tue, 04 Oct 2022 14:00:00 MDT',
   end: 'Tue, 04 Oct 2022 15:20:00 MDT',
@@ -175,7 +183,7 @@ const uncertainBiologyT = {
   color: '#0D852F', //A dark green
 };
 
-const uncertainBiologyTH = {
+const octBiologyTH = {
   title: 'Biology',
   start: 'Thu, 06 Oct 2022 14:00:00 MDT',
   end: 'Thu, 06 Oct 2022 15:20:00 MDT',
@@ -183,25 +191,35 @@ const uncertainBiologyTH = {
   color: '#0D852F', //A dark green
 };
 
+const novBiologyTH = {
+  title: 'Biology',
+  start: 'Thu, 03 Nov 2022 14:00:00 MDT',
+  end: 'Thu, 03 Nov 2022 15:20:00 MDT',
+  location: 'GC 1900',
+  color: '#0D852F', //A dark green
+};
+
 const uncertainList = [
-  uncertainVolleyballM,
-  uncertainVolleyballW,
-  uncertainAIT,
-  uncertainAITH,
-  uncertainBiologyT,
-  uncertainBiologyTH,
-  uncertainCapstoneM,
-  uncertainCapstoneW,
-  uncertainNLPM,
-  uncertainNLPW,
+  octVolleyballM,
+  octVolleyballW,
+  novBiologyTH,
+  octAIT,
+  octAITH,
+  octBiologyT,
+  octBiologyTH,
+  septVolleyballM,
+  octCapstoneM,
+  octCapstoneW,
+  octNLPM,
+  octNLPW,
 ];
 
 const hardCodeUncertainItems = {
   '2022-10-02': [],
-  '2022-10-03': [uncertainVolleyballM, uncertainCapstoneM, uncertainNLPM],
-  '2022-10-04': [uncertainAIT, uncertainBiologyT],
-  '2022-10-05': [uncertainVolleyballW, uncertainCapstoneW, uncertainNLPW],
-  '2022-10-06': [uncertainAITH, uncertainBiologyTH],
+  '2022-10-03': [octVolleyballM, octCapstoneM, octNLPM],
+  '2022-10-04': [octAIT, octBiologyT],
+  '2022-10-05': [octVolleyballW, octCapstoneW, octNLPW],
+  '2022-10-06': [octAITH, octBiologyTH],
   '2022-10-07': [],
   '2022-10-08': [],
 };
@@ -257,13 +275,28 @@ function constructDateString(givenDate) {
   const date = new Date(givenDate);
   // console.log('date.month:' + date.getMonth());
   let m = formatSingleDigitMonth(date.getMonth());
-  // console.log(m);
+  console.log('actual month: ' + m);
   let d = formatSingleDigit(date.getDate());
+  console.log('day=' + d);
   let ds = `${date.getFullYear()}-${m}-${d}`;
   return ds;
 }
 
-const createItemList = async month => {
+function constructMonth(givenDate) {
+  // getMonth is 0 based!!!!!!!!!!!!!!!!!!!!!
+  const date = new Date(givenDate);
+  let m = formatSingleDigitMonth(date.getMonth());
+  return m;
+}
+
+function constructDay(givenDate) {
+  // getDate will give the actual day of the month
+  const date = new Date(givenDate);
+  // let d = formatSingleDigit(date.getDate());
+  return date.getDate();
+}
+
+const createItemList = async (month, items) => {
   // Make API Call
   // Grab possible events from storage?
   // animals
@@ -271,21 +304,27 @@ const createItemList = async month => {
   // .map(item => <li key={item.id}>{item.animal}</li>);
   //^^ can filter through keys if I start keys with an "e" or something
   // add hardcoded events?
-  let list = {};
+  // let list = {};
   for (let i of uncertainList) {
     // console.log('i.start=' + i.start);
-    let ds = constructDateString(i.start);
+    // let ds = constructDateString(i.start);
+    let iMonth = constructMonth(i.start);
+    let iDay = constructDay(i.start);
     // console.log('ds=' + ds);
-    if (month.dateString === ds) {
-      console.log('for loop works!');
-      if (!list[month.dateString]) {
-        list[month.dateString] = [];
+    // if (month.dateString === ds) {
+    if (month.month === iMonth) {
+      // console.log('iMonth= ' + iMonth);
+      if (!items[month.dateString]) {
+        items[month.dateString] = [];
       }
-      list[month.dateString].push(i);
+      // console.log('month.day =' + month.day + '');
+      if (month.day === iDay && !items[month.dateString].includes(i)) {
+        // console.log('push: ' + i.title + ' ' + i.start);
+        items[month.dateString].push(i);
+      }
     }
   }
-  console.log(list);
-  return list;
+  return items;
 };
 
 // function CalendarScreen(props) {
@@ -296,10 +335,13 @@ const CalendarScreen = ({navigation, groupName}) => {
 
   const loadItems = async month => {
     // setItems(originalDummyItems);
-    console.log('loadItems: month=' + JSON.stringify(month));
-    const itemList = await createItemList(month);
     // setItems(hardCodeUncertainItems);
+    // console.log('loadItems: month=' + JSON.stringify(month));
+    const itemList = await createItemList(month, items);
+    // console.log('After await create itemList');
+    // console.log(JSON.stringify(itemList, undefined, 2));
     setItems(itemList);
+    // console.log('items are set');
   };
 
   const renderItem = item => {
