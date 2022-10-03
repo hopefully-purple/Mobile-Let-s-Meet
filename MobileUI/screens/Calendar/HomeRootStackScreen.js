@@ -1,11 +1,9 @@
-import React, {useState} from 'react';
-import Colors from '../../assets/styles/colors';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Card} from 'react-native-paper';
+import React from 'react';
 import {View, Text, Button} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import CalendarScreen from './CalendarScreen';
+import AddEventModal from './AddEventModal';
+import Colors from '../../assets/styles/colors';
 
 function HomeScreen({navigation}) {
   return <CalendarScreen groupName="My" navigation={navigation} />;
@@ -16,12 +14,7 @@ function GroupScreen({navigation}) {
 }
 
 function ModalScreen({navigation}) {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text style={{fontSize: 30}}>This is a modal!</Text>
-      <Button onPress={() => navigation.goBack()} title="Dismiss" />
-    </View>
-  );
+  return <AddEventModal navigation={navigation} />;
 }
 
 const RootStack = createStackNavigator();
@@ -48,8 +41,39 @@ export default function HomeRootStackScreen(props) {
           />
         )}
       </RootStack.Group>
-      <RootStack.Group screenOptions={{presentation: 'modal'}}>
-        <RootStack.Screen name="MyModal" component={ModalScreen} />
+      {/* <RootStack.Group screenOptions={{presentation: 'modal'}}> */}
+      <RootStack.Group
+        screenOptions={{
+          headerStyle: {
+            color: Colors.DD_CREAM,
+          },
+        }}>
+        <RootStack.Screen
+          name="MyModal"
+          component={ModalScreen}
+          options={{
+            title: 'New Event',
+            headerTitleStyle: {
+              color: Colors.DD_CREAM,
+              fontSize: 20,
+            },
+            animation: 'slide_from_right',
+            headerStyle: {
+              backgroundColor: Colors.DD_RED_2,
+            },
+            headerLeft: () => (
+              <Button
+                onPress={() => props.navigation.goBack()}
+                title="Cancel"
+              />
+            ),
+            // headerBackTitle: 'Cancel',
+            // headerBackTitleStyle: {
+            //   color: Colors.DD_CREAM,
+            //   fontSize: 20,
+            // },
+          }}
+        />
       </RootStack.Group>
     </RootStack.Navigator>
   );

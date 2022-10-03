@@ -21,16 +21,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.DD_RED_2,
     justifyContent: 'space-evenly',
   },
-  outputContainer: {
-    color: Colors.DD_RED_2,
-    left: 50,
-    maxWidth: 300,
-    padding: 15,
-    borderWidth: 15,
-    borderColor: Colors.DD_RED_2,
-    backgroundColor: Colors.DD_CREAM,
-    fontWeight: 'bold',
-  },
   itemText: {
     color: Colors.DD_DARK_GRAY,
   },
