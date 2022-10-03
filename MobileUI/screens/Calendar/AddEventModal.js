@@ -82,10 +82,13 @@ const storeNewEvent = async (title, location, start, end, color) => {
   };
   // console.log(newEvent);
   try {
-    // Attempt to keep keys unique: Key= "title" + " - start"
+    // Attempt to keep keys unique: Key= "Event title" + " - start"
     // bc not going to have two Bio discussions at the same time
     // but two bio discussions can exist
-    await AsyncStorage.setItem(`${title} - ${start}`, JSON.stringify(newEvent));
+    await AsyncStorage.setItem(
+      `Event ${title} - ${start}`,
+      JSON.stringify(newEvent),
+    );
   } catch (e) {
     // print error
     console.log('storing event error: ' + e);

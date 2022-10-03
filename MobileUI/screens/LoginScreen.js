@@ -106,12 +106,12 @@ const getUsernameValue = async username => {
   return null;
 };
 
-const getAllKeys = async () => {
+export const getAllKeys = async () => {
   let keys = [];
   try {
     keys = await AsyncStorage.getAllKeys();
     if (keys !== null) {
-      console.log(keys);
+      console.log('keys: ' + keys);
       return keys;
     }
   } catch (e) {

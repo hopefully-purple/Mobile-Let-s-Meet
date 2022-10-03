@@ -14,6 +14,7 @@ import Colors from '../../assets/styles/colors';
 import {calendarTheme} from '../../assets/styles/calendarTheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card} from 'react-native-paper';
+import {getAllKeys} from '../LoginScreen';
 
 const styles = StyleSheet.create({
   container: {
@@ -298,20 +299,38 @@ function constructDay(givenDate) {
 
 const createItemList = async (month, items) => {
   // Make API Call
+
   // Grab possible events from storage?
   // animals
   // .filter(item => item.animal.includes("e"))
   // .map(item => <li key={item.id}>{item.animal}</li>);
   //^^ can filter through keys if I start keys with an "e" or something
+  // let storageContents = await getAllKeys();
+  // storageContents = storageContents.filter(item => item.includes('Event'));
+  // // .map(async item => {
+  // try {
+  //   const jsonValue = await AsyncStorage.multiGet(storageContents);
+  //   // jsonValue != null ? uncertainList.push(JSON.parse(jsonValue)) : null;
+  //   console.log('Below is get item result from storage:');
+  //   console.log(jsonValue);
+  //   // const newE = JSON.parse(jsonValue);
+  //   // console.log(JSON.stringify(newE, undefined, 2));
+  //   // if (!uncertainList.includes(newE)) {
+  //   //   uncertainList.push(newE);
+  //   // }
+  // } catch (e) {
+  //   // read error
+  //   console.log('crazy map filtering get item storage error: ' + e);
+  //   throw e;
+  // }
+  // // });
+  // console.log('end of storage contents section');
   // add hardcoded events?
-  // let list = {};
   for (let i of uncertainList) {
     // console.log('i.start=' + i.start);
-    // let ds = constructDateString(i.start);
     let iMonth = constructMonth(i.start);
     let iDay = constructDay(i.start);
     // console.log('ds=' + ds);
-    // if (month.dateString === ds) {
     if (month.month === iMonth) {
       // console.log('iMonth= ' + iMonth);
       if (!items[month.dateString]) {
@@ -338,10 +357,10 @@ const CalendarScreen = ({navigation, groupName}) => {
     // setItems(hardCodeUncertainItems);
     // console.log('loadItems: month=' + JSON.stringify(month));
     const itemList = await createItemList(month, items);
-    // console.log('After await create itemList');
-    // console.log(JSON.stringify(itemList, undefined, 2));
+    console.log('After await create itemList');
+    console.log(JSON.stringify(itemList, undefined, 2));
     setItems(itemList);
-    // console.log('items are set');
+    console.log('items are set');
   };
 
   const renderItem = item => {
