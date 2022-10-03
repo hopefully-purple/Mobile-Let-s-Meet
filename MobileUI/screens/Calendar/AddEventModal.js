@@ -1,8 +1,17 @@
 import React, {useState} from 'react';
 import Colors from '../../assets/styles/colors';
-import {ScrollView, View, Keyboard, Button, StyleSheet} from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  Keyboard,
+  Button,
+  StyleSheet,
+} from 'react-native';
 import {TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DatePicker from 'react-native-date-picker';
+import {SliderPicker, HuePicker} from 'react-color';
 
 const styles = StyleSheet.create({
   container: {
@@ -11,6 +20,11 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-evenly',
   },
   input: {
+    margin: 10,
+  },
+  text: {
+    color: Colors.DD_DARK_GRAY,
+    fontSize: 20,
     margin: 10,
   },
 });
@@ -45,13 +59,38 @@ const uncertainVolleyballM = {
   // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
 };
 
+// https://casesandberg.github.io/react-color/
+// Doesn't work! Throws Text errors :`(
+const CalendarThing = (calColor, setCalColor) => {
+  return (
+    <HuePicker
+      color={calColor}
+      onChangeComplete={setCalColor}
+      width={50}
+      height={20}
+    />
+  );
+};
+
 export default function AddEventModal({navigation}) {
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [calColor, setCalColor] = useState('#0D852F');
+
+  const doneHandler = () => {
+    console.log(title);
+    console.log(location);
+    console.log(startDate);
+    console.log(endDate);
+    console.log(calColor);
+    // API call to post new event
+    navigation.goBack();
+  };
 
   return (
-    // <ScrollView style={styles.container}>
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <TextInput
         label="Title"
         value={title}
@@ -71,8 +110,24 @@ export default function AddEventModal({navigation}) {
         activeOutlineColor={Colors.DD_RED_2}
         autoCorrect={false}
       />
-      <Button onPress={() => navigation.goBack()} title="Done" />
-      {/* </ScrollView> */}
-    </View>
+      <Text style={styles.text}>
+        Start: {startDate.toLocaleDateString()} {startDate.toLocaleTimeString()}
+      </Text>
+      <DatePicker
+        date={startDate}
+        onDateChange={setStartDate}
+        minuteInterval={5}
+      />
+      <Text style={styles.text}>
+        End: {endDate.toLocaleDateString()} {endDate.toLocaleTimeString()}
+      </Text>
+      <DatePicker date={endDate} onDateChange={setEndDate} minuteInterval={5} />
+      <Text style={styles.text}>Pick color aka calendar soon</Text>
+      {/* <CalendarThing calColor={calColor} setCalColor={setCalColor} /> */}
+      <Button onPress={doneHandler} title="Done" style={{margin: 100}} />
+      <Text> </Text>
+    </ScrollView>
   );
 }
+
+// https://github.com/henninghall/react-native-date-picker
