@@ -72,6 +72,29 @@ const CalendarThing = (calColor, setCalColor) => {
   );
 };
 
+const storeNewEvent = async (title, location, start, end, color) => {
+  const newEvent = {
+    title,
+    start,
+    end,
+    location,
+    color,
+  };
+  // console.log(newEvent);
+  try {
+    // Attempt to keep keys unique: Key= "title" + " - start"
+    // bc not going to have two Bio discussions at the same time
+    // but two bio discussions can exist
+    await AsyncStorage.setItem(`${title} - ${start}`, JSON.stringify(newEvent));
+  } catch (e) {
+    // print error
+    console.log('storing event error: ' + e);
+    throw e;
+  }
+
+  return;
+};
+
 export default function AddEventModal({navigation}) {
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
@@ -79,13 +102,17 @@ export default function AddEventModal({navigation}) {
   const [endDate, setEndDate] = useState(new Date());
   const [calColor, setCalColor] = useState('#0D852F');
 
-  const doneHandler = () => {
-    console.log(title);
-    console.log(location);
-    console.log(startDate);
-    console.log(endDate);
-    console.log(calColor);
+  const doneHandler = async () => {
+    // console.log(title);
+    // console.log(location);
+    // console.log(startDate);
+    // console.log(endDate);
+    // console.log(calColor);
     // API call to post new event
+    // Async storage call
+    await storeNewEvent(title, location, startDate, endDate, calColor);
+    //let event = await AsyncStorage.getItem(`${title} - ${startDate}`);
+    //console.log(event);
     navigation.goBack();
   };
 

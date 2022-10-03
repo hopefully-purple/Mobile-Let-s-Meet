@@ -13,7 +13,7 @@ function GroupScreen({navigation}) {
   return <CalendarScreen groupName="Group" navigation={navigation} />;
 }
 
-function ModalScreen({navigation}) {
+function AddEventModalScreen({navigation}) {
   return <AddEventModal navigation={navigation} />;
 }
 
@@ -49,8 +49,8 @@ export default function HomeRootStackScreen(props) {
           },
         }}>
         <RootStack.Screen
-          name="MyModal"
-          component={ModalScreen}
+          name="AddEventModal"
+          component={AddEventModalScreen}
           options={{
             title: 'New Event',
             headerTitleStyle: {

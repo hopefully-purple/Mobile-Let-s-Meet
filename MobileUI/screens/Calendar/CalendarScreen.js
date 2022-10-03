@@ -65,7 +65,7 @@ const CalendarTitle = props => {
       <Text style={styles.calendarTitleText}>{props.groupName} Schedule</Text>
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => props.navigation.navigate('MyModal')}>
+        onPress={() => props.navigation.navigate('AddEventModal')}>
         {/* <Image
           //We are making FAB using TouchableOpacity with an image
           //We are using online image here
@@ -92,6 +92,7 @@ const eventObject = {
   privacy: '',
   users: [], // list of users
   group: {}, //groupmodel object
+  calendar: '', //calendar model object
 };
 
 // Or the EventModels/Mine get events action might return this object:
@@ -101,15 +102,13 @@ const eventObject = {
 // end = e.EndTime.ToString("O"),
 // location = e.Location,
 // color = e.Calendar.Color,
-// background = e.Calendar.Color,
-// backgroundColor = e.Calendar.Color,
+
 const uncertainVolleyballM = {
   title: 'Volleyball',
   start: 'Mon, 03 Oct 2022 8:35:00 MDT',
   end: 'Mon, 03 Oct 2022 9:25:00 MDT',
   location: 'HPR E 101',
   color: '#8A56E6', //A nice purple
-  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
 };
 
 const uncertainVolleyballW = {
@@ -118,7 +117,6 @@ const uncertainVolleyballW = {
   end: 'Wed, 05 Oct 2022 9:25:00 MDT',
   location: 'HPR E 101',
   color: '#8A56E6', //A nice purple
-  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
 };
 
 const uncertainCapstoneM = {
@@ -127,7 +125,6 @@ const uncertainCapstoneM = {
   end: 'Mon, 03 Oct 2022 11:35:00 MDT',
   location: 'Discord',
   color: '#F02F17', //A nice, bright, red
-  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
 };
 
 const uncertainCapstoneW = {
@@ -136,7 +133,6 @@ const uncertainCapstoneW = {
   end: 'Wed, 05 Oct 2022 11:35:00 MDT',
   location: 'Discord',
   color: '#F02F17', //A nice, bright, red
-  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
 };
 
 const uncertainNLPM = {
@@ -145,7 +141,6 @@ const uncertainNLPM = {
   end: 'Mon, 03 Oct 2022 14:45:00 MDT',
   location: 'CTIHB 109',
   color: '#F07F26', //A nice, bright, orange
-  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
 };
 
 const uncertainNLPW = {
@@ -154,7 +149,6 @@ const uncertainNLPW = {
   end: 'Wed, 05 Oct 2022 14:45:00 MDT',
   location: 'CTIHB 109',
   color: '#F07F26', //A nice, bright, orange
-  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
 };
 
 const uncertainAIT = {
@@ -163,7 +157,6 @@ const uncertainAIT = {
   end: 'Tue, 04 Oct 2022 13:45:00 MDT',
   location: 'WEB L103',
   color: '#1D4BD6', //A nice blue
-  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
 };
 
 const uncertainAITH = {
@@ -172,7 +165,6 @@ const uncertainAITH = {
   end: 'Thu, 06 Oct 2022 13:45:00 MDT',
   location: 'WEB L103',
   color: '#1D4BD6', //A nice blue
-  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
 };
 
 const uncertainBiologyT = {
@@ -181,7 +173,6 @@ const uncertainBiologyT = {
   end: 'Tue, 04 Oct 2022 15:20:00 MDT',
   location: 'GC 1900',
   color: '#0D852F', //A dark green
-  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
 };
 
 const uncertainBiologyTH = {
@@ -190,8 +181,20 @@ const uncertainBiologyTH = {
   end: 'Thu, 06 Oct 2022 15:20:00 MDT',
   location: 'GC 1900',
   color: '#0D852F', //A dark green
-  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
 };
+
+const uncertainList = [
+  uncertainVolleyballM,
+  uncertainVolleyballW,
+  uncertainAIT,
+  uncertainAITH,
+  uncertainBiologyT,
+  uncertainBiologyTH,
+  uncertainCapstoneM,
+  uncertainCapstoneW,
+  uncertainNLPM,
+  uncertainNLPW,
+];
 
 const hardCodeUncertainItems = {
   '2022-10-02': [],
@@ -229,15 +232,74 @@ function formatEventTime(s, e) {
   return finalTimeString;
 }
 
+function formatSingleDigitMonth(number) {
+  const n = number + 1; //to account for 0 based
+  if (n < 10) {
+    return `0${n}`;
+  } else {
+    return n;
+  }
+}
+
+function formatSingleDigit(number) {
+  if (number < 10) {
+    return `0${number}`;
+  } else {
+    return number;
+  }
+}
+
+function constructDateString(givenDate) {
+  // month.dateString = '2022-09-03' format
+  // getMonth is 0 based!!!!!!!!!!!!!!!!!!!!!
+  // get Day is getting day of the week, 0 based.
+  // getDate will give the actual day of the month
+  const date = new Date(givenDate);
+  // console.log('date.month:' + date.getMonth());
+  let m = formatSingleDigitMonth(date.getMonth());
+  // console.log(m);
+  let d = formatSingleDigit(date.getDate());
+  let ds = `${date.getFullYear()}-${m}-${d}`;
+  return ds;
+}
+
+const createItemList = async month => {
+  // Make API Call
+  // Grab possible events from storage?
+  // animals
+  // .filter(item => item.animal.includes("e"))
+  // .map(item => <li key={item.id}>{item.animal}</li>);
+  //^^ can filter through keys if I start keys with an "e" or something
+  // add hardcoded events?
+  let list = {};
+  for (let i of uncertainList) {
+    // console.log('i.start=' + i.start);
+    let ds = constructDateString(i.start);
+    // console.log('ds=' + ds);
+    if (month.dateString === ds) {
+      console.log('for loop works!');
+      if (!list[month.dateString]) {
+        list[month.dateString] = [];
+      }
+      list[month.dateString].push(i);
+    }
+  }
+  console.log(list);
+  return list;
+};
+
 // function CalendarScreen(props) {
 const CalendarScreen = ({navigation, groupName}) => {
   const nowDate = new Date().toUTCString();
   const [selectedDay, setSelectedDay] = useState(nowDate);
   const [items, setItems] = useState({});
 
-  const loadItems = day => {
+  const loadItems = async month => {
     // setItems(originalDummyItems);
-    setItems(hardCodeUncertainItems);
+    console.log('loadItems: month=' + JSON.stringify(month));
+    const itemList = await createItemList(month);
+    // setItems(hardCodeUncertainItems);
+    setItems(itemList);
   };
 
   const renderItem = item => {
