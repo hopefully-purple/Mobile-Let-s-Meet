@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import Colors from '../../assets/styles/colors';
 import {
   ScrollView,
@@ -12,6 +12,7 @@ import {TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DatePicker from 'react-native-date-picker';
 import {SliderPicker, HuePicker} from 'react-color';
+import CalendarEventsContext from '../../contexts/CalendarEvents';
 
 const styles = StyleSheet.create({
   container: {
@@ -104,6 +105,7 @@ export default function AddEventModal({navigation}) {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [calColor, setCalColor] = useState('#0D852F');
+  const {items, setItems} = useContext(CalendarEventsContext);
 
   const doneHandler = async () => {
     // console.log(title);
