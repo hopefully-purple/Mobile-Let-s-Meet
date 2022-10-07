@@ -28,11 +28,11 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>ec2-52-7-65-63.compute-1.amazonaws.com</key>
+			<key>ec2-3-84-219-120.compute-1.amazonaws.com</key>
 			<dict>
-			    <key>NSIncludesSubdomains</key>
-      			<true/>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
 				<true/>
 			</dict>
 		</dict>
