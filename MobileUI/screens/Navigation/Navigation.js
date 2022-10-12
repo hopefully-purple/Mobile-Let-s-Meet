@@ -11,6 +11,7 @@ import RegistrationScreen from '../RegistrationFlow/RegistrationScreen';
 import BaseRegistration from '../RegistrationFlow/BaseRegistration';
 import LogStateContext from '../../contexts/LoginState';
 import ProfileScreen from '../ProfileScreen';
+import SettingsScreen from '../SettingsScreen';
 
 //Important links
 //https://reactnavigation.org/docs/drawer-based-navigation/
@@ -42,15 +43,6 @@ function FriendsScreen({navigation}) {
     <View style={styles.screenContainer}>
       <Text style={styles.defaultScreentext}> List of friends</Text>
       <Text style={styles.defaultScreentext}> Add friends</Text>
-    </View>
-  );
-}
-function SettingsScreen({navigation}) {
-  return (
-    <View style={styles.screenContainer}>
-      <Text style={styles.defaultScreentext}>Change profile info</Text>
-      <Text style={styles.defaultScreentext}>Change password</Text>
-      <Text style={styles.defaultScreentext}>Change privacy settings</Text>
     </View>
   );
 }

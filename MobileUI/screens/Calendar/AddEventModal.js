@@ -115,8 +115,17 @@ export default function AddEventModal({navigation}) {
     // console.log(calColor);
     // API call to post new event
     // Async storage call
-    await storeNewEvent(title, location, startDate, endDate, calColor);
+    // await storeNewEvent(title, location, startDate, endDate, calColor);
     //let event = await AsyncStorage.getItem(`${title} - ${startDate}`);
+    const newEvent = {
+      title,
+      start: startDate,
+      end: endDate,
+      location,
+      color: calColor,
+    };
+    console.log('NEW EVENT MADE, events context:');
+    console.log(JSON.stringify(items, undefined, 2));
     //console.log(event);
     navigation.goBack();
   };
