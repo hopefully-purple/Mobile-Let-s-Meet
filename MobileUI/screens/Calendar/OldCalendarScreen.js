@@ -18,6 +18,7 @@ import {getAllKeys} from '../LoginScreen';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
 import {calendarGetEvents} from './CalendarAPIHandling';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
+import {constructDateString} from '../../parsingHelpers/DateParsing';
 
 function formatEventTime(s, e) {
   let finalTimeString = '';
@@ -32,38 +33,6 @@ function formatEventTime(s, e) {
   finalTimeString += ` - ${hours}:${minutes}`;
 
   return finalTimeString;
-}
-
-function formatSingleDigitMonth(number) {
-  const n = number + 1; //to account for 0 based
-  if (n < 10) {
-    return `0${n}`;
-  } else {
-    return n;
-  }
-}
-
-function formatSingleDigit(number) {
-  if (number < 10) {
-    return `0${number}`;
-  } else {
-    return number;
-  }
-}
-
-function constructDateString(givenDate) {
-  // month.dateString = '2022-09-03' format
-  // getMonth is 0 based!!!!!!!!!!!!!!!!!!!!!
-  // get Day is getting day of the week, 0 based.
-  // getDate will give the actual day of the month
-  const date = new Date(givenDate);
-  // console.log('date.month:' + date.getMonth());
-  let m = formatSingleDigitMonth(date.getMonth());
-  // console.log('actual month: ' + m);
-  let d = formatSingleDigit(date.getDate());
-  // console.log('day=' + d);
-  let ds = `${date.getFullYear()}-${m}-${d}`;
-  return ds;
 }
 
 /**
