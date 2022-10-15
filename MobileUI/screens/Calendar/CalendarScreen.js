@@ -7,6 +7,7 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import Colors from '../../assets/styles/colors';
 import {calendarTheme} from '../../assets/styles/calendarTheme';
@@ -41,6 +42,37 @@ const CalendarTitle = props => {
   );
 };
 
+function formatEventTime(s, e) {
+  let finalTimeString = '';
+  let date = new Date(s);
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  finalTimeString = `${hours}:${minutes}`;
+
+  date = new Date(e);
+  hours = date.getHours();
+  minutes = date.getMinutes();
+  finalTimeString += ` - ${hours}:${minutes}`;
+
+  return finalTimeString;
+}
+
+const Item = ({i, itemColor, time}) => (
+  <TouchableOpacity
+    style={styles.item}
+    onPress={() => console.log(JSON.stringify(i))}>
+    <Card style={{...styles.cardStyle, borderColor: itemColor}}>
+      <Card.Content>
+        <View>
+          <Text style={styles.itemText}>
+            {`${time}\n${i.title}\n${i.location}`}
+          </Text>
+        </View>
+      </Card.Content>
+    </Card>
+  </TouchableOpacity>
+);
+
 // https://openbase.com/js/react-native-calendar-strip
 // There's stuff in there that talks about localization for datetimes!
 const CalendarScreen = ({navigation, calendarName}) => {
@@ -49,6 +81,13 @@ const CalendarScreen = ({navigation, calendarName}) => {
   const [items, setItems] = useState({});
   const events = useContext(CalendarEventsContext);
 
+  const renderItem = ({item}) => {
+    // console.log(items.length);
+    const itemColor = item.color;
+    const time = formatEventTime(item.start, item.end);
+    // console.log('rendering ' + item.id);
+    return <Item i={item} itemColor={itemColor} time={time} />;
+  };
   return (
     <SafeAreaView style={styles.container}>
       <CalendarTitle name={calendarName} navigation={navigation} />
@@ -66,6 +105,13 @@ const CalendarScreen = ({navigation, calendarName}) => {
         highlightDateNameStyle={{color: Colors.DD_RED_3, fontSize: 15}}
         iconContainer={{flex: 0.1}}
       />
+      <View style={{backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY}}>
+        <FlatList
+          data={classScheduleList}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+        />
+      </View>
     </SafeAreaView>
   );
 };
