@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {View, Text, Button} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import CalendarScreen from './CalendarScreen';
@@ -6,12 +6,54 @@ import AddEventModal from './AddEventModal';
 import Colors from '../../assets/styles/colors';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
+import {calendarGetEvents} from './CalendarAPIHandling';
+
+const readEventData = async () => {
+  //TODO: change call based on calendarName?
+  try {
+    // const value = await AsyncStorage.getItem(language);
+    //const value = await calendarGetEvents(); // API call
+    const value = null;
+    // console.log('(App.readData) value:' + value);
+    if (value !== null) {
+      // setLanguageObj({language: language, words: JSON.parse(value)});
+      return value; // initialize events context
+    } else {
+      console.log(
+        '(calendarScreen.readData).getEvents value is null! Set to class schedule list for now',
+      );
+      //TODO: probably return empty array irl
+      return classScheduleList;
+    }
+  } catch (e) {
+    console.log(
+      '(calendarScreen.readData) Failed to fetch the events from server: ' + e,
+    );
+    throw e;
+  }
+};
 
 function HomeScreen({navigation}) {
+  const {events, setEvents} = useContext(CalendarEventsContext);
+  useEffect(() => {
+    navigation.addListener('focus', async () => {
+      // do something
+      console.log('-------calendarscreen-------------');
+      const data = await readEventData();
+      // console.log(JSON.stringify(data, undefined, 2));
+      console.log('set events to data');
+      setEvents(data);
+    });
+  }, [navigation, setEvents]);
   return <CalendarScreen calendarName="My" navigation={navigation} />;
 }
 
 function GroupScreen({navigation}) {
+  useEffect(
+    () =>
+      navigation.addListener('focus', () => alert('Groupscreen was focused')),
+    [navigation],
+  );
   return <CalendarScreen calendarName="Group" navigation={navigation} />;
 }
 
@@ -22,7 +64,7 @@ function AddEventModalScreen({navigation}) {
 const RootStack = createStackNavigator();
 
 export default function HomeRootStackScreen(props) {
-  const [events, setEvents] = useState(classScheduleList);
+  const [events, setEvents] = useState([]);
 
   return (
     <CalendarEventsContext.Provider value={{events, setEvents}}>

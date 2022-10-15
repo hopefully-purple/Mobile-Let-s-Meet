@@ -18,6 +18,7 @@ import CalendarEventsContext from '../../contexts/CalendarEvents';
 import {calendarGetEvents} from './CalendarAPIHandling';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
 import CalendarStrip from 'react-native-calendar-strip';
+import {constructDateString} from '../../parsingHelpers/DateParsing';
 
 const CalendarTitle = props => {
   return (
@@ -41,6 +42,41 @@ const CalendarTitle = props => {
     </View>
   );
 };
+
+function organizeIntoDates(events) {
+  let newFL = {};
+  // console.log(JSON.stringify(events, undefined, 2));
+  console.log('calendarScreen.organizeIntoDates events=' + events.length);
+  if (events.length === 0) {
+    console.log('events currently empty, return []');
+    return newFL;
+  }
+
+  for (let i of events) {
+    // console.log('i.start=' + i.start);
+    // let iMonth = constructMonth(i.start);
+    // let iDay = constructDay(i.start);
+    let iDateString = constructDateString(i.start);
+    // console.log('iDateString=' + iDateString);
+    // if (month.month === iMonth) {
+    // console.log('iMonth= ' + iMonth + ' iDay= ' + iDay);
+    if (!newFL[iDateString]) {
+      // console.log('add iDateString to array');
+      newFL[iDateString] = [];
+      // console.log('newFL size=' + newFL.length);
+    }
+    // console.log('month.day =' + month.day + '');
+    if (!newFL[iDateString].includes(i)) {
+      // console.log('push: ' + i.title + ' ' + i.start);
+      newFL[iDateString].push(i);
+    }
+  }
+
+  // console.log('newFL:');
+  // console.log(JSON.stringify(newFL, undefined, 2));
+
+  return newFL;
+}
 
 function formatEventTime(s, e) {
   let finalTimeString = '';
@@ -79,7 +115,7 @@ const CalendarScreen = ({navigation, calendarName}) => {
   const nowDate = new Date().toUTCString();
   const [selectedDay, setSelectedDay] = useState(nowDate);
   const [items, setItems] = useState({});
-  const events = useContext(CalendarEventsContext);
+  const {events, setEvents} = useContext(CalendarEventsContext);
 
   const renderItem = ({item}) => {
     // console.log(items.length);
@@ -88,13 +124,40 @@ const CalendarScreen = ({navigation, calendarName}) => {
     // console.log('rendering ' + item.id);
     return <Item i={item} itemColor={itemColor} time={time} />;
   };
+
+  const handleDateSelected = date => {
+    //date is a moment object
+    // Set items to the array in Flatlist corresponding to date
+    const dateKey = date.format('YYYY-MM-DD');
+    // console.log(flatList[dateKey]);
+    const dayEvents = flatList[dateKey];
+    if (dayEvents !== undefined) {
+      setItems(dayEvents);
+    } else {
+      setItems({});
+    }
+    // console.log(dateKey);
+  };
+
+  const [flatList, setFlatList] = useState([]);
+  useEffect(
+    function createFlatList() {
+      // console.log('(LS.createSectionList) how often is useEffect called?');
+      // if (searchQuery === '') {
+      //   const newSectionL = organizeIntoAlphabetizedSections(languageObj);
+      //   setSectionList(newSectionL);
+      // }
+      const newFlatL = organizeIntoDates(events);
+      setFlatList(newFlatL);
+    },
+    [events],
+  );
   return (
     <SafeAreaView style={styles.container}>
       <CalendarTitle name={calendarName} navigation={navigation} />
       <CalendarStrip
-        onDateSelected={date => {
-          console.log('date changed=' + date);
-        }}
+        selectedDate={selectedDay}
+        onDateSelected={handleDateSelected}
         scrollable
         style={{height: 100, paddingTop: 10, paddingBottom: 10}}
         calendarColor={Colors.DD_CREAM}
@@ -107,7 +170,7 @@ const CalendarScreen = ({navigation, calendarName}) => {
       />
       <View style={{backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY}}>
         <FlatList
-          data={classScheduleList}
+          data={items}
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />
