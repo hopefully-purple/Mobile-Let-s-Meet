@@ -8,8 +8,6 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {Agenda} from 'react-native-calendars';
-import {LocaleConfig} from 'react-native-calendars';
 import Colors from '../../assets/styles/colors';
 import {calendarTheme} from '../../assets/styles/calendarTheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,6 +16,7 @@ import {getAllKeys} from '../LoginScreen';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
 import {calendarGetEvents} from './CalendarAPIHandling';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
+import CalendarStrip from 'react-native-calendar-strip';
 
 const CalendarTitle = props => {
   return (
@@ -42,6 +41,8 @@ const CalendarTitle = props => {
   );
 };
 
+// https://openbase.com/js/react-native-calendar-strip
+// There's stuff in there that talks about localization for datetimes!
 const CalendarScreen = ({navigation, calendarName}) => {
   const nowDate = new Date().toUTCString();
   const [selectedDay, setSelectedDay] = useState(nowDate);
@@ -51,6 +52,20 @@ const CalendarScreen = ({navigation, calendarName}) => {
   return (
     <SafeAreaView style={styles.container}>
       <CalendarTitle name={calendarName} navigation={navigation} />
+      <CalendarStrip
+        onDateSelected={date => {
+          console.log('date changed=' + date);
+        }}
+        scrollable
+        style={{height: 100, paddingTop: 10, paddingBottom: 10}}
+        calendarColor={Colors.DD_CREAM}
+        calendarHeaderStyle={{color: Colors.DD_RED_2, fontSize: 21}}
+        dateNameStyle={{color: Colors.DD_RED_2, fontSize: 15}}
+        dateNumberStyle={{color: Colors.DD_LIGHT_GRAY, fontSize: 15}}
+        highlightDateNumberStyle={{color: Colors.DD_RED_3, fontSize: 15}}
+        highlightDateNameStyle={{color: Colors.DD_RED_3, fontSize: 15}}
+        iconContainer={{flex: 0.1}}
+      />
     </SafeAreaView>
   );
 };
@@ -59,7 +74,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.DD_RED_2,
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
   },
   itemText: {
     color: Colors.DD_DARK_GRAY,
