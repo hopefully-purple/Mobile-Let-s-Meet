@@ -20,14 +20,14 @@ const readEventData = async () => {
       return value; // initialize events context
     } else {
       console.log(
-        '(calendarScreen.readData).getEvents value is null! Set to class schedule list for now',
+        '(homerootstack.readData).getEvents value is null! Set to class schedule list for now',
       );
       //TODO: probably return empty array irl
       return classScheduleList;
     }
   } catch (e) {
     console.log(
-      '(calendarScreen.readData) Failed to fetch the events from server: ' + e,
+      '(Homerootstack.readData) Failed to fetch the events from server: ' + e,
     );
     throw e;
   }
@@ -38,13 +38,14 @@ function HomeScreen({navigation}) {
   useEffect(() => {
     navigation.addListener('focus', async () => {
       // do something
-      console.log('-------calendarscreen-------------');
-      const data = await readEventData();
-      // console.log(JSON.stringify(data, undefined, 2));
-      console.log('set events to data');
-      setEvents(data);
+      console.log('-------HomerootStackscreen-------------');
+      if (events.length === 0) {
+        const data = await readEventData();
+        console.log('set events to data');
+        setEvents(data);
+      }
     });
-  }, [navigation, setEvents]);
+  }, [navigation, setEvents, events]);
   return <CalendarScreen calendarName="My" navigation={navigation} />;
 }
 

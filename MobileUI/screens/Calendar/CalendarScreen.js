@@ -138,11 +138,6 @@ const CalendarScreen = ({navigation, calendarName}) => {
   const [flatList, setFlatList] = useState([]);
   useEffect(
     function createFlatList() {
-      // console.log('(LS.createSectionList) how often is useEffect called?');
-      // if (searchQuery === '') {
-      //   const newSectionL = organizeIntoAlphabetizedSections(languageObj);
-      //   setSectionList(newSectionL);
-      // }
       const newFlatL = organizeIntoDates(events);
       setFlatList(newFlatL);
     },

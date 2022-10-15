@@ -14,52 +14,6 @@ import DatePicker from 'react-native-date-picker';
 import {SliderPicker, HuePicker} from 'react-color';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.DD_CREAM,
-    // justifyContent: 'space-evenly',
-  },
-  input: {
-    margin: 10,
-  },
-  text: {
-    color: Colors.DD_DARK_GRAY,
-    fontSize: 20,
-    margin: 10,
-  },
-});
-
-//This is what is stored in the database. Might not necessarily be the result from get
-const eventObject = {
-  eventID: '', //int
-  startTime: '', //DateTime
-  endTime: '', //DateTime
-  title: '',
-  location: '',
-  privacy: '',
-  users: [], // list of users
-  group: {}, //groupmodel object
-};
-
-// Or the EventModels/Mine get events action might return this object:
-// id = e.EventID,
-// title = e.Title,
-// start = e.StartTime.ToString("O"),
-// end = e.EndTime.ToString("O"),
-// location = e.Location,
-// color = e.Calendar.Color,
-// background = e.Calendar.Color,
-// backgroundColor = e.Calendar.Color,
-const uncertainVolleyballM = {
-  title: 'Volleyball',
-  start: 'Mon, 03 Oct 2022 8:35:00 MDT',
-  end: 'Mon, 03 Oct 2022 9:25:00 MDT',
-  location: 'HPR E 101',
-  color: '#8A56E6', //A nice purple
-  // The bckgd and bckgdC are unnecessary imo . . . TODO: ask about that
-};
-
 // https://casesandberg.github.io/react-color/
 // Doesn't work! Throws Text errors :`(
 const CalendarThing = (calColor, setCalColor) => {
@@ -114,6 +68,7 @@ export default function AddEventModal({navigation}) {
     // console.log(endDate);
     // console.log(calColor);
     const newEvent = {
+      id: `${events.length + 1} ${title}`,
       title,
       start: startDate,
       end: endDate,
@@ -126,7 +81,9 @@ export default function AddEventModal({navigation}) {
 
     //To trigger reload of Events and new GET API call, update the events context
     //events.push(newEvent)
-    //setEvents()
+    const newE = events;
+    newE.push(newEvent);
+    setEvents(newE);
     console.log(JSON.stringify(events, undefined, 2));
     //console.log(event);
     navigation.goBack();
@@ -172,5 +129,21 @@ export default function AddEventModal({navigation}) {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.DD_CREAM,
+    // justifyContent: 'space-evenly',
+  },
+  input: {
+    margin: 10,
+  },
+  text: {
+    color: Colors.DD_DARK_GRAY,
+    fontSize: 20,
+    margin: 10,
+  },
+});
 
 // https://github.com/henninghall/react-native-date-picker
