@@ -5,13 +5,14 @@ import CalendarScreen from './CalendarScreen';
 import AddEventModal from './AddEventModal';
 import Colors from '../../assets/styles/colors';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
+import {classScheduleList} from '../../assets/data/HardCodedEvents';
 
 function HomeScreen({navigation}) {
-  return <CalendarScreen groupName="My" navigation={navigation} />;
+  return <CalendarScreen calendarName="My" navigation={navigation} />;
 }
 
 function GroupScreen({navigation}) {
-  return <CalendarScreen groupName="Group" navigation={navigation} />;
+  return <CalendarScreen calendarName="Group" navigation={navigation} />;
 }
 
 function AddEventModalScreen({navigation}) {
@@ -21,34 +22,13 @@ function AddEventModalScreen({navigation}) {
 const RootStack = createStackNavigator();
 
 export default function HomeRootStackScreen(props) {
-  const [items, setItems] = useState({});
+  const [events, setEvents] = useState(classScheduleList);
 
-  const readData = async () => {
-    console.log('ReadData');
-    // try {
-    //   const value = await AsyncStorage.getItem('Spanish');
-    //   console.log('(App.readData) value:' + value);
-    //   if (value !== null) {
-    //     beginningObject.words = JSON.parse(value);
-    //     setLanguageObj(beginningObject);
-    //   } else {
-    //     console.log('(App.readData).getItem value is null!');
-    //   }
-    // } catch (e) {
-    //   console.log('(App.readData) Failed to fetch the input from storage: ' + e);
-    //   throw e;
-    // }
-  };
-
-  useEffect(() => {
-    console.log('App.useEffect');
-    readData();
-  }, []);
   return (
-    <CalendarEventsContext.Provider value={{items, setItems}}>
+    <CalendarEventsContext.Provider value={{events, setEvents}}>
       <RootStack.Navigator>
         <RootStack.Group>
-          {props.groupName ? (
+          {props.calendarName !== 'My' ? (
             <RootStack.Screen
               name="Group"
               component={GroupScreen}

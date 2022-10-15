@@ -34,8 +34,11 @@ const styles = StyleSheet.create({
 });
 
 function GroupsScreen({navigation}) {
-  // return <CalendarScreen groupName="Group" />;
-  return <HomeRootStackScreen groupName="Group" />;
+  return <HomeRootStackScreen calendarName="Group" navigation={navigation} />;
+}
+
+function MyScheduleScreen({navigation}) {
+  return <HomeRootStackScreen calendarName="My" navigation={navigation} />;
 }
 
 function FriendsScreen({navigation}) {
@@ -86,7 +89,7 @@ export default function Navigation() {
           )}
           <Drawer.Screen
             name="My Schedule"
-            component={HomeRootStackScreen}
+            component={MyScheduleScreen}
             options={{
               headerShown: false,
               drawerItemStyle: {

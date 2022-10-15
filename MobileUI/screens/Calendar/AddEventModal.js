@@ -105,7 +105,7 @@ export default function AddEventModal({navigation}) {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [calColor, setCalColor] = useState('#0D852F');
-  const {items, setItems} = useContext(CalendarEventsContext);
+  const {events, setEvents} = useContext(CalendarEventsContext);
 
   const doneHandler = async () => {
     // console.log(title);
@@ -113,10 +113,6 @@ export default function AddEventModal({navigation}) {
     // console.log(startDate);
     // console.log(endDate);
     // console.log(calColor);
-    // API call to post new event
-    // Async storage call
-    // await storeNewEvent(title, location, startDate, endDate, calColor);
-    //let event = await AsyncStorage.getItem(`${title} - ${startDate}`);
     const newEvent = {
       title,
       start: startDate,
@@ -125,7 +121,13 @@ export default function AddEventModal({navigation}) {
       color: calColor,
     };
     console.log('NEW EVENT MADE, events context:');
-    console.log(JSON.stringify(items, undefined, 2));
+
+    // API call to post new event
+
+    //To trigger reload of Events and new GET API call, update the events context
+    //events.push(newEvent)
+    //setEvents()
+    console.log(JSON.stringify(events, undefined, 2));
     //console.log(event);
     navigation.goBack();
   };
