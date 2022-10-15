@@ -18,7 +18,10 @@ import CalendarEventsContext from '../../contexts/CalendarEvents';
 import {calendarGetEvents} from './CalendarAPIHandling';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
 import CalendarStrip from 'react-native-calendar-strip';
-import {constructDateString} from '../../parsingHelpers/DateParsing';
+import {
+  constructDateString,
+  formatEventTime,
+} from '../../parsingHelpers/DateParsing';
 
 const CalendarTitle = props => {
   return (
@@ -78,21 +81,6 @@ function organizeIntoDates(events) {
   return newFL;
 }
 
-function formatEventTime(s, e) {
-  let finalTimeString = '';
-  let date = new Date(s);
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  finalTimeString = `${hours}:${minutes}`;
-
-  date = new Date(e);
-  hours = date.getHours();
-  minutes = date.getMinutes();
-  finalTimeString += ` - ${hours}:${minutes}`;
-
-  return finalTimeString;
-}
-
 const Item = ({i, itemColor, time}) => (
   <TouchableOpacity
     style={styles.item}
@@ -126,6 +114,7 @@ const CalendarScreen = ({navigation, calendarName}) => {
   };
 
   const handleDateSelected = date => {
+    setSelectedDay(date);
     //date is a moment object
     // Set items to the array in Flatlist corresponding to date
     const dateKey = date.format('YYYY-MM-DD');
@@ -137,6 +126,13 @@ const CalendarScreen = ({navigation, calendarName}) => {
       setItems({});
     }
     // console.log(dateKey);
+  };
+
+  const markedDatesFunc = date => {
+    if (flatList[date.format('YYYY-MM-DD')]) {
+      return {dots: [{color: Colors.DD_RED_1}]};
+    }
+    return {};
   };
 
   const [flatList, setFlatList] = useState([]);
@@ -158,17 +154,20 @@ const CalendarScreen = ({navigation, calendarName}) => {
       <CalendarStrip
         selectedDate={selectedDay}
         onDateSelected={handleDateSelected}
+        // Marked dates callback
+        markedDates={markedDatesFunc}
         scrollable
         style={{height: 100, paddingTop: 10, paddingBottom: 10}}
         calendarColor={Colors.DD_CREAM}
         calendarHeaderStyle={{color: Colors.DD_RED_2, fontSize: 21}}
         dateNameStyle={{color: Colors.DD_RED_2, fontSize: 15}}
         dateNumberStyle={{color: Colors.DD_LIGHT_GRAY, fontSize: 15}}
+        markedDatesStyle={{height: 5, width: 5}}
         highlightDateNumberStyle={{color: Colors.DD_RED_3, fontSize: 15}}
         highlightDateNameStyle={{color: Colors.DD_RED_3, fontSize: 15}}
         iconContainer={{flex: 0.1}}
       />
-      <View style={{backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY}}>
+      <View style={{backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY, height: 600}}>
         <FlatList
           data={items}
           renderItem={renderItem}

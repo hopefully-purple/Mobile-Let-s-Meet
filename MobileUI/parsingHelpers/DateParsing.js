@@ -1,6 +1,29 @@
 import React from 'react';
 
 /**
+ * Given a start and end date,
+ * return the time span in string format
+ * TODO: Account for the 24hr format and adjust to 12hr + am/pm
+ * @param {string} s - start date
+ * @param {string} e - end date
+ * @returns 'HH:MM - HH:MM
+ */
+export function formatEventTime(s, e) {
+  let finalTimeString = '';
+  let date = new Date(s);
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  finalTimeString = `${hours}:${minutes}`;
+
+  date = new Date(e);
+  hours = date.getHours();
+  minutes = date.getMinutes();
+  finalTimeString += ` - ${hours}:${minutes}`;
+
+  return finalTimeString;
+}
+
+/**
  * Given a date in string format,
  * return the date in 'YYYY-MM-DD' string format
  * @param {string} givenDate
