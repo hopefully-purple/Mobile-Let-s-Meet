@@ -5,8 +5,10 @@ import CalendarScreen from './CalendarScreen';
 import AddEventModal from './AddEventModal';
 import Colors from '../../assets/styles/colors';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
+import GroupsContext from '../../contexts/Groups';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
-import {calendarGetEvents} from './CalendarAPIHandling';
+import {calendarGetEvents} from '../../API/CalendarAPIHandling';
+import {groupsGetGroups} from '../../API/GroupsAPIHandling';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GroupListScreen from '../Groups/GroupListScreen';
 
@@ -41,7 +43,7 @@ function HomeScreen({navigation}) {
   useEffect(() => {
     navigation.addListener('focus', async () => {
       // do something
-      console.log('-------HomerootStackscreen-------------');
+      console.log('-------HomerootStackscreen (For calendar)-------------');
       // if (events.length === 0) {
       const data = await readEventData();
       console.log(JSON.stringify(data, undefined, 2));
@@ -54,12 +56,16 @@ function HomeScreen({navigation}) {
 }
 
 function GroupScreen({navigation}) {
-  // useEffect(
-  //   () =>
-  //     navigation.addListener('focus', () => alert('Groupscreen was focused')),
-  //   [navigation],
-  // );
-  // return <CalendarScreen calendarName="Group" navigation={navigation} />;
+  const {groups, setGroups} = useContext(GroupsContext);
+  useEffect(() => {
+    navigation.addListener('focus', async () => {
+      console.log('-------HomerootStackscreen (For Group)-------------');
+      const data = await groupsGetGroups();
+      // console.log(JSON.stringify(data, undefined, 2));
+      console.log('set groups to data');
+      setGroups(data);
+    });
+  }, [navigation, setGroups]);
   return <GroupListScreen navigation={navigation} />;
 }
 
@@ -71,81 +77,84 @@ const RootStack = createStackNavigator();
 
 export default function HomeRootStackScreen(props) {
   const [events, setEvents] = useState([]);
+  const [groups, setGroups] = useState([]);
 
   return (
-    <CalendarEventsContext.Provider value={{events, setEvents}}>
-      <RootStack.Navigator>
-        <RootStack.Group>
-          {props.calendarName !== 'My' ? (
+    <GroupsContext.Provider value={{groups, setGroups}}>
+      <CalendarEventsContext.Provider value={{events, setEvents}}>
+        <RootStack.Navigator>
+          <RootStack.Group>
+            {props.calendarName !== 'My' ? (
+              <RootStack.Screen
+                name="Group"
+                component={GroupScreen}
+                options={{
+                  title: 'Groups',
+                  headerShown: true,
+                  headerStyle: {
+                    backgroundColor: Colors.DD_RED_2,
+                  },
+                  headerTitleStyle: {
+                    color: Colors.DD_CREAM,
+                    fontSize: 25,
+                    fontWeight: '500',
+                    marginBottom: 10,
+                  },
+                }}
+              />
+            ) : (
+              <RootStack.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            )}
+          </RootStack.Group>
+          {/* <RootStack.Group screenOptions={{presentation: 'modal'}}> */}
+          <RootStack.Group
+            screenOptions={{
+              headerStyle: {
+                color: Colors.DD_CREAM,
+              },
+            }}>
             <RootStack.Screen
-              name="Group"
-              component={GroupScreen}
+              name="AddEventModal"
+              component={AddEventModalScreen}
               options={{
-                title: 'Groups',
-                headerShown: true,
+                title: 'New Event',
+                headerTitleStyle: {
+                  color: Colors.DD_CREAM,
+                  fontSize: 20,
+                },
+                animation: 'slide_from_right',
                 headerStyle: {
                   backgroundColor: Colors.DD_RED_2,
                 },
-                headerTitleStyle: {
-                  color: Colors.DD_CREAM,
-                  fontSize: 25,
-                  fontWeight: '500',
-                  marginBottom: 10,
-                },
+                headerLeft: () => (
+                  <Button
+                    onPress={() => {
+                      if (props.calendarName === 'My') {
+                        props.navigation.navigate('Home');
+                      } else {
+                        props.navigation.navigate('Group');
+                      }
+                    }}
+                    title="Cancel"
+                  />
+                ),
+                // headerBackTitle: 'Cancel',
+                // headerBackTitleStyle: {
+                //   color: Colors.DD_CREAM,
+                //   fontSize: 20,
+                // },
               }}
             />
-          ) : (
-            <RootStack.Screen
-              name="Home"
-              component={HomeScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          )}
-        </RootStack.Group>
-        {/* <RootStack.Group screenOptions={{presentation: 'modal'}}> */}
-        <RootStack.Group
-          screenOptions={{
-            headerStyle: {
-              color: Colors.DD_CREAM,
-            },
-          }}>
-          <RootStack.Screen
-            name="AddEventModal"
-            component={AddEventModalScreen}
-            options={{
-              title: 'New Event',
-              headerTitleStyle: {
-                color: Colors.DD_CREAM,
-                fontSize: 20,
-              },
-              animation: 'slide_from_right',
-              headerStyle: {
-                backgroundColor: Colors.DD_RED_2,
-              },
-              headerLeft: () => (
-                <Button
-                  onPress={() => {
-                    if (props.calendarName === 'My') {
-                      props.navigation.navigate('Home');
-                    } else {
-                      props.navigation.navigate('Group');
-                    }
-                  }}
-                  title="Cancel"
-                />
-              ),
-              // headerBackTitle: 'Cancel',
-              // headerBackTitleStyle: {
-              //   color: Colors.DD_CREAM,
-              //   fontSize: 20,
-              // },
-            }}
-          />
-        </RootStack.Group>
-      </RootStack.Navigator>
-    </CalendarEventsContext.Provider>
+          </RootStack.Group>
+        </RootStack.Navigator>
+      </CalendarEventsContext.Provider>
+    </GroupsContext.Provider>
   );
 }
 

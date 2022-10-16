@@ -16,7 +16,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card} from 'react-native-paper';
 import {getAllKeys} from '../LoginScreen';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
-import {calendarGetEvents, calendarDeleteEvent} from './CalendarAPIHandling';
+import {
+  calendarGetEvents,
+  calendarDeleteEvent,
+} from '../../API/CalendarAPIHandling';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
 import CalendarStrip from 'react-native-calendar-strip';
 import {

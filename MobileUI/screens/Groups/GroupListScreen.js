@@ -1,9 +1,16 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {Text, StyleSheet, View, FlatList, TouchableOpacity} from 'react-native';
 import Colors from '../../assets/styles/colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Card} from 'react-native-paper';
-import UserContext from '../../contexts/User';
+import GroupsContext from '../../contexts/Groups';
+
+// https://bobbyhadz.com/blog/react-sort-array-of-objects
+function organizeGroups(groups) {
+  let newG = {};
+  newG = [...groups].sort((a, b) => a.id - b.id);
+  return newG;
+}
 
 const GroupBox = ({group}) => {
   return (
@@ -20,8 +27,9 @@ const GroupBox = ({group}) => {
 };
 
 export default function GroupListScreen({navigation}) {
-  const [items, setItems] = useState({});
+  // const [items, setItems] = useState({});
   //   const user = useContext(UserContext);
+  const {groups, setGroups} = useContext(GroupsContext);
 
   const renderItem = ({item}) => {
     // console.log(items.length);
@@ -33,12 +41,21 @@ export default function GroupListScreen({navigation}) {
     name: 'New',
   };
 
+  const [flatList, setFlatList] = useState([]);
+  useEffect(
+    function createFlatList() {
+      const newFlatL = organizeGroups(groups);
+      setFlatList(newFlatL);
+    },
+    [groups],
+  );
+
   return (
     <SafeAreaView style={styles.screenContainer}>
       <GroupBox group={newGroupHolder} />
       <View>
         <FlatList
-          data={items}
+          data={flatList}
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />
