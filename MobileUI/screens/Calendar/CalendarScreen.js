@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, cloneElement} from 'react';
 import {
   Button,
   Image,
@@ -100,10 +100,12 @@ const Item = ({i, itemColor, time}) => (
 // https://openbase.com/js/react-native-calendar-strip
 // There's stuff in there that talks about localization for datetimes!
 const CalendarScreen = ({navigation, calendarName}) => {
-  const nowDate = new Date().toUTCString();
-  const [selectedDay, setSelectedDay] = useState(nowDate);
+  const nowDate = new Date();
+  const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
   const [items, setItems] = useState({});
   const {events, setEvents} = useContext(CalendarEventsContext);
+
+  this.calendarStrip = React.createRef();
 
   const renderItem = ({item}) => {
     // console.log(items.length);
@@ -128,6 +130,19 @@ const CalendarScreen = ({navigation, calendarName}) => {
     // console.log(dateKey);
   };
 
+  const customDatesStylesFunc = date => {
+    if (date.format('ddd MMM DD YYYY') === nowDate.toDateString()) {
+      return {
+        dateNameStyle: {
+          backgroundColor: Colors.DD_RED_2,
+          color: Colors.DD_CREAM,
+        },
+        // dateNumberStyle: {color: 'purple'},
+        // dateContainerStyle: {backgroundColor: Colors.DD_RED_3_LIGHT},
+      };
+    }
+  };
+
   const markedDatesFunc = date => {
     if (flatList[date.format('YYYY-MM-DD')]) {
       return {dots: [{color: Colors.DD_RED_1}]};
@@ -143,6 +158,12 @@ const CalendarScreen = ({navigation, calendarName}) => {
     },
     [events],
   );
+
+  // useEffect(() => {
+  //   if (selectedDay !== undefined) {
+  //     this.calendarStrip.current.updateWeekView(selectedDay);
+  //   }
+  // }, [selectedDay]);
   return (
     <SafeAreaView style={styles.container}>
       <CalendarTitle name={calendarName} navigation={navigation} />
@@ -155,12 +176,14 @@ const CalendarScreen = ({navigation, calendarName}) => {
         style={{height: 100, paddingTop: 10, paddingBottom: 10}}
         calendarColor={Colors.DD_CREAM}
         calendarHeaderStyle={{color: Colors.DD_RED_2, fontSize: 21}}
+        customDatesStyles={customDatesStylesFunc}
         dateNameStyle={{color: Colors.DD_RED_2, fontSize: 15}}
         dateNumberStyle={{color: Colors.DD_LIGHT_GRAY, fontSize: 15}}
         markedDatesStyle={{height: 5, width: 5}}
         highlightDateNumberStyle={{color: Colors.DD_RED_3, fontSize: 15}}
         highlightDateNameStyle={{color: Colors.DD_RED_3, fontSize: 15}}
         iconContainer={{flex: 0.1}}
+        ref={this.calendarStrip}
       />
       <View style={{backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY, height: 600}}>
         <FlatList

@@ -7,17 +7,18 @@ import Colors from '../../assets/styles/colors';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
 import {calendarGetEvents} from './CalendarAPIHandling';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const readEventData = async () => {
   //TODO: change call based on calendarName?
   try {
-    // const value = await AsyncStorage.getItem(language);
-    //const value = await calendarGetEvents(); // API call
-    const value = null;
+    const value = await AsyncStorage.getItem('Events');
+    // const value = await calendarGetEvents(); // API call
+    // const value = null;
     // console.log('(App.readData) value:' + value);
-    if (value !== null) {
+    if (value !== null && value !== undefined) {
       // setLanguageObj({language: language, words: JSON.parse(value)});
-      return value; // initialize events context
+      return JSON.parse(value); // initialize events context
     } else {
       console.log(
         '(homerootstack.readData).getEvents value is null! Set to class schedule list for now',
@@ -39,11 +40,12 @@ function HomeScreen({navigation}) {
     navigation.addListener('focus', async () => {
       // do something
       console.log('-------HomerootStackscreen-------------');
-      if (events.length === 0) {
-        const data = await readEventData();
-        console.log('set events to data');
-        setEvents(data);
-      }
+      // if (events.length === 0) {
+      const data = await readEventData();
+      console.log(JSON.stringify(data, undefined, 2));
+      console.log('set events to data');
+      setEvents(data);
+      // }
     });
   }, [navigation, setEvents, events]);
   return <CalendarScreen calendarName="My" navigation={navigation} />;

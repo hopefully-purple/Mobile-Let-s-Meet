@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DatePicker from 'react-native-date-picker';
 import {SliderPicker, HuePicker} from 'react-color';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
+import {calendarCreateNewEvent} from './CalendarAPIHandling';
 
 // https://casesandberg.github.io/react-color/
 // Doesn't work! Throws Text errors :`(
@@ -61,6 +62,22 @@ export default function AddEventModal({navigation}) {
   const [calColor, setCalColor] = useState('#0D852F');
   const {events, setEvents} = useContext(CalendarEventsContext);
 
+  this.titleInput = React.createRef();
+  this.locationInput = React.createRef();
+
+  const saveData = async newEvent => {
+    try {
+      const newE = events;
+      newE.push(newEvent);
+      await AsyncStorage.setItem('Events', JSON.stringify(newE));
+      console.log('(saveData) Data successfully saved');
+      return true;
+    } catch (e) {
+      console.log('(saveData) Failed to save the data to the storage');
+      throw e;
+    }
+  };
+
   const doneHandler = async () => {
     // console.log(title);
     // console.log(location);
@@ -70,23 +87,37 @@ export default function AddEventModal({navigation}) {
     const newEvent = {
       id: `${events.length + 1} ${title}`,
       title,
-      start: startDate,
-      end: endDate,
+      start: startDate, //.toUTCString(),
+      end: endDate, //.toUTCString(),
       location,
       color: calColor,
     };
-    console.log('NEW EVENT MADE, events context:');
+    // console.log('NEW EVENT MADE, events context:');
 
+    console.log(
+      'NEW EVENT MADE > Post API call > result: <not rn, dev server broken>',
+    );
     // API call to post new event
-
+    // await calendarCreateNewEvent(newEvent);
+    // console.log(JSON.stringify(result, undefined, 2));
     //To trigger reload of Events and new GET API call, update the events context
-    //events.push(newEvent)
-    const newE = events;
-    newE.push(newEvent);
-    setEvents(newE);
-    console.log(JSON.stringify(events, undefined, 2));
-    //console.log(event);
-    navigation.goBack();
+    // const newE = events;
+    // newE.push(newEvent);
+    // setEvents(newE);
+
+    //Clear inputs
+    this.titleInput.current.clear();
+    this.locationInput.current.clear();
+    setTitle('');
+    setLocation('');
+
+    //Save to async storage (for now until dev server is fixed)
+    const result = await saveData(newEvent);
+    if (result) {
+      //Go back to schedule
+      console.log('go back');
+      navigation.goBack();
+    }
   };
 
   return (
@@ -99,6 +130,7 @@ export default function AddEventModal({navigation}) {
         style={styles.input}
         activeOutlineColor={Colors.DD_RED_2}
         autoCorrect={false}
+        ref={this.titleInput}
         // onSubmitEditing={Keyboard.dismiss}
       />
       <TextInput
@@ -109,6 +141,7 @@ export default function AddEventModal({navigation}) {
         style={styles.input}
         activeOutlineColor={Colors.DD_RED_2}
         autoCorrect={false}
+        ref={this.locationInput}
       />
       <Text style={styles.text}>
         Start: {startDate.toLocaleDateString()} {startDate.toLocaleTimeString()}

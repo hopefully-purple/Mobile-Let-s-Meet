@@ -7,6 +7,7 @@ const Colors = {
   DD_RED_2: '#950741',
   DD_RED_2_LIGHT: '#B88A9D',
   DD_RED_3: '#C3083F',
+  DD_RED_3_LIGHT: '#FFABA6', //'#FFC9D1',
   DD_CREAM: '#EDF5E0',
   DD_CREAM_LIGHT: '#ECF7DA',
   DD_EXTRA_LIGHT_GRAY: '#E5EBE9', //'#D3DEE3', //'#E5E6EB',
