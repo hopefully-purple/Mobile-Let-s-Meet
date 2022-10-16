@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import {View} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
-import HomeScreen from '../HomeScreen';
+import CalendarScreen from '../Calendar/CalendarScreen';
+import HomeRootStackScreen from '../Calendar/HomeRootStackScreen';
 import LoginScreen from '../LoginScreen';
 import {Text, StyleSheet} from 'react-native';
 import Colors from '../../assets/styles/colors';
@@ -10,6 +11,7 @@ import RegistrationScreen from '../RegistrationFlow/RegistrationScreen';
 import BaseRegistration from '../RegistrationFlow/BaseRegistration';
 import LogStateContext from '../../contexts/LoginState';
 import ProfileScreen from '../ProfileScreen';
+import SettingsScreen from '../SettingsScreen';
 
 //Important links
 //https://reactnavigation.org/docs/drawer-based-navigation/
@@ -32,7 +34,11 @@ const styles = StyleSheet.create({
 });
 
 function GroupsScreen({navigation}) {
-  return <HomeScreen groupName="Group" />;
+  return <HomeRootStackScreen calendarName="Group" navigation={navigation} />;
+}
+
+function MyScheduleScreen({navigation}) {
+  return <HomeRootStackScreen calendarName="My" navigation={navigation} />;
 }
 
 function FriendsScreen({navigation}) {
@@ -40,15 +46,6 @@ function FriendsScreen({navigation}) {
     <View style={styles.screenContainer}>
       <Text style={styles.defaultScreentext}> List of friends</Text>
       <Text style={styles.defaultScreentext}> Add friends</Text>
-    </View>
-  );
-}
-function SettingsScreen({navigation}) {
-  return (
-    <View style={styles.screenContainer}>
-      <Text style={styles.defaultScreentext}>Change profile info</Text>
-      <Text style={styles.defaultScreentext}>Change password</Text>
-      <Text style={styles.defaultScreentext}>Change privacy settings</Text>
     </View>
   );
 }
@@ -92,7 +89,7 @@ export default function Navigation() {
           )}
           <Drawer.Screen
             name="My Schedule"
-            component={HomeScreen}
+            component={MyScheduleScreen}
             options={{
               headerShown: false,
               drawerItemStyle: {

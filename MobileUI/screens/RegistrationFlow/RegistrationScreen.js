@@ -52,7 +52,7 @@ const RegistrationScreen = ({navigation}) => {
       // console.log('Sending Username: ' + name + ' Password: ' + password);
       // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
       const response = await fetch(
-        'http://ec2-52-7-65-63.compute-1.amazonaws.com/Auth/CreateUser',
+        'http://ec2-3-84-219-120.compute-1.amazonaws.com/Auth/CreateUser',
         {
           method: 'POST',
           headers: {
