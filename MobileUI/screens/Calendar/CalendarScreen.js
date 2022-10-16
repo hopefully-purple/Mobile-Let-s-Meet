@@ -111,12 +111,7 @@ const Item = ({i, itemColor, time}) => {
     Alert.alert(i.title, i.location, [
       {
         text: 'Delete',
-        // onPress: () => deleteItemInEvents(),
-        onPress: () => {
-          if (calendarDeleteEvent(i)) {
-            console.log('FIND A WAY TO REFRESH CALENDAR STRIP');
-          }
-        },
+        onPress: () => deleteItemInEvents(),
       },
       {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
     ]);

@@ -13,14 +13,14 @@ import GroupListScreen from '../Groups/GroupListScreen';
 const readEventData = async () => {
   //TODO: change call based on calendarName?
   try {
-    // const value = await AsyncStorage.getItem('Events');
-    const value = await calendarGetEvents(); // API call
+    const value = await AsyncStorage.getItem('Events');
+    // const value = await calendarGetEvents(); // API call
     // const value = null;
     // console.log('(App.readData) value:' + value);
     if (value !== null && value !== undefined) {
       // setLanguageObj({language: language, words: JSON.parse(value)});
-      // return JSON.parse(value); // initialize events context
-      return value;
+      return JSON.parse(value); // initialize events context
+      // return value; //for API call result
     } else {
       console.log(
         '(homerootstack.readData).getEvents value is null! Set to class schedule list for now',
