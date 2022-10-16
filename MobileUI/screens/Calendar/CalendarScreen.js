@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  Alert,
 } from 'react-native';
 import Colors from '../../assets/styles/colors';
 import {calendarTheme} from '../../assets/styles/calendarTheme';
@@ -81,21 +82,54 @@ function organizeIntoDates(events) {
   return newFL;
 }
 
-const Item = ({i, itemColor, time}) => (
-  <TouchableOpacity
-    style={styles.item}
-    onPress={() => console.log(JSON.stringify(i))}>
-    <Card style={{...styles.cardStyle, borderColor: itemColor}}>
-      <Card.Content>
-        <View>
-          <Text style={styles.itemText}>
-            {`${time}\n${i.title}\n${i.location}`}
-          </Text>
-        </View>
-      </Card.Content>
-    </Card>
-  </TouchableOpacity>
-);
+const Item = ({i, itemColor, time}) => {
+  const {events, setEvents} = useContext(CalendarEventsContext);
+  function deleteItemInEvents() {
+    // Filter condition
+    function excludeItem(it) {
+      return it.id !== i.id;
+    }
+    const newEvents = events.filter(excludeItem);
+    // console.log(words);
+    setEvents(newEvents);
+    const saveData = async () => {
+      try {
+        await AsyncStorage.setItem('Events', JSON.stringify(newEvents));
+        console.log('(calnedarscreen.saveData) Data successfully saved');
+      } catch (e) {
+        console.log(
+          '(calendarscreen.saveData) Failed to save the data to the storage',
+        );
+        throw e;
+      }
+    };
+
+    saveData();
+  }
+
+  const changeItemAlert = () => {
+    Alert.alert(i.title, i.location, [
+      {
+        text: 'Delete',
+        onPress: () => deleteItemInEvents(),
+      },
+      {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+    ]);
+  };
+  return (
+    <TouchableOpacity style={styles.item} onLongPress={() => changeItemAlert()}>
+      <Card style={{...styles.cardStyle, borderColor: itemColor}}>
+        <Card.Content>
+          <View>
+            <Text style={styles.itemText}>
+              {`${time}\n${i.title}\n${i.location}`}
+            </Text>
+          </View>
+        </Card.Content>
+      </Card>
+    </TouchableOpacity>
+  );
+};
 
 // https://openbase.com/js/react-native-calendar-strip
 // There's stuff in there that talks about localization for datetimes!
