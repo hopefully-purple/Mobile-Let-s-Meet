@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card} from 'react-native-paper';
 import {getAllKeys} from '../LoginScreen';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
-import {calendarGetEvents} from './CalendarAPIHandling';
+import {calendarGetEvents, calendarDeleteEvent} from './CalendarAPIHandling';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
 import CalendarStrip from 'react-native-calendar-strip';
 import {
@@ -111,7 +111,12 @@ const Item = ({i, itemColor, time}) => {
     Alert.alert(i.title, i.location, [
       {
         text: 'Delete',
-        onPress: () => deleteItemInEvents(),
+        // onPress: () => deleteItemInEvents(),
+        onPress: () => {
+          if (calendarDeleteEvent(i)) {
+            console.log('FIND A WAY TO REFRESH CALENDAR STRIP');
+          }
+        },
       },
       {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
     ]);
