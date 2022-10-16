@@ -52,7 +52,7 @@ function organizeIntoDates(events) {
   // console.log(JSON.stringify(events, undefined, 2));
   console.log('calendarScreen.organizeIntoDates events=' + events.length);
   if (events.length === 0) {
-    console.log('events currently empty, return []');
+    console.log('events currently empty, return {}');
     return newFL;
   }
 

@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React from 'react';
 
 //This is what is stored in the database. Might not necessarily be the result from get
 const eventObject = {

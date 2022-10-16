@@ -8,7 +8,7 @@ import CalendarEventsContext from '../../contexts/CalendarEvents';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
 import {calendarGetEvents} from './CalendarAPIHandling';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import GroupListScreen from '../GroupListScreen';
+import GroupListScreen from '../Groups/GroupListScreen';
 
 const readEventData = async () => {
   //TODO: change call based on calendarName?
@@ -80,7 +80,17 @@ export default function HomeRootStackScreen(props) {
               name="Group"
               component={GroupScreen}
               options={{
-                headerShown: false,
+                title: 'Groups',
+                headerShown: true,
+                headerStyle: {
+                  backgroundColor: Colors.DD_RED_2,
+                },
+                headerTitleStyle: {
+                  color: Colors.DD_CREAM,
+                  fontSize: 25,
+                  fontWeight: '500',
+                  marginBottom: 10,
+                },
               }}
             />
           ) : (
