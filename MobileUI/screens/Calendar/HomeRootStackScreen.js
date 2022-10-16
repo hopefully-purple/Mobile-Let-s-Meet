@@ -113,7 +113,13 @@ export default function HomeRootStackScreen(props) {
               },
               headerLeft: () => (
                 <Button
-                  onPress={() => props.navigation.goBack()}
+                  onPress={() => {
+                    if (props.calendarName === 'My') {
+                      props.navigation.navigate('Home');
+                    } else {
+                      props.navigation.navigate('Group');
+                    }
+                  }}
                   title="Cancel"
                 />
               ),
