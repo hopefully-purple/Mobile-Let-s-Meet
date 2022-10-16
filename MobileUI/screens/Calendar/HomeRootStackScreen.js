@@ -8,6 +8,7 @@ import CalendarEventsContext from '../../contexts/CalendarEvents';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
 import {calendarGetEvents} from './CalendarAPIHandling';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import GroupListScreen from '../GroupListScreen';
 
 const readEventData = async () => {
   //TODO: change call based on calendarName?
@@ -52,12 +53,13 @@ function HomeScreen({navigation}) {
 }
 
 function GroupScreen({navigation}) {
-  useEffect(
-    () =>
-      navigation.addListener('focus', () => alert('Groupscreen was focused')),
-    [navigation],
-  );
-  return <CalendarScreen calendarName="Group" navigation={navigation} />;
+  // useEffect(
+  //   () =>
+  //     navigation.addListener('focus', () => alert('Groupscreen was focused')),
+  //   [navigation],
+  // );
+  // return <CalendarScreen calendarName="Group" navigation={navigation} />;
+  return <GroupListScreen navigation={navigation} />;
 }
 
 function AddEventModalScreen({navigation}) {
