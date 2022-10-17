@@ -4,6 +4,7 @@ import Colors from '../../assets/styles/colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Card} from 'react-native-paper';
 import GroupsContext from '../../contexts/Groups';
+import {BoxButton} from '../../assets/components/CustomButtons';
 
 // https://bobbyhadz.com/blog/react-sort-array-of-objects
 function organizeGroups(groups) {
@@ -14,15 +15,13 @@ function organizeGroups(groups) {
 
 const GroupBox = ({group}) => {
   return (
-    <TouchableOpacity>
-      <Card style={styles.cardStyle}>
-        <Card.Content>
-          <View>
-            <Text style={styles.defaultScreentext}>{group.name}</Text>
-          </View>
-        </Card.Content>
-      </Card>
-    </TouchableOpacity>
+    <Card style={styles.cardStyle}>
+      <Card.Content>
+        <View>
+          <Text style={styles.defaultScreentext}>{group.name}</Text>
+        </View>
+      </Card.Content>
+    </Card>
   );
 };
 
@@ -37,10 +36,6 @@ export default function GroupListScreen({navigation}) {
     return <GroupBox group={item} />;
   };
 
-  const newGroupHolder = {
-    name: 'New',
-  };
-
   const [flatList, setFlatList] = useState([]);
   useEffect(
     function createFlatList() {
@@ -52,14 +47,22 @@ export default function GroupListScreen({navigation}) {
 
   return (
     <SafeAreaView style={styles.screenContainer}>
-      <GroupBox group={newGroupHolder} />
-      <View>
-        <FlatList
-          data={flatList}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
+      <View style={styles.buttons}>
+        <BoxButton
+          title={'+ Create'}
+          onPress={() => console.log('new button pressed')}
+        />
+        <BoxButton
+          title={'Join'}
+          onPress={() => console.log('new button pressed')}
         />
       </View>
+      <FlatList
+        data={flatList}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+        style={{marginTop: 40}}
+      />
     </SafeAreaView>
   );
 }
@@ -68,22 +71,30 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     alignItems: 'center',
-    // justifyContent: 'center',
     backgroundColor: Colors.DD_CREAM,
     // color: Colors.DD_RED_2,
   },
   defaultScreentext: {
     fontSize: 25,
-    fontWeight: '500',
+    // fontWeight: '500',
     color: Colors.DD_RED_2,
     textAlign: 'center',
   },
+  buttons: {
+    flexDirection: 'row',
+    position: 'absolute',
+    margin: 10,
+    // alignContent: 'center',
+  },
   cardStyle: {
-    backgroundColor: Colors.TEST_GREEN,
+    backgroundColor: Colors.DD_CREAM,
     height: 70,
     width: 300,
-    borderColor: Colors.DD_LIGHT_GRAY,
-    borderWidth: 5,
+    borderColor: Colors.DD_RED_2,
+    borderWidth: 2,
+    marginVertical: 10,
+    marginHorizontal: 40,
+    // alignContent: 'space-around',
   },
   // itemText: {
   //   color: Colors.DD_DARK_GRAY,
