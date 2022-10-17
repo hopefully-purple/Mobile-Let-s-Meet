@@ -13,22 +13,30 @@ function organizeGroups(groups) {
   return newG;
 }
 
-const GroupBox = ({group}) => {
-  return (
-    <Card style={styles.cardStyle}>
-      <Card.Content>
-        <View>
-          <Text style={styles.defaultScreentext}>{group.name}</Text>
-        </View>
-      </Card.Content>
-    </Card>
-  );
-};
-
 export default function GroupListScreen({navigation}) {
-  // const [items, setItems] = useState({});
-  //   const user = useContext(UserContext);
   const {groups, setGroups} = useContext(GroupsContext);
+
+  const GroupBox = ({group}) => {
+    const handleGroupPress = () => {
+      //Grab group name
+      // console.log(group.name + ' selected');
+      console.log('pulling up ' + group.name + ' calendar (eventually . . .)');
+      //Set things up to trigger a correct event grab and calendar name change
+      //navigate to calendar
+      navigation.navigate('Home');
+    };
+    return (
+      <TouchableOpacity onPress={handleGroupPress}>
+        <Card style={styles.cardStyle}>
+          <Card.Content>
+            <View>
+              <Text style={styles.defaultScreentext}>{group.name}</Text>
+            </View>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
+    );
+  };
 
   const renderItem = ({item}) => {
     // console.log(items.length);
