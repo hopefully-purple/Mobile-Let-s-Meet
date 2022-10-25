@@ -58,11 +58,7 @@ export default function GroupListScreen({navigation}) {
       <View style={styles.buttons}>
         <BoxButton
           title={'+ Create'}
-          onPress={() => console.log('new button pressed')}
-        />
-        <BoxButton
-          title={'Join'}
-          onPress={() => console.log('new button pressed')}
+          onPress={() => navigation.navigate('AddGroupModal')}
         />
       </View>
       <FlatList

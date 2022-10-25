@@ -6,11 +6,15 @@ import AddEventModal from './AddEventModal';
 import Colors from '../../assets/styles/colors';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
 import GroupsContext from '../../contexts/Groups';
+import {bareBonesGroupList} from '../../assets/data/HardCodedGroups';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
+import {friendsGetFriends} from '../../API/FriendsAPIHandling';
 import {calendarGetEvents} from '../../API/CalendarAPIHandling';
 import {groupsGetGroups} from '../../API/GroupsAPIHandling';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GroupListScreen from '../Groups/GroupListScreen';
+import AddGroupModal from '../Groups/AddGroupModal';
+import FriendsContext from '../../contexts/Friends';
 
 const readEventData = async () => {
   //TODO: change call based on calendarName?
@@ -25,14 +29,15 @@ const readEventData = async () => {
       // return value; //for API call result
     } else {
       console.log(
-        '(homerootstack.readData).getEvents value is null! Set to class schedule list for now',
+        '(homerootstack.readEventData).getEvents value is null! Set to class schedule list for now',
       );
       //TODO: probably return empty array irl
       return classScheduleList;
     }
   } catch (e) {
     console.log(
-      '(Homerootstack.readData) Failed to fetch the events from server: ' + e,
+      '(Homerootstack.readEventData) Failed to fetch the events from server: ' +
+        e,
     );
     throw e;
   }
@@ -55,12 +60,39 @@ function HomeScreen({navigation}) {
   return <CalendarScreen calendarName="My" navigation={navigation} />;
 }
 
+const readGroupData = async () => {
+  //TODO: change call based on calendarName?
+  try {
+    const value = await AsyncStorage.getItem('Groups');
+    // const value = await groupsGetGroups(); // API call
+    // const value = null;
+    // console.log('(App.readData) value:' + value);
+    if (value !== null && value !== undefined) {
+      // setLanguageObj({language: language, words: JSON.parse(value)});
+      return JSON.parse(value); // initialize groups context
+      // return value; //for API call result
+    } else {
+      console.log(
+        '(homerootstack.readGroupData).getGroups value is null! Set to bareBonesGroupList for now',
+      );
+      //TODO: probably return empty array irl
+      return bareBonesGroupList;
+    }
+  } catch (e) {
+    console.log(
+      '(Homerootstack.readGroupData) Failed to fetch the groups from server: ' +
+        e,
+    );
+    throw e;
+  }
+};
+
 function GroupScreen({navigation}) {
   const {groups, setGroups} = useContext(GroupsContext);
   useEffect(() => {
     navigation.addListener('focus', async () => {
       console.log('-------HomerootStackscreen (For Group)-------------');
-      const data = await groupsGetGroups();
+      const data = await readGroupData();
       // console.log(JSON.stringify(data, undefined, 2));
       console.log('set groups to data');
       setGroups(data);
@@ -71,6 +103,10 @@ function GroupScreen({navigation}) {
 
 function AddEventModalScreen({navigation}) {
   return <AddEventModal navigation={navigation} />;
+}
+
+function AddGroupModalScreen({navigation}) {
+  return <AddGroupModal navigation={navigation} />;
 }
 
 const RootStack = createStackNavigator();
@@ -135,20 +171,42 @@ export default function HomeRootStackScreen(props) {
                 headerLeft: () => (
                   <Button
                     onPress={() => {
-                      if (props.calendarName === 'My') {
-                        props.navigation.navigate('Home');
-                      } else {
-                        props.navigation.navigate('Group');
-                      }
+                      props.navigation.navigate('Home');
                     }}
                     title="Cancel"
                   />
                 ),
-                // headerBackTitle: 'Cancel',
-                // headerBackTitleStyle: {
-                //   color: Colors.DD_CREAM,
-                //   fontSize: 20,
-                // },
+              }}
+            />
+            <RootStack.Screen
+              name="AddGroupModal"
+              component={AddGroupModalScreen}
+              options={{
+                title: 'New Group',
+                headerTitleStyle: {
+                  color: Colors.DD_CREAM,
+                  fontSize: 20,
+                },
+                animation: 'slide_from_right',
+                headerStyle: {
+                  backgroundColor: Colors.DD_RED_2,
+                },
+                headerLeft: () => (
+                  <Button
+                    onPress={() => {
+                      props.navigation.navigate('Group');
+                    }}
+                    title="Cancel"
+                  />
+                ),
+                // headerRight: () => (
+                //   <Button
+                //     onPress={() => {
+                //       props.navigation.navigate('Group');
+                //     }}
+                //     title="Done"
+                //   />
+                // ),
               }}
             />
           </RootStack.Group>
