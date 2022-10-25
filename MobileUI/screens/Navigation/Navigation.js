@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {View} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
@@ -14,6 +14,7 @@ import FriendsContext from '../../contexts/Friends';
 import ProfileScreen from '../ProfileScreen';
 import SettingsScreen from '../SettingsScreen';
 import FriendsScreen from '../FriendsScreen';
+import {friendsGetFriends} from '../../API/FriendsAPIHandling';
 
 //Important links
 //https://reactnavigation.org/docs/drawer-based-navigation/
@@ -45,6 +46,20 @@ function MyScheduleScreen({navigation}) {
 
 function LoggingScreen({navigation}) {
   return <LoginScreen navigation={navigation} />;
+}
+
+function FriendScreen({navigation}) {
+  const {friends, setFriends} = useContext(FriendsContext);
+  useEffect(() => {
+    navigation.addListener('focus', async () => {
+      console.log('-------Navigation (For Friends)-------------');
+      const data = await friendsGetFriends();
+      // console.log(JSON.stringify(data, undefined, 2));
+      console.log('set friends to data');
+      setFriends(data);
+    });
+  }, [navigation, setFriends]);
+  return <FriendsScreen navigation={navigation} />;
 }
 
 const Drawer = createDrawerNavigator();
@@ -104,7 +119,7 @@ export default function Navigation() {
             {isLoggedIn && (
               <Drawer.Screen
                 name="Friends"
-                component={FriendsScreen}
+                component={FriendScreen}
                 options={{
                   headerStyle: {
                     backgroundColor: Colors.DD_RED_2,
