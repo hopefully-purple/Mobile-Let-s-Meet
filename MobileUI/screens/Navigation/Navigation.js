@@ -10,8 +10,10 @@ import Colors from '../../assets/styles/colors';
 import RegistrationScreen from '../RegistrationFlow/RegistrationScreen';
 import BaseRegistration from '../RegistrationFlow/BaseRegistration';
 import LogStateContext from '../../contexts/LoginState';
+import FriendsContext from '../../contexts/Friends';
 import ProfileScreen from '../ProfileScreen';
 import SettingsScreen from '../SettingsScreen';
+import FriendsScreen from '../FriendsScreen';
 
 //Important links
 //https://reactnavigation.org/docs/drawer-based-navigation/
@@ -41,15 +43,6 @@ function MyScheduleScreen({navigation}) {
   return <HomeRootStackScreen calendarName="My" navigation={navigation} />;
 }
 
-function FriendsScreen({navigation}) {
-  return (
-    <View style={styles.screenContainer}>
-      <Text style={styles.defaultScreentext}> List of friends</Text>
-      <Text style={styles.defaultScreentext}> Add friends</Text>
-    </View>
-  );
-}
-
 function LoggingScreen({navigation}) {
   return <LoginScreen navigation={navigation} />;
 }
@@ -58,103 +51,115 @@ const Drawer = createDrawerNavigator();
 
 export default function Navigation() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [friends, setFriends] = useState([]);
 
   let logScreenLabel = isLoggedIn ? 'Log Out' : 'Log In';
   let landing = isLoggedIn ? 'My Schedule' : 'Login';
   return (
     <LogStateContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
-      <NavigationContainer>
-        <Drawer.Navigator
-          initialRouteName={landing}
-          screenOptions={{
-            drawerType: 'front',
-            drawerActiveBackgroundColor: Colors.DD_CREAM,
-            drawerActiveTintColor: Colors.DD_RED_3,
-            drawerInactiveTintColor: Colors.DD_LIGHT_GRAY,
-            drawerLabelStyle: {
-              fontSize: 24,
-            },
-            drawerStyle: {
-              backgroundColor: Colors.DD_CREAM,
-            },
-          }}>
-          {isLoggedIn && (
-            <Drawer.Screen
-              name="Profile"
-              component={ProfileScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          )}
-          <Drawer.Screen
-            name="My Schedule"
-            component={MyScheduleScreen}
-            options={{
-              headerShown: false,
-              drawerItemStyle: {
-                height: isLoggedIn ? 55 : 0,
+      <FriendsContext.Provider value={{friends, setFriends}}>
+        <NavigationContainer>
+          <Drawer.Navigator
+            initialRouteName={landing}
+            screenOptions={{
+              drawerType: 'front',
+              drawerActiveBackgroundColor: Colors.DD_CREAM,
+              drawerActiveTintColor: Colors.DD_RED_3,
+              drawerInactiveTintColor: Colors.DD_LIGHT_GRAY,
+              drawerLabelStyle: {
+                fontSize: 24,
               },
-            }}
-          />
-          {isLoggedIn && (
-            <Drawer.Screen
-              name="Groups"
-              component={GroupsScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          )}
-          {isLoggedIn && (
-            <Drawer.Screen
-              name="Friends"
-              component={FriendsScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          )}
-          {isLoggedIn && (
-            <Drawer.Screen
-              name="Settings"
-              component={SettingsScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          )}
-          <Drawer.Screen
-            name="Login"
-            component={LoggingScreen}
-            options={{
-              headerShown: false,
-              drawerLabel: logScreenLabel,
-            }}
-          />
-          <Drawer.Screen
-            name={'Registration'}
-            component={RegistrationScreen}
-            options={{
-              headerShown: false,
-              drawerHideStatusBarOnOpen: true,
-              drawerItemStyle: {
-                height: 0,
+              drawerStyle: {
+                backgroundColor: Colors.DD_CREAM,
               },
-            }}
-          />
-          <Drawer.Screen
-            name={'BaseRegistration'}
-            component={BaseRegistration}
-            options={{
-              headerShown: false,
-              drawerItemStyle: {
-                height: 0,
-              },
-            }}
-          />
-        </Drawer.Navigator>
-      </NavigationContainer>
+            }}>
+            {isLoggedIn && (
+              <Drawer.Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            )}
+            <Drawer.Screen
+              name="My Schedule"
+              component={MyScheduleScreen}
+              options={{
+                headerShown: false,
+                drawerItemStyle: {
+                  height: isLoggedIn ? 55 : 0,
+                },
+              }}
+            />
+            {isLoggedIn && (
+              <Drawer.Screen
+                name="Groups"
+                component={GroupsScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            )}
+            {isLoggedIn && (
+              <Drawer.Screen
+                name="Friends"
+                component={FriendsScreen}
+                options={{
+                  headerStyle: {
+                    backgroundColor: Colors.DD_RED_2,
+                  },
+                  headerTitleStyle: {
+                    color: Colors.DD_CREAM,
+                    fontSize: 25,
+                    fontWeight: '500',
+                    marginBottom: 10,
+                  },
+                  headerBackVisible: false,
+                }}
+              />
+            )}
+            {isLoggedIn && (
+              <Drawer.Screen
+                name="Settings"
+                component={SettingsScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            )}
+            <Drawer.Screen
+              name="Login"
+              component={LoggingScreen}
+              options={{
+                headerShown: false,
+                drawerLabel: logScreenLabel,
+              }}
+            />
+            <Drawer.Screen
+              name={'Registration'}
+              component={RegistrationScreen}
+              options={{
+                headerShown: false,
+                drawerHideStatusBarOnOpen: true,
+                drawerItemStyle: {
+                  height: 0,
+                },
+              }}
+            />
+            <Drawer.Screen
+              name={'BaseRegistration'}
+              component={BaseRegistration}
+              options={{
+                headerShown: false,
+                drawerItemStyle: {
+                  height: 0,
+                },
+              }}
+            />
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </FriendsContext.Provider>
     </LogStateContext.Provider>
   );
 }

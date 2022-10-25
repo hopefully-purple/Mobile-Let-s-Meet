@@ -33,8 +33,8 @@ const septVolleyballM = {
 const octVolleyballM = {
   id: 2,
   title: 'Volleyball',
-  start: 'Mon, 10 Oct 2022 8:35:00 MDT',
-  end: 'Mon, 10 Oct 2022 9:25:00 MDT',
+  start: 'Mon, 24 Oct 2022 8:35:00 MDT',
+  end: 'Mon, 24 Oct 2022 9:25:00 MDT',
   location: 'HPR E 101',
   color: '#8A56E6', //A nice purple
 };
@@ -42,8 +42,8 @@ const octVolleyballM = {
 const octVolleyballW = {
   id: 3,
   title: 'Volleyball',
-  start: 'Wed, 12 Oct 2022 8:35:00 MDT',
-  end: 'Wed, 12 Oct 2022 9:25:00 MDT',
+  start: 'Wed, 26 Oct 2022 8:35:00 MDT',
+  end: 'Wed, 26 Oct 2022 9:25:00 MDT',
   location: 'HPR E 101',
   color: '#8A56E6', //A nice purple
 };
@@ -51,8 +51,8 @@ const octVolleyballW = {
 const octCapstoneM = {
   id: 4,
   title: 'Capstone Project',
-  start: 'Mon, 10 Oct 2022 10:45:00 MDT',
-  end: 'Mon, 10 Oct 2022 11:35:00 MDT',
+  start: 'Mon, 24 Oct 2022 10:45:00 MDT',
+  end: 'Mon, 24 Oct 2022 11:35:00 MDT',
   location: 'Discord',
   color: '#F02F17', //A nice, bright, red
 };
@@ -60,8 +60,8 @@ const octCapstoneM = {
 const octCapstoneW = {
   id: 5,
   title: 'Capstone Project',
-  start: 'Wed, 12 Oct 2022 10:45:00 MDT',
-  end: 'Wed, 12 Oct 2022 11:35:00 MDT',
+  start: 'Wed, 26 Oct 2022 10:45:00 MDT',
+  end: 'Wed, 26 Oct 2022 11:35:00 MDT',
   location: 'Discord',
   color: '#F02F17', //A nice, bright, red
 };
@@ -69,8 +69,8 @@ const octCapstoneW = {
 const octNLPM = {
   id: 6,
   title: 'Natural Language Processing',
-  start: 'Mon, 10 Oct 2022 13:25:00 MDT',
-  end: 'Mon, 10 Oct 2022 14:45:00 MDT',
+  start: 'Mon, 24 Oct 2022 13:25:00 MDT',
+  end: 'Mon, 24 Oct 2022 14:45:00 MDT',
   location: 'CTIHB 109',
   color: '#F07F26', //A nice, bright, orange
 };
@@ -78,8 +78,8 @@ const octNLPM = {
 const octNLPW = {
   id: 7,
   title: 'Natural Language Processing',
-  start: 'Wed, 12 Oct 2022 13:25:00 MDT',
-  end: 'Wed, 12 Oct 2022 14:45:00 MDT',
+  start: 'Wed, 26 Oct 2022 13:25:00 MDT',
+  end: 'Wed, 26 Oct 2022 14:45:00 MDT',
   location: 'CTIHB 109',
   color: '#F07F26', //A nice, bright, orange
 };
@@ -87,8 +87,8 @@ const octNLPW = {
 const octAIT = {
   id: 8,
   title: 'Artificial Intelligence',
-  start: 'Tue, 11 Oct 2022 12:25:00 MDT',
-  end: 'Tue, 11 Oct 2022 13:45:00 MDT',
+  start: 'Tue, 25 Oct 2022 12:25:00 MDT',
+  end: 'Tue, 25 Oct 2022 13:45:00 MDT',
   location: 'WEB L103',
   color: '#1D4BD6', //A nice blue
 };
@@ -96,8 +96,8 @@ const octAIT = {
 const octAITH = {
   id: 9,
   title: 'Artificial Intelligence',
-  start: 'Thu, 13 Oct 2022 12:25:00 MDT',
-  end: 'Thu, 13 Oct 2022 13:45:00 MDT',
+  start: 'Thu, 27 Oct 2022 12:25:00 MDT',
+  end: 'Thu, 27 Oct 2022 13:45:00 MDT',
   location: 'WEB L103',
   color: '#1D4BD6', //A nice blue
 };
@@ -105,8 +105,8 @@ const octAITH = {
 const octBiologyT = {
   id: 10,
   title: 'Biology',
-  start: 'Tue, 11 Oct 2022 14:00:00 MDT',
-  end: 'Tue, 11 Oct 2022 15:20:00 MDT',
+  start: 'Tue, 25 Oct 2022 14:00:00 MDT',
+  end: 'Tue, 25 Oct 2022 15:20:00 MDT',
   location: 'GC 1900',
   color: '#0D852F', //A dark green
 };
@@ -114,8 +114,8 @@ const octBiologyT = {
 const octBiologyTH = {
   id: 11,
   title: 'Biology',
-  start: 'Thu, 13 Oct 2022 14:00:00 MDT',
-  end: 'Thu, 13 Oct 2022 15:20:00 MDT',
+  start: 'Thu, 27 Oct 2022 14:00:00 MDT',
+  end: 'Thu, 27 Oct 2022 15:20:00 MDT',
   location: 'GC 1900',
   color: '#0D852F', //A dark green
 };
