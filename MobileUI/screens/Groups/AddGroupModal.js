@@ -58,6 +58,7 @@ export default function AddGroupModal({navigation}) {
       const newGroup = {
         id: `${groups.length + 1} ${newGroupName}`,
         name: newGroupName,
+        members: addedFriends,
       };
       // console.log('NEW EVENT MADE, events context:');
 

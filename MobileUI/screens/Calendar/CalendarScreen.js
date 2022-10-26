@@ -27,8 +27,23 @@ import {
   formatEventTime,
 } from '../../parsingHelpers/DateParsing';
 import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
+import {SmallBoxButton} from '../../assets/components/CustomButtons';
+import GroupsContext from '../../contexts/Groups';
 
 const CalendarTitle = props => {
+  const {groups, setGroups} = useContext(GroupsContext);
+
+  function membersString() {
+    // console.log(JSON.stringify(groups, undefined, 2));
+    // var result = groups.find(obj => {
+    //   return obj.name === props.name;
+    // });
+    // console.log(JSON.stringify(result, undefined, 2));
+    // let members = '';
+    // result.members.map(m => (members = members + m.name + ', '));
+    // return members;
+    return 'Feature coming soon!';
+  }
   return (
     <View style={styles.calendarTitle}>
       <Text style={styles.calendarTitleText}>{props.name} Schedule</Text>
@@ -47,6 +62,12 @@ const CalendarTitle = props => {
         /> */}
         <Text style={styles.floatingButtonStyle}>+</Text>
       </TouchableOpacity>
+      {!props.isPersonal && (
+        <SmallBoxButton
+          title={'View Members'}
+          onPress={() => Alert.alert(membersString())}
+        />
+      )}
     </View>
   );
 };
@@ -76,7 +97,20 @@ function organizeIntoDates(events) {
     // console.log('month.day =' + month.day + '');
     if (!newFL[iDateString].includes(i)) {
       // console.log('push: ' + i.title + ' ' + i.start);
-      newFL[iDateString].push(i);
+      var localStartDate = new Date(i.start); //.toLocaleTimeString('en-US', {
+      //   timeZone: 'UTC',
+      //   hour12: true,
+      //   hour: 'numeric',
+      //   minute: 'numeric',
+      // });
+      var localEndDate = new Date(i.end);
+      console.log('##################' + localStartDate + '  ' + localEndDate);
+      const convertedI = {
+        ...i,
+        start: localStartDate,
+        end: localEndDate,
+      };
+      newFL[iDateString].push(convertedI);
     }
   }
 
@@ -210,9 +244,14 @@ const CalendarScreen = ({navigation, calendarName}) => {
   //     this.calendarStrip.current.updateWeekView(selectedDay);
   //   }
   // }, [selectedDay]);
+  const isPersonalSchedule = currentCalendarName === 'My';
   return (
     <SafeAreaView style={styles.container}>
-      <CalendarTitle name={currentCalendarName} navigation={navigation} />
+      <CalendarTitle
+        name={currentCalendarName}
+        navigation={navigation}
+        isPersonal={isPersonalSchedule}
+      />
       <CalendarStrip
         selectedDate={selectedDay}
         onDateSelected={handleDateSelected}

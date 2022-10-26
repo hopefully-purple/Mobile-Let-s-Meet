@@ -22,7 +22,32 @@ export const BoxButton = props => {
   );
 };
 
+export const SmallBoxButton = props => {
+  const {onPress, title = '+ New'} = props;
+  return (
+    <TouchableOpacity style={styles.smallBoxButton} onPress={onPress}>
+      <Text style={styles.smallBoxButtonText}>{title}</Text>
+    </TouchableOpacity>
+  );
+};
+
 const styles = StyleSheet.create({
+  smallBoxButtonText: {
+    fontSize: 10,
+    // fontWeight: '500',
+    color: Colors.DD_RED_2,
+    // textAlign: 'center',
+    // padding: 5,
+  },
+  smallBoxButton: {
+    alignSelf: 'flex-start', //<<< !! This is what makes the width adjust to content size
+    backgroundColor: Colors.DD_CREAM,
+    borderColor: Colors.DD_RED_2,
+    borderWidth: 2,
+    padding: 10,
+    margin: 5,
+    borderRadius: 5,
+  },
   boxButtonText: {
     fontSize: 25,
     // fontWeight: '500',

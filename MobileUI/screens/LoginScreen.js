@@ -282,10 +282,10 @@ const LoginScreen = ({navigation}) => {
           autoCapitalize="none"
         />
         <GreyPillButton title="Go!" onPress={() => handleLogInButton()} />
-        <GreyPillButton
+        {/* <GreyPillButton
           title="Bypass login"
           onPress={() => handleByPassButton()}
-        />
+        /> */}
         {!!isLoading && (
           <Text style={styles.defaultScreentext}>Loading...</Text>
         )}
