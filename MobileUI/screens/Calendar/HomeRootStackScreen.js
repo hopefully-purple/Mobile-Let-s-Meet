@@ -15,8 +15,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import GroupListScreen from '../Groups/GroupListScreen';
 import AddGroupModal from '../Groups/AddGroupModal';
 import FriendsContext from '../../contexts/Friends';
+import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
 
-const readEventData = async () => {
+const readEventData = async currentCalendarName => {
   //TODO: change call based on calendarName?
   try {
     const value = await AsyncStorage.getItem('Events');
@@ -28,11 +29,15 @@ const readEventData = async () => {
       return JSON.parse(value); // initialize events context
       // return value; //for API call result
     } else {
-      console.log(
-        '(homerootstack.readEventData).getEvents value is null! Set to class schedule list for now',
-      );
       //TODO: probably return empty array irl
-      return classScheduleList;
+      if (currentCalendarName === 'My') {
+        console.log(
+          '(homerootstack.readEventData).getEvents value is null! Set to class schedule list for now',
+        );
+        return classScheduleList;
+      } else {
+        return [];
+      }
     }
   } catch (e) {
     console.log(
@@ -45,19 +50,33 @@ const readEventData = async () => {
 
 function HomeScreen({navigation}) {
   const {events, setEvents} = useContext(CalendarEventsContext);
+  const {currentCalendarName, setCurrentCalendarName} = useContext(
+    CurrentCalendarNameContext,
+  );
   useEffect(() => {
     navigation.addListener('focus', async () => {
       // do something
       console.log('-------HomerootStackscreen (For calendar)-------------');
       // if (events.length === 0) {
-      const data = await readEventData();
-      console.log(JSON.stringify(data, undefined, 2));
-      console.log('set events to data');
-      setEvents(data);
+      if (currentCalendarName !== 'My') {
+        console.log('@@@@@@@@@@@@@@@@@@@@@@@@');
+        setEvents([]);
+      } else {
+        const data = await readEventData(currentCalendarName);
+        console.log(JSON.stringify(data, undefined, 2));
+        console.log('set events to data');
+        setEvents(data);
+      }
       // }
     });
-  }, [navigation, setEvents, events]);
-  return <CalendarScreen calendarName="My" navigation={navigation} />;
+  }, [navigation, setEvents, events, currentCalendarName]);
+  console.log('****************' + currentCalendarName + '********');
+  return (
+    <CalendarScreen
+      calendarName={currentCalendarName}
+      navigation={navigation}
+    />
+  );
 }
 
 const readGroupData = async () => {
@@ -114,6 +133,9 @@ const RootStack = createStackNavigator();
 export default function HomeRootStackScreen(props) {
   const [events, setEvents] = useState([]);
   const [groups, setGroups] = useState([]);
+  // const {currentCalendar, setCurrentCalendar} = useContext(
+  //   CurrentCalendarContext,
+  // );
 
   return (
     <GroupsContext.Provider value={{groups, setGroups}}>

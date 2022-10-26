@@ -26,6 +26,7 @@ import {
   constructDateString,
   formatEventTime,
 } from '../../parsingHelpers/DateParsing';
+import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
 
 const CalendarTitle = props => {
   return (
@@ -141,8 +142,16 @@ const CalendarScreen = ({navigation, calendarName}) => {
   const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
   const [items, setItems] = useState({});
   const {events, setEvents} = useContext(CalendarEventsContext);
+  const {currentCalendarName, setCurrentCalendarName} = useContext(
+    CurrentCalendarNameContext,
+  );
 
   this.calendarStrip = React.createRef();
+
+  navigation.addListener('drawerItemPress', () => {
+    console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+    setCurrentCalendarName('My');
+  });
 
   const renderItem = ({item}) => {
     // console.log(items.length);
@@ -203,7 +212,7 @@ const CalendarScreen = ({navigation, calendarName}) => {
   // }, [selectedDay]);
   return (
     <SafeAreaView style={styles.container}>
-      <CalendarTitle name={calendarName} navigation={navigation} />
+      <CalendarTitle name={currentCalendarName} navigation={navigation} />
       <CalendarStrip
         selectedDate={selectedDay}
         onDateSelected={handleDateSelected}
