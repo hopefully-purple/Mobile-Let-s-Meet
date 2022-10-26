@@ -14,7 +14,7 @@ import {groupsGetGroups} from '../../API/GroupsAPIHandling';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GroupListScreen from '../Groups/GroupListScreen';
 import AddGroupModal from '../Groups/AddGroupModal';
-import FriendsContext from '../../contexts/Friends';
+import JoinGroupModal from '../Groups/JoinGroupModal';
 import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
 
 const readEventData = async currentCalendarName => {
@@ -128,6 +128,10 @@ function AddGroupModalScreen({navigation}) {
   return <AddGroupModal navigation={navigation} />;
 }
 
+function JoinGroupModalScreen({navigation}) {
+  return <JoinGroupModal navigation={navigation} />;
+}
+
 const RootStack = createStackNavigator();
 
 export default function HomeRootStackScreen(props) {
@@ -194,6 +198,29 @@ export default function HomeRootStackScreen(props) {
                   <Button
                     onPress={() => {
                       props.navigation.navigate('Home');
+                    }}
+                    title="Cancel"
+                  />
+                ),
+              }}
+            />
+            <RootStack.Screen
+              name="JoinGroupModal"
+              component={JoinGroupModalScreen}
+              options={{
+                title: 'Join A Group',
+                headerTitleStyle: {
+                  color: Colors.DD_CREAM,
+                  fontSize: 20,
+                },
+                animation: 'slide_from_right',
+                headerStyle: {
+                  backgroundColor: Colors.DD_RED_2,
+                },
+                headerLeft: () => (
+                  <Button
+                    onPress={() => {
+                      props.navigation.navigate('Group');
                     }}
                     title="Cancel"
                   />

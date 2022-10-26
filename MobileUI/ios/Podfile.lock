@@ -380,6 +380,10 @@ PODS:
     - React-Core
     - React-RCTImage
   - RNSweetAlert (3.1.0)
+  - VisionCamera (2.15.1):
+    - React
+    - React-callinvoker
+    - React-Core
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -445,6 +449,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSweetAlert (from `../node_modules/react-native-sweet-alert`)
+  - VisionCamera (from `../node_modules/react-native-vision-camera`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -537,6 +542,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSweetAlert:
     :path: "../node_modules/react-native-sweet-alert"
+  VisionCamera:
+    :path: "../node_modules/react-native-vision-camera"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -590,6 +597,7 @@ SPEC CHECKSUMS:
   RNReanimated: c38d82b0e910e2478439686c58c02bac6e4232e9
   RNScreens: 0df01424e9e0ed7827200d6ed1087ddd06c493f9
   RNSweetAlert: 1aa4e70d8f8540aa6b9c18c019f62a25e36720b6
+  VisionCamera: b04cd44d4492fa240db342d180fdf4a3766d5848
   Yoga: d6b6a80659aa3e91aaba01d0012e7edcbedcbecd
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
