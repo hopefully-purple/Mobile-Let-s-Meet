@@ -1,7 +1,7 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, useRef} from 'react';
 import Colors from '../../assets/styles/colors';
 import {
-  ScrollView,
+  SafeAreaView,
   View,
   Text,
   Keyboard,
@@ -17,13 +17,16 @@ import {
   CameraPermissionStatus,
 } from 'react-native-vision-camera';
 import {BoxButton} from '../../assets/components/CustomButtons';
+import {CaptureButton} from './views/CaptureButton';
 
 // https://mrousavy.com/react-native-vision-camera/docs/guides/
 // https://github.com/mrousavy/react-native-vision-camera/blob/1d6f720f8b499c03e91de32fabce64e9db293702/example/src/App.tsx
+// Be prepared to spend a whole 24 hours on figuring this out! Yay!
 
 export default function JoinGroupModal({navigation}) {
   const [joinGroupLink, setJoinGroupLink] = useState('');
 
+  const camera = useRef();
   const [cameraPermission, setCameraPermission] = useState();
   const [openCamera, setOpenCamera] = useState(false);
   const devices = useCameraDevices('wide-angle-camera');
@@ -42,8 +45,20 @@ export default function JoinGroupModal({navigation}) {
     return null;
   }
 
+  // const takePhoto = useCallback(async () => {
+  //   try {
+  //     if (camera.current == null) throw new Error('Camera ref is null!');
+
+  //     console.log('Taking photo...');
+  //     const photo = await camera.current.takePhoto(takePhotoOptions);
+  //     onMediaCaptured(photo, 'photo');
+  //   } catch (e) {
+  //     console.error('Failed to take photo!', e);
+  //   }
+  // }, [camera, onMediaCaptured, takePhotoOptions]);
+
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <TextInput
         label="Paste Group Link Here"
         value={joinGroupLink}
@@ -54,15 +69,35 @@ export default function JoinGroupModal({navigation}) {
         autoCorrect={false}
         ref={this.joinGroupLinkInput}
       />
-      <BoxButton title={'Scan QR Code'} onPress={() => setOpenCamera(true)} />
+      <BoxButton
+        title={'Scan QR Code'}
+        onPress={() => {
+          setOpenCamera(true);
+        }}
+      />
       {openCamera && !devNu && (
-        <Camera
-          style={StyleSheet.absoluteFill}
-          device={device}
-          isActive={true}
-        />
+        <>
+          <Camera
+            ref={camera}
+            style={StyleSheet.absoluteFill}
+            device={device}
+            isActive={true}
+            photo={true}
+          />
+          {/* <CaptureButton
+            style={styles.captureButton}
+            camera={camera}
+            onMediaCaptured={onMediaCaptured}
+            cameraZoom={zoom}
+            minZoom={minZoom}
+            maxZoom={maxZoom}
+            flash={supportsFlash ? flash : 'off'}
+            enabled={isCameraInitialized && isActive}
+            setIsPressingButton={setIsPressingButton}
+          /> */}
+        </>
       )}
-    </ScrollView>
+    </SafeAreaView>
   );
 }
 
