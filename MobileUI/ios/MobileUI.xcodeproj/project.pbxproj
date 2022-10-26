@@ -500,7 +500,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.MobileUI;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.LetsMeetMobile;
 				PRODUCT_NAME = MobileUI;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
