@@ -35,7 +35,7 @@ export async function calendarGetEvents() {
  * @returns OK response??
  */
 export async function calendarCreateNewEvent(newEvent) {
-  console.log('(CAPIHandling) Beginning of CalendarGetEvents');
+  console.log('(CAPIHandling) Beginning of CalendarCreateNewEvent');
   try {
     console.log('New Event:' + JSON.stringify(newEvent, undefined, 2));
     const response = await fetch(
@@ -57,6 +57,33 @@ export async function calendarCreateNewEvent(newEvent) {
     return result;
   } catch (err) {
     console.log('something went wrong with calendarCreateNewEvent: ' + err);
+    throw err;
+  }
+}
+
+/**
+ * API call to delete an event
+ * @param {eventObject} event - event object to be deleted
+ * @returns OK response??
+ */
+export async function calendarDeleteEvent(event) {
+  console.log('(CAPIHandling) Beginning of CalendarDeleteEvent');
+  try {
+    console.log('Event:' + JSON.stringify(event, undefined, 2));
+    const response = await fetch(
+      `http://ec2-3-84-219-120.compute-1.amazonaws.com/EventModels/Delete/${event.id}`,
+      {
+        method: 'POST',
+      },
+    );
+
+    // console.log('await response');
+    // const result = await response.json();
+    // console.log(typeof response);
+    // console.log(JSON.stringify(response, undefined, 2));
+    return response.ok;
+  } catch (err) {
+    console.log('something went wrong with calendarDeleteEvent: ' + err);
     throw err;
   }
 }

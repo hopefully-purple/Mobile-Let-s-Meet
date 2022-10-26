@@ -9,36 +9,9 @@ import {
   TextInput,
 } from 'react-native';
 import Colors from '../../assets/styles/colors';
-import Button from '../../assets/components/CustomButton';
+import {GreyPillButton} from '../../assets/components/CustomButtons';
 // import {LogStateContext} from '../../App';
 import LogStateContext from '../../contexts/LoginState';
-
-const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.DD_CREAM,
-    color: Colors.DD_RED_2,
-  },
-  defaultScreentext: {
-    fontSize: 25,
-    fontWeight: '500',
-    color: Colors.DD_RED_3,
-    textAlign: 'center',
-    marginBottom: 46,
-  },
-  userInput: {
-    height: 51,
-    width: 260,
-    marginLeft: 57,
-    marginRight: 60,
-    marginTop: 62,
-    backgroundColor: Colors.DD_RED_2,
-    paddingLeft: 17,
-    color: Colors.DD_LIGHT_GRAY,
-  },
-});
 
 // Step 1.1
 const Step11 = ({onClick1, onClick2}) => {
@@ -48,8 +21,8 @@ const Step11 = ({onClick1, onClick2}) => {
       <Text style={styles.defaultScreentext}>
         Do you use a scheduling app already?
       </Text>
-      <Button title="Yes" onPress={onClick1} />
-      <Button title="No" onPress={onClick2} />
+      <GreyPillButton title="Yes" onPress={onClick1} />
+      <GreyPillButton title="No" onPress={onClick2} />
     </View>
   );
 };
@@ -90,8 +63,8 @@ const Step12Manual = ({onClick1, onClick2}) => {
       <Text style={styles.defaultScreentext}>
         Wanna manually enter your schedule?
       </Text>
-      <Button title="Yes" onPress={onClick1} />
-      <Button title="No" onPress={onClick2} />
+      <GreyPillButton title="Yes" onPress={onClick1} />
+      <GreyPillButton title="No" onPress={onClick2} />
     </View>
   );
 };
@@ -119,8 +92,8 @@ const Step21 = ({onClick1, onClick2}) => {
       <Text style={styles.defaultScreentext}>
         Are you in a rush to schedule a meeting?
       </Text>
-      <Button title="Yes" onPress={onClick1} />
-      <Button title="No" onPress={onClick2} />
+      <GreyPillButton title="Yes" onPress={onClick1} />
+      <GreyPillButton title="No" onPress={onClick2} />
     </View>
   );
 };
@@ -236,8 +209,31 @@ const BaseRegistration = ({navigation}) => {
   );
 };
 
-// RegistrationScreen.defaultProps = {
-//   groupName: "My"
-// }
+const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.DD_CREAM,
+    color: Colors.DD_RED_2,
+  },
+  defaultScreentext: {
+    fontSize: 25,
+    fontWeight: '500',
+    color: Colors.DD_RED_3,
+    textAlign: 'center',
+    marginBottom: 46,
+  },
+  userInput: {
+    height: 51,
+    width: 260,
+    marginLeft: 57,
+    marginRight: 60,
+    marginTop: 62,
+    backgroundColor: Colors.DD_RED_2,
+    paddingLeft: 17,
+    color: Colors.DD_LIGHT_GRAY,
+  },
+});
 
 export default BaseRegistration;

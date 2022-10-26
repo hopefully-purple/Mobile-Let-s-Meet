@@ -1,7 +1,7 @@
 import React, {useState, useContext} from 'react';
 import {Text, SafeAreaView, StyleSheet, View, TextInput} from 'react-native';
 import Colors from '../assets/styles/colors';
-import Button from '../assets/components/CustomButton';
+import {GreyPillButton} from '../assets/components/CustomButtons';
 import LogStateContext from '../contexts/LoginState';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserContext from '../contexts/User';
@@ -281,8 +281,11 @@ const LoginScreen = ({navigation}) => {
           ref={this.passwordInput}
           autoCapitalize="none"
         />
-        <Button title="Go!" onPress={() => handleLogInButton()} />
-        <Button title="Bypass login" onPress={() => handleByPassButton()} />
+        <GreyPillButton title="Go!" onPress={() => handleLogInButton()} />
+        {/* <GreyPillButton
+          title="Bypass login"
+          onPress={() => handleByPassButton()}
+        /> */}
         {!!isLoading && (
           <Text style={styles.defaultScreentext}>Loading...</Text>
         )}

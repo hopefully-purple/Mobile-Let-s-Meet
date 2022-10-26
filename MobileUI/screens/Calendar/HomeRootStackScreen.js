@@ -5,11 +5,19 @@ import CalendarScreen from './CalendarScreen';
 import AddEventModal from './AddEventModal';
 import Colors from '../../assets/styles/colors';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
+import GroupsContext from '../../contexts/Groups';
+import {bareBonesGroupList} from '../../assets/data/HardCodedGroups';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
-import {calendarGetEvents} from './CalendarAPIHandling';
+import {friendsGetFriends} from '../../API/FriendsAPIHandling';
+import {calendarGetEvents} from '../../API/CalendarAPIHandling';
+import {groupsGetGroups} from '../../API/GroupsAPIHandling';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import GroupListScreen from '../Groups/GroupListScreen';
+import AddGroupModal from '../Groups/AddGroupModal';
+import FriendsContext from '../../contexts/Friends';
+import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
 
-const readEventData = async () => {
+const readEventData = async currentCalendarName => {
   //TODO: change call based on calendarName?
   try {
     const value = await AsyncStorage.getItem('Events');
@@ -19,16 +27,22 @@ const readEventData = async () => {
     if (value !== null && value !== undefined) {
       // setLanguageObj({language: language, words: JSON.parse(value)});
       return JSON.parse(value); // initialize events context
+      // return value; //for API call result
     } else {
-      console.log(
-        '(homerootstack.readData).getEvents value is null! Set to class schedule list for now',
-      );
       //TODO: probably return empty array irl
-      return classScheduleList;
+      if (currentCalendarName === 'My') {
+        console.log(
+          '(homerootstack.readEventData).getEvents value is null! Set to class schedule list for now',
+        );
+        return classScheduleList;
+      } else {
+        return [];
+      }
     }
   } catch (e) {
     console.log(
-      '(Homerootstack.readData) Failed to fetch the events from server: ' + e,
+      '(Homerootstack.readEventData) Failed to fetch the events from server: ' +
+        e,
     );
     throw e;
   }
@@ -36,103 +50,191 @@ const readEventData = async () => {
 
 function HomeScreen({navigation}) {
   const {events, setEvents} = useContext(CalendarEventsContext);
+  const {currentCalendarName, setCurrentCalendarName} = useContext(
+    CurrentCalendarNameContext,
+  );
   useEffect(() => {
     navigation.addListener('focus', async () => {
       // do something
-      console.log('-------HomerootStackscreen-------------');
+      console.log('-------HomerootStackscreen (For calendar)-------------');
       // if (events.length === 0) {
-      const data = await readEventData();
-      console.log(JSON.stringify(data, undefined, 2));
-      console.log('set events to data');
-      setEvents(data);
+      if (currentCalendarName !== 'My') {
+        console.log('@@@@@@@@@@@@@@@@@@@@@@@@');
+        setEvents([]);
+      } else {
+        const data = await readEventData(currentCalendarName);
+        console.log(JSON.stringify(data, undefined, 2));
+        console.log('set events to data');
+        setEvents(data);
+      }
       // }
     });
-  }, [navigation, setEvents, events]);
-  return <CalendarScreen calendarName="My" navigation={navigation} />;
+  }, [navigation, setEvents, events, currentCalendarName]);
+  console.log('****************' + currentCalendarName + '********');
+  return (
+    <CalendarScreen
+      calendarName={currentCalendarName}
+      navigation={navigation}
+    />
+  );
 }
 
+const readGroupData = async () => {
+  //TODO: change call based on calendarName?
+  try {
+    const value = await AsyncStorage.getItem('Groups');
+    // const value = await groupsGetGroups(); // API call
+    // const value = null;
+    // console.log('(App.readData) value:' + value);
+    if (value !== null && value !== undefined) {
+      // setLanguageObj({language: language, words: JSON.parse(value)});
+      return JSON.parse(value); // initialize groups context
+      // return value; //for API call result
+    } else {
+      console.log(
+        '(homerootstack.readGroupData).getGroups value is null! Set to bareBonesGroupList for now',
+      );
+      //TODO: probably return empty array irl
+      return bareBonesGroupList;
+    }
+  } catch (e) {
+    console.log(
+      '(Homerootstack.readGroupData) Failed to fetch the groups from server: ' +
+        e,
+    );
+    throw e;
+  }
+};
+
 function GroupScreen({navigation}) {
-  useEffect(
-    () =>
-      navigation.addListener('focus', () => alert('Groupscreen was focused')),
-    [navigation],
-  );
-  return <CalendarScreen calendarName="Group" navigation={navigation} />;
+  const {groups, setGroups} = useContext(GroupsContext);
+  useEffect(() => {
+    navigation.addListener('focus', async () => {
+      console.log('-------HomerootStackscreen (For Group)-------------');
+      const data = await readGroupData();
+      // console.log(JSON.stringify(data, undefined, 2));
+      console.log('set groups to data');
+      setGroups(data);
+    });
+  }, [navigation, setGroups]);
+  return <GroupListScreen navigation={navigation} />;
 }
 
 function AddEventModalScreen({navigation}) {
   return <AddEventModal navigation={navigation} />;
 }
 
+function AddGroupModalScreen({navigation}) {
+  return <AddGroupModal navigation={navigation} />;
+}
+
 const RootStack = createStackNavigator();
 
 export default function HomeRootStackScreen(props) {
   const [events, setEvents] = useState([]);
+  const [groups, setGroups] = useState([]);
+  // const {currentCalendar, setCurrentCalendar} = useContext(
+  //   CurrentCalendarContext,
+  // );
 
   return (
-    <CalendarEventsContext.Provider value={{events, setEvents}}>
-      <RootStack.Navigator>
-        <RootStack.Group>
-          {props.calendarName !== 'My' ? (
-            <RootStack.Screen
-              name="Group"
-              component={GroupScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          ) : (
-            <RootStack.Screen
-              name="Home"
-              component={HomeScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          )}
-        </RootStack.Group>
-        {/* <RootStack.Group screenOptions={{presentation: 'modal'}}> */}
-        <RootStack.Group
-          screenOptions={{
-            headerStyle: {
-              color: Colors.DD_CREAM,
-            },
-          }}>
-          <RootStack.Screen
-            name="AddEventModal"
-            component={AddEventModalScreen}
-            options={{
-              title: 'New Event',
-              headerTitleStyle: {
-                color: Colors.DD_CREAM,
-                fontSize: 20,
-              },
-              animation: 'slide_from_right',
+    <GroupsContext.Provider value={{groups, setGroups}}>
+      <CalendarEventsContext.Provider value={{events, setEvents}}>
+        <RootStack.Navigator>
+          <RootStack.Group>
+            {props.calendarName !== 'My' ? (
+              <RootStack.Screen
+                name="Group"
+                component={GroupScreen}
+                options={{
+                  title: 'Groups',
+                  headerShown: true,
+                  headerStyle: {
+                    backgroundColor: Colors.DD_RED_2,
+                  },
+                  headerTitleStyle: {
+                    color: Colors.DD_CREAM,
+                    fontSize: 25,
+                    fontWeight: '500',
+                    marginBottom: 10,
+                  },
+                }}
+              />
+            ) : (
+              <RootStack.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            )}
+          </RootStack.Group>
+          {/* <RootStack.Group screenOptions={{presentation: 'modal'}}> */}
+          <RootStack.Group
+            screenOptions={{
               headerStyle: {
-                backgroundColor: Colors.DD_RED_2,
+                color: Colors.DD_CREAM,
               },
-              headerLeft: () => (
-                <Button
-                  onPress={() => {
-                    if (props.calendarName === 'My') {
+            }}>
+            <RootStack.Screen
+              name="AddEventModal"
+              component={AddEventModalScreen}
+              options={{
+                title: 'New Event',
+                headerTitleStyle: {
+                  color: Colors.DD_CREAM,
+                  fontSize: 20,
+                },
+                animation: 'slide_from_right',
+                headerStyle: {
+                  backgroundColor: Colors.DD_RED_2,
+                },
+                headerLeft: () => (
+                  <Button
+                    onPress={() => {
                       props.navigation.navigate('Home');
-                    } else {
+                    }}
+                    title="Cancel"
+                  />
+                ),
+              }}
+            />
+            <RootStack.Screen
+              name="AddGroupModal"
+              component={AddGroupModalScreen}
+              options={{
+                title: 'New Group',
+                headerTitleStyle: {
+                  color: Colors.DD_CREAM,
+                  fontSize: 20,
+                },
+                animation: 'slide_from_right',
+                headerStyle: {
+                  backgroundColor: Colors.DD_RED_2,
+                },
+                headerLeft: () => (
+                  <Button
+                    onPress={() => {
                       props.navigation.navigate('Group');
-                    }
-                  }}
-                  title="Cancel"
-                />
-              ),
-              // headerBackTitle: 'Cancel',
-              // headerBackTitleStyle: {
-              //   color: Colors.DD_CREAM,
-              //   fontSize: 20,
-              // },
-            }}
-          />
-        </RootStack.Group>
-      </RootStack.Navigator>
-    </CalendarEventsContext.Provider>
+                    }}
+                    title="Cancel"
+                  />
+                ),
+                // headerRight: () => (
+                //   <Button
+                //     onPress={() => {
+                //       props.navigation.navigate('Group');
+                //     }}
+                //     title="Done"
+                //   />
+                // ),
+              }}
+            />
+          </RootStack.Group>
+        </RootStack.Navigator>
+      </CalendarEventsContext.Provider>
+    </GroupsContext.Provider>
   );
 }
 

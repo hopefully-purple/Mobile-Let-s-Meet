@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DatePicker from 'react-native-date-picker';
 import {SliderPicker, HuePicker} from 'react-color';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
-import {calendarCreateNewEvent} from './CalendarAPIHandling';
+import {calendarCreateNewEvent} from '../../API/CalendarAPIHandling';
 
 // https://casesandberg.github.io/react-color/
 // Doesn't work! Throws Text errors :`(
