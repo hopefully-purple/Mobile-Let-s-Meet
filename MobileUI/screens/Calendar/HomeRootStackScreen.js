@@ -38,7 +38,7 @@ function HomeScreen({navigation}) {
       }
       // }
     });
-  }, [navigation, setEvents, events, currentCalendarName]);
+  }, [navigation, setEvents, currentCalendarName]);
   console.log('****************' + currentCalendarName + '********');
   return (
     <CalendarScreen

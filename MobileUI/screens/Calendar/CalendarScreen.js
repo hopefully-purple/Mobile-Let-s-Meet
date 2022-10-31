@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card} from 'react-native-paper';
 import {getAllKeys} from '../LoginScreen';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
-import {readEventData} from '../../API/APIControllers';
+import {readEventData, deleteEvent} from '../../API/APIControllers';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
 import CalendarStrip from 'react-native-calendar-strip';
 import {
@@ -119,27 +119,13 @@ function organizeIntoDates(events) {
 
 const Item = ({i, itemColor, time}) => {
   const {events, setEvents} = useContext(CalendarEventsContext);
-  function deleteItemInEvents() {
-    // Filter condition
-    function excludeItem(it) {
-      return it.id !== i.id;
-    }
-    const newEvents = events.filter(excludeItem);
-    // console.log(words);
-    setEvents(newEvents);
-    const saveData = async () => {
-      try {
-        await AsyncStorage.setItem('Events', JSON.stringify(newEvents));
-        console.log('(calnedarscreen.saveData) Data successfully saved');
-      } catch (e) {
-        console.log(
-          '(calendarscreen.saveData) Failed to save the data to the storage',
-        );
-        throw e;
-      }
-    };
 
-    saveData();
+  function deleteItemInEvents() {
+    if (deleteEvent(i, events, setEvents)) {
+      console.log('(calendarScreen.deleteItemInEvents) delete succeeded');
+    } else {
+      Alert.alert('Delete did not succeed');
+    }
   }
 
   const changeItemAlert = () => {
