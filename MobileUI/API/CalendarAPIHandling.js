@@ -31,6 +31,7 @@ export async function calendarGetEvents() {
 
 /**
  * API call to create a new event
+ * TODO: Truly need to test once AWS is updated
  * @param {eventObject} newEvent - event object to be added
  * @returns OK response??
  */

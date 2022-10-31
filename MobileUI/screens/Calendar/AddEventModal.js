@@ -7,6 +7,7 @@ import {
   Keyboard,
   Button,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,42 +18,42 @@ import {calendarCreateNewEvent} from '../../API/CalendarAPIHandling';
 
 // https://casesandberg.github.io/react-color/
 // Doesn't work! Throws Text errors :`(
-const CalendarThing = (calColor, setCalColor) => {
-  return (
-    <HuePicker
-      color={calColor}
-      onChangeComplete={setCalColor}
-      width={50}
-      height={20}
-    />
-  );
-};
+// const CalendarThing = (calColor, setCalColor) => {
+//   return (
+//     <HuePicker
+//       color={calColor}
+//       onChangeComplete={setCalColor}
+//       width={50}
+//       height={20}
+//     />
+//   );
+// };
 
-const storeNewEvent = async (title, location, start, end, color) => {
-  const newEvent = {
-    title,
-    start,
-    end,
-    location,
-    color,
-  };
-  // console.log(newEvent);
-  try {
-    // Attempt to keep keys unique: Key= "Event title" + " - start"
-    // bc not going to have two Bio discussions at the same time
-    // but two bio discussions can exist
-    await AsyncStorage.setItem(
-      `Event ${title} - ${start}`,
-      JSON.stringify(newEvent),
-    );
-  } catch (e) {
-    // print error
-    console.log('storing event error: ' + e);
-    throw e;
-  }
+// const storeNewEvent = async (title, location, start, end, color) => {
+//   const newEvent = {
+//     title,
+//     start,
+//     end,
+//     location,
+//     color,
+//   };
+//   // console.log(newEvent);
+//   try {
+//     // Attempt to keep keys unique: Key= "Event title" + " - start"
+//     // bc not going to have two Bio discussions at the same time
+//     // but two bio discussions can exist
+//     await AsyncStorage.setItem(
+//       `Event ${title} - ${start}`,
+//       JSON.stringify(newEvent),
+//     );
+//   } catch (e) {
+//     // print error
+//     console.log('storing event error: ' + e);
+//     throw e;
+//   }
 
-  return;
-};
+//   return;
+// };
 
 export default function AddEventModal({navigation}) {
   const [title, setTitle] = useState('');
@@ -79,11 +80,16 @@ export default function AddEventModal({navigation}) {
   };
 
   const doneHandler = async () => {
-    // console.log(title);
-    // console.log(location);
-    // console.log(startDate);
-    // console.log(endDate);
-    // console.log(calColor);
+    if (title === '' && location === '') {
+      Alert.alert(
+        'EventModels/Create does not currently work due to AWS out of date',
+      );
+      console.log(
+        'go back, no saving to async since title and location were empty',
+      );
+      navigation.goBack();
+      return;
+    }
     const newEvent = {
       id: `${events.length + 1} ${title}`,
       title,
@@ -96,6 +102,9 @@ export default function AddEventModal({navigation}) {
 
     console.log(
       'NEW EVENT MADE > Post API call > result: <not rn, dev server broken>',
+    );
+    Alert.alert(
+      'EventModels/Create does not currently work due to AWS out of date',
     );
     // API call to post new event
     // await calendarCreateNewEvent(newEvent);
