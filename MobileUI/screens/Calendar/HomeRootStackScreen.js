@@ -6,47 +6,14 @@ import AddEventModal from './AddEventModal';
 import Colors from '../../assets/styles/colors';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
 import GroupsContext from '../../contexts/Groups';
-import {bareBonesGroupList} from '../../assets/data/HardCodedGroups';
-import {classScheduleList} from '../../assets/data/HardCodedEvents';
 import {friendsGetFriends} from '../../API/FriendsAPIHandling';
 import {calendarGetEvents} from '../../API/CalendarAPIHandling';
 import {groupsGetGroups} from '../../API/GroupsAPIHandling';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import GroupListScreen from '../Groups/GroupListScreen';
 import AddGroupModal from '../Groups/AddGroupModal';
 import JoinGroupModal from '../Groups/JoinGroupModal';
 import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
-
-const readEventData = async currentCalendarName => {
-  //TODO: change call based on calendarName?
-  try {
-    const value = await AsyncStorage.getItem('Events');
-    // const value = await calendarGetEvents(); // API call
-    // const value = null;
-    // console.log('(App.readData) value:' + value);
-    if (value !== null && value !== undefined) {
-      // setLanguageObj({language: language, words: JSON.parse(value)});
-      return JSON.parse(value); // initialize events context
-      // return value; //for API call result
-    } else {
-      //TODO: probably return empty array irl
-      if (currentCalendarName === 'My') {
-        console.log(
-          '(homerootstack.readEventData).getEvents value is null! Set to class schedule list for now',
-        );
-        return classScheduleList;
-      } else {
-        return [];
-      }
-    }
-  } catch (e) {
-    console.log(
-      '(Homerootstack.readEventData) Failed to fetch the events from server: ' +
-        e,
-    );
-    throw e;
-  }
-};
+import {readEventData, readGroupData} from '../../API/APIControllers';
 
 function HomeScreen({navigation}) {
   const {events, setEvents} = useContext(CalendarEventsContext);
@@ -59,11 +26,13 @@ function HomeScreen({navigation}) {
       console.log('-------HomerootStackscreen (For calendar)-------------');
       // if (events.length === 0) {
       if (currentCalendarName !== 'My') {
-        console.log('@@@@@@@@@@@@@@@@@@@@@@@@');
+        console.log(
+          '@@@@@@@@@@@@grabbing events for groups needs to be implemented @@@@@@@@@@@@',
+        );
         setEvents([]);
       } else {
         const data = await readEventData(currentCalendarName);
-        console.log(JSON.stringify(data, undefined, 2));
+        // console.log(JSON.stringify(data, undefined, 2));
         console.log('set events to data');
         setEvents(data);
       }
@@ -78,33 +47,6 @@ function HomeScreen({navigation}) {
     />
   );
 }
-
-const readGroupData = async () => {
-  //TODO: change call based on calendarName?
-  try {
-    const value = await AsyncStorage.getItem('Groups');
-    // const value = await groupsGetGroups(); // API call
-    // const value = null;
-    // console.log('(App.readData) value:' + value);
-    if (value !== null && value !== undefined) {
-      // setLanguageObj({language: language, words: JSON.parse(value)});
-      return JSON.parse(value); // initialize groups context
-      // return value; //for API call result
-    } else {
-      console.log(
-        '(homerootstack.readGroupData).getGroups value is null! Set to bareBonesGroupList for now',
-      );
-      //TODO: probably return empty array irl
-      return bareBonesGroupList;
-    }
-  } catch (e) {
-    console.log(
-      '(Homerootstack.readGroupData) Failed to fetch the groups from server: ' +
-        e,
-    );
-    throw e;
-  }
-};
 
 function GroupScreen({navigation}) {
   const {groups, setGroups} = useContext(GroupsContext);

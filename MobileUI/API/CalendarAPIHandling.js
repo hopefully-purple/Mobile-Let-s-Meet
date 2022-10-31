@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import UserContext from '../../contexts/User';
+import UserContext from '../contexts/User';
 
 /**
  * API call to get calendar events
@@ -20,7 +20,7 @@ export async function calendarGetEvents() {
 
     // console.log('await response');
     const result = await response.json();
-
+    console.log('(CAPIHandling) calendarGetEvents result:');
     console.log(JSON.stringify(result, undefined, 2));
     return result;
   } catch (err) {

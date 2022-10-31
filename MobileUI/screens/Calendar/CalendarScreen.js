@@ -16,10 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card} from 'react-native-paper';
 import {getAllKeys} from '../LoginScreen';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
-import {
-  calendarGetEvents,
-  calendarDeleteEvent,
-} from '../../API/CalendarAPIHandling';
+import {readEventData} from '../../API/APIControllers';
 import {classScheduleList} from '../../assets/data/HardCodedEvents';
 import CalendarStrip from 'react-native-calendar-strip';
 import {
@@ -75,7 +72,7 @@ const CalendarTitle = props => {
 function organizeIntoDates(events) {
   let newFL = {};
   // console.log(JSON.stringify(events, undefined, 2));
-  console.log('calendarScreen.organizeIntoDates events=' + events.length);
+  console.log('(calendarScreen.organizeIntoDates) events=' + events.length);
   if (events.length === 0) {
     console.log('events currently empty, return {}');
     return newFL;
@@ -175,6 +172,7 @@ const CalendarScreen = ({navigation, calendarName}) => {
   const nowDate = new Date();
   const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
   const [items, setItems] = useState({});
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const {events, setEvents} = useContext(CalendarEventsContext);
   const {currentCalendarName, setCurrentCalendarName} = useContext(
     CurrentCalendarNameContext,
@@ -239,6 +237,18 @@ const CalendarScreen = ({navigation, calendarName}) => {
     [events],
   );
 
+  const onRefresh = async () => {
+    //set isRefreshing to true
+    setIsRefreshing(true);
+    console.log('REFRESHING FLAT LIST!!!!!!');
+    const data = await readEventData(currentCalendarName); // API call
+    // console.log('(CalendarScreen.onRefresh) new event data:');
+    // console.log(JSON.stringify(data, undefined, 2));
+    setEvents(data);
+    // and set isRefreshing to false
+    setIsRefreshing(false);
+  };
+
   // useEffect(() => {
   //   if (selectedDay !== undefined) {
   //     this.calendarStrip.current.updateWeekView(selectedDay);
@@ -275,6 +285,8 @@ const CalendarScreen = ({navigation, calendarName}) => {
           data={items}
           renderItem={renderItem}
           keyExtractor={item => item.id}
+          onRefresh={onRefresh}
+          refreshing={isRefreshing}
         />
       </View>
     </SafeAreaView>
