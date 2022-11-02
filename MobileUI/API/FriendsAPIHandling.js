@@ -118,3 +118,59 @@ export async function friendsCreateFriendRequestByEmail(email, userName) {
     return true;
   }
 }
+
+/**
+ * API call to accept a friend request
+ * If something goes wrong, catches error and goes to hardcoded functionality
+ * @returns response.ok
+ */
+export async function friendsAcceptRequest(friend, userName) {
+  console.log('(FAPIHandling) Beginning of AcceptRequest');
+  let user = await getUsernameValue(userName);
+  try {
+    const response = await fetch(
+      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/AcceptRequest',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: friend.id,
+      },
+    );
+
+    return response.ok;
+  } catch (err) {
+    console.log('something went wrong with friendsAcceptRequest: ' + err);
+    // throw err;
+    return true;
+  }
+}
+
+/**
+ * API call to reject a friend request
+ * If something goes wrong, catches error and goes to hardcoded functionality
+ * @returns response.ok
+ */
+export async function friendsRejectRequest(friend, userName) {
+  console.log('(FAPIHandling) Beginning of RejectRequest');
+  let user = await getUsernameValue(userName);
+  try {
+    const response = await fetch(
+      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/RejectRequest',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: friend.id,
+      },
+    );
+
+    return response.ok;
+  } catch (err) {
+    console.log('something went wrong with friendsRejectRequest: ' + err);
+    // throw err;
+    return true;
+  }
+}
