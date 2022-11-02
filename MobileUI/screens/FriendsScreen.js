@@ -14,7 +14,7 @@ import FriendsContext from '../contexts/Friends';
 import {BoxButton} from '../assets/components/CustomButtons';
 import {
   friendsGetSentRequests,
-  friendsCreateFriendRequestById,
+  friendsCreateFriendRequestByEmail,
 } from '../API/FriendsAPIHandling';
 
 // https://bobbyhadz.com/blog/react-sort-array-of-objects
@@ -91,7 +91,7 @@ export default function FriendsScreen({navigation}) {
 
     setSentPendingReqsString(sentPendingReqsString + newFriendEmail + ', ');
 
-    let result = await friendsCreateFriendRequestById();
+    let result = await friendsCreateFriendRequestByEmail(newFriendEmail);
     if (!result) {
       Alert.alert('Friend request failed?');
     }

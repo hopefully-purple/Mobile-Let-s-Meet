@@ -3,72 +3,75 @@ import {bareBonesFriendsList} from '../assets/data/HardCodedFriends';
 
 /**
  * API call to get friends of user
- * @returns Hardcoded list of friends
+ * @returns json array of friend objects
  */
 export async function friendsGetFriends() {
   console.log('(FAPIHandling) Beginning of GetFriends');
-  return bareBonesFriendsList;
-  //   try {
-  //     const response = await fetch(
-  //       'http://ec2-3-84-219-120.compute-1.amazonaws.com/EventModels/GetEvents',
-  //       {
-  //         method: 'GET',
-  //       },
-  //     );
-  //     const result = await response.json();
+  // return bareBonesFriendsList;
+  try {
+    const response = await fetch(
+      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/GetFriends',
+      {
+        method: 'GET',
+      },
+    );
+    const result = await response.json();
 
-  //     console.log(JSON.stringify(result, undefined, 2));
-  //     return result;
-  //   } catch (err) {
-  //     console.log('something went wrong with groupsGetGroups: ' + err);
-  //     throw err;
-  //   }
+    console.log(JSON.stringify(result, undefined, 2));
+    return result;
+  } catch (err) {
+    console.log('something went wrong with friendsGetFriends: ' + err);
+    // throw err;
+    return bareBonesFriendsList;
+  }
 }
 
 /**
  * API call to get sent friend requests of user
- * @returns empty list
+ * @returns json array of sent friend requests
  */
 export async function friendsGetSentRequests() {
   console.log('(FAPIHandling) Beginning of GetSentRequests');
-  return [];
-  //   try {
-  //     const response = await fetch(
-  //       'http://ec2-3-84-219-120.compute-1.amazonaws.com/EventModels/GetEvents',
-  //       {
-  //         method: 'GET',
-  //       },
-  //     );
-  //     const result = await response.json();
+  try {
+    const response = await fetch(
+      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/GetSentRequests',
+      {
+        method: 'GET',
+      },
+    );
+    const result = await response.json();
 
-  //     console.log(JSON.stringify(result, undefined, 2));
-  //     return result;
-  //   } catch (err) {
-  //     console.log('something went wrong with groupsGetGroups: ' + err);
-  //     throw err;
-  //   }
+    console.log(JSON.stringify(result, undefined, 2));
+    return result;
+  } catch (err) {
+    console.log('something went wrong with friendsGetSentRequests: ' + err);
+    // throw err;
+    return [];
+  }
 }
 
 /**
- * API call to get sent friend requests of user
- * @returns true
+ * API call to create a friend request using email
+ * @returns response.ok
  */
-export async function friendsCreateFriendRequestById() {
-  console.log('(FAPIHandling) Beginning of CreateFriendRequest');
-  return true;
-  //   try {
-  //     const response = await fetch(
-  //       'http://ec2-3-84-219-120.compute-1.amazonaws.com/EventModels/GetEvents',
-  //       {
-  //         method: 'GET',
-  //       },
-  //     );
-  //     const result = await response.json();
+export async function friendsCreateFriendRequestByEmail(email) {
+  console.log('(FAPIHandling) Beginning of CreateFriendRequestByEmail');
+  // return true;
+  try {
+    const response = await fetch(
+      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/CreateFriendRequestByEmail',
+      {
+        method: 'POST',
+        body: email,
+      },
+    );
 
-  //     console.log(JSON.stringify(result, undefined, 2));
-  //     return result;
-  //   } catch (err) {
-  //     console.log('something went wrong with groupsGetGroups: ' + err);
-  //     throw err;
-  //   }
+    return response.ok;
+  } catch (err) {
+    console.log(
+      'something went wrong with friendsCreateFriendRequestByEmail: ' + err,
+    );
+    // throw err;
+    return true;
+  }
 }
