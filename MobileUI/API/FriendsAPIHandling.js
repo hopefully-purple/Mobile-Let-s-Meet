@@ -4,6 +4,7 @@ import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
 
 /**
  * API call to get friends of user
+ * If something goes wrong, catches error and goes to hardcoded functionality
  * @returns json array of friend objects
  */
 export async function friendsGetFriends(userName) {
@@ -32,6 +33,7 @@ export async function friendsGetFriends(userName) {
 
 /**
  * API call to get sent friend requests of user
+ * If something goes wrong, catches error and goes to hardcoded functionality
  * @returns json array of sent friend requests
  */
 export async function friendsGetSentRequests() {
@@ -56,16 +58,20 @@ export async function friendsGetSentRequests() {
 
 /**
  * API call to create a friend request using email
+ * If something goes wrong, catches error and goes to hardcoded functionality
  * @returns response.ok
  */
-export async function friendsCreateFriendRequestByEmail(email) {
+export async function friendsCreateFriendRequestByEmail(email, userName) {
   console.log('(FAPIHandling) Beginning of CreateFriendRequestByEmail');
-  // return true;
+  let user = await getUsernameValue(userName);
   try {
     const response = await fetch(
       'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/CreateFriendRequestByEmail',
       {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
         body: email,
       },
     );

@@ -16,6 +16,7 @@ import {
   friendsGetSentRequests,
   friendsCreateFriendRequestByEmail,
 } from '../API/FriendsAPIHandling';
+import UserContext from '../contexts/User';
 
 // https://bobbyhadz.com/blog/react-sort-array-of-objects
 function organizeFriends(friends) {
@@ -28,6 +29,7 @@ export default function FriendsScreen({navigation}) {
   const [newFriendEmail, setNewFriendEmail] = useState('');
   const [sentPendingReqsString, setSentPendingReqsString] = useState('');
   const {friends, setFriends} = useContext(FriendsContext);
+  const user = useContext(UserContext);
 
   this.friendEmailInput = React.createRef();
 
@@ -91,7 +93,10 @@ export default function FriendsScreen({navigation}) {
 
     setSentPendingReqsString(sentPendingReqsString + newFriendEmail + ', ');
 
-    let result = await friendsCreateFriendRequestByEmail(newFriendEmail);
+    let result = await friendsCreateFriendRequestByEmail(
+      newFriendEmail,
+      user.name,
+    );
     if (!result) {
       Alert.alert('Friend request failed?');
     }
