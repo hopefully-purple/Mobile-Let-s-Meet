@@ -1,5 +1,49 @@
 import React from 'react';
 
+// [{
+//   groupID: 5
+//   groupName: "Test"
+//   joinCode: "5-fa746dbd"
+// }]
+
+export const bareBonesGroupListAccurate = [
+  {
+    groupID: 0,
+    groupName: 'Group 1',
+    joinCode: '5-fa746dbd',
+  },
+  {
+    groupID: 1,
+    groupName: 'Group 2',
+    joinCode: '5-fa746dbd',
+  },
+  {
+    groupID: 2,
+    groupName: 'Group 3',
+    joinCode: '5-fa746dbd',
+  },
+  {
+    groupID: 3,
+    groupName: 'Group 4',
+    joinCode: '5-fa746dbd',
+  },
+  {
+    groupID: 4,
+    groupName: 'Group 5',
+    joinCode: '5-fa746dbd',
+  },
+  {
+    groupID: 5,
+    groupName: 'Group 6',
+    joinCode: '5-fa746dbd',
+  },
+  {
+    groupID: 7,
+    groupName: 'Group 8',
+    joinCode: '5-fa746dbd',
+  },
+];
+
 export const bareBonesGroupList = [
   {
     id: 0,
