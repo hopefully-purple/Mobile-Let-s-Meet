@@ -81,7 +81,7 @@ export async function groupCreateNewGroup(newGroup, userName) {
   try {
     console.log('New Group:' + JSON.stringify(newGroup, undefined, 2));
     const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com//GroupModels/CreateGroup',
+      'http://ec2-3-84-219-120.compute-1.amazonaws.com/GroupModels/CreateGroup',
       {
         method: 'POST',
         headers: {
@@ -92,12 +92,12 @@ export async function groupCreateNewGroup(newGroup, userName) {
         body: newGroup,
       },
     );
-    const result = await response.json();
-    return result;
+
+    return response.ok;
   } catch (err) {
     console.log('something went wrong with groupCreateNewGroup: ' + err);
     // throw err;
-    return true;
+    return false;
   }
 }
 

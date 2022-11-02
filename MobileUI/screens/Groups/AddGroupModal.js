@@ -14,6 +14,7 @@ import {Card, TextInput} from 'react-native-paper';
 import FriendsContext from '../../contexts/Friends';
 import GroupsContext from '../../contexts/Groups';
 import {friendsGetFriends} from '../../API/FriendsAPIHandling';
+import {groupCreateNewGroup} from '../../API/GroupsAPIHandling';
 import {BoxButton} from '../../assets/components/CustomButtons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserContext from '../../contexts/User';
@@ -57,31 +58,28 @@ export default function AddGroupModal({navigation}) {
 
   const doneHandler = async () => {
     if (newGroupName !== '' && addedFriends.length !== 0) {
+      console.log(addedFriends);
       const newGroup = {
-        id: `${groups.length + 1} ${newGroupName}`,
+        // id: `${groups.length + 1} ${newGroupName}`, // << unsure!!
         name: newGroupName,
-        members: addedFriends,
+        friendIds: addedFriends,
       };
       // console.log('NEW EVENT MADE, events context:');
 
-      console.log(
-        'NEW GROUP MADE > Post API call > result: <not rn, dev server not updated, just save storage>',
-      );
-      // API call to post new event
-      // await calendarCreateNewEvent(newEvent);
-      // console.log(JSON.stringify(result, undefined, 2));
-      //To trigger reload of Events and new GET API call, update the events context
-      // const newE = events;
-      // newE.push(newEvent);
-      // setEvents(newE);
+      console.log('NEW GROUP MADE > Post API call > result');
+      let asyncSaveDataResult = false;
+      let apiResult = await groupCreateNewGroup(newGroup, user.name);
+      // ASYNC Stuff
+      if (!apiResult) {
+        //Save to async storage (for now until dev server is fixed)
+        asyncSaveDataResult = await saveData(newGroup);
+      }
 
       //Clear inputs
       this.newGroupNameInput.current.clear();
       setNewGroupName('');
 
-      //Save to async storage (for now until dev server is fixed)
-      const result = await saveData(newGroup);
-      if (result) {
+      if (asyncSaveDataResult || apiResult) {
         //Go back to schedule
         console.log('go back');
         navigation.goBack();
@@ -95,8 +93,8 @@ export default function AddGroupModal({navigation}) {
     const handleFriendPress = () => {
       console.log('selected ' + friend.name);
       let addF = addedFriends;
-      if (!addF.includes(friend)) {
-        addF.push(friend);
+      if (!addF.includes(friend.id)) {
+        addF.push(friend.id);
         setAddedFriends(addF);
         // console.log(JSON.stringify(addedFriends, undefined, 2));
         setGroupMembersDisplayList(
