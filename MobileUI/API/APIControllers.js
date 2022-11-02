@@ -79,9 +79,10 @@ export const readGroupData = async () => {
  * @param {eventObject} i Event to delete
  * @param {array} events Events array context for ASYNC way
  * @param {context} setEvents to set the Events context to the updated data
+ * @param {string} userName The name of current user for extraction of token
  * @returns true or false based on success
  */
-export const deleteEvent = async (i, events, setEvents) => {
+export const deleteEvent = async (i, events, setEvents, userName) => {
   //   console.log(JSON.stringify(i, undefined, 2));
   //ASYNC WAY
   // Filter condition
@@ -107,10 +108,10 @@ export const deleteEvent = async (i, events, setEvents) => {
 
   //API WAY
   try {
-    const result = await calendarDeleteEvent(i);
+    const result = await calendarDeleteEvent(i, userName);
     if (result) {
       console.log('(deleteEvent) call calendarGetEvents');
-      const value = await calendarGetEvents(); // API call
+      const value = await calendarGetEvents(userName); // API call
       if (value !== null && value !== undefined) {
         console.log('deleteEvent) setEvents to the new value! ret true');
         setEvents(value);

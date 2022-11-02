@@ -15,6 +15,7 @@ import DatePicker from 'react-native-date-picker';
 import {SliderPicker, HuePicker} from 'react-color';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
 import {calendarCreateNewEvent} from '../../API/CalendarAPIHandling';
+import UserContext from '../../contexts/User';
 
 // https://casesandberg.github.io/react-color/
 // Doesn't work! Throws Text errors :`(
@@ -62,6 +63,7 @@ export default function AddEventModal({navigation}) {
   const [endDate, setEndDate] = useState(new Date());
   const [calColor, setCalColor] = useState('#0D852F');
   const {events, setEvents} = useContext(CalendarEventsContext);
+  const user = useContext(UserContext);
 
   this.titleInput = React.createRef();
   this.locationInput = React.createRef();
@@ -107,7 +109,7 @@ export default function AddEventModal({navigation}) {
       'EventModels/Create does not currently work due to AWS out of date',
     );
     // API call to post new event
-    // await calendarCreateNewEvent(newEvent);
+    // await calendarCreateNewEvent(newEvent, user.name);
     // console.log(JSON.stringify(result, undefined, 2));
     //To trigger reload of Events and new GET API call, update the events context
     // const newE = events;

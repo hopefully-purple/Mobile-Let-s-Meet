@@ -120,9 +120,11 @@ function organizeIntoDates(events) {
 
 const Item = ({i, itemColor, time}) => {
   const {events, setEvents} = useContext(CalendarEventsContext);
+  const user = useContext(UserContext);
 
-  function deleteItemInEvents() {
-    if (deleteEvent(i, events, setEvents)) {
+  async function deleteItemInEvents() {
+    console.log('(calendarScreen.deleteItem) user = ' + user.name);
+    if (await deleteEvent(i, events, setEvents, user.name)) {
       console.log('(calendarScreen.deleteItemInEvents) delete succeeded');
     } else {
       Alert.alert('Delete did not succeed');

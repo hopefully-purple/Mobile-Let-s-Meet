@@ -5,12 +5,13 @@ import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
 /**
  * API call to get calendar events
  * FYI: under postmanTest1, capstone project calendar id = 7
+ * @param {string} userName The name of current user for extraction of token
  * @returns result of GetEvents API request as a JSON object
  */
-export async function calendarGetEvents(name) {
+export async function calendarGetEvents(userName) {
   // const user = useContext(UserContext);
   console.log('(CAPIHandling) Beginning of CalendarGetEvents');
-  let user = await getUsernameValue(name);
+  let user = await getUsernameValue(userName);
   try {
     // console.log('Sending Username: ' + name + ' Password: ' + password);
     // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
@@ -39,11 +40,12 @@ export async function calendarGetEvents(name) {
  * API call to create a new event
  * TODO: Truly need to test once AWS is updated
  * @param {eventObject} newEvent - event object to be added
+ * @param {string} userName The name of current user for extraction of token
  * @returns OK response??
  */
-export async function calendarCreateNewEvent(newEvent) {
-  // const user = useContext(UserContext);
+export async function calendarCreateNewEvent(newEvent, userName) {
   console.log('(CAPIHandling) Beginning of CalendarCreateNewEvent');
+  let user = await getUsernameValue(userName);
   try {
     console.log('New Event:' + JSON.stringify(newEvent, undefined, 2));
     const response = await fetch(
@@ -53,7 +55,7 @@ export async function calendarCreateNewEvent(newEvent) {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          // Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
         },
         body: newEvent,
       },
@@ -73,16 +75,21 @@ export async function calendarCreateNewEvent(newEvent) {
 /**
  * API call to delete an event
  * @param {eventObject} event - event object to be deleted
+ * @param {string} userName The name of current user for extraction of token
  * @returns OK response??
  */
-export async function calendarDeleteEvent(event) {
+export async function calendarDeleteEvent(event, userName) {
   console.log('(CAPIHandling) Beginning of CalendarDeleteEvent');
+  let user = await getUsernameValue(userName);
   try {
     console.log('Event:' + JSON.stringify(event, undefined, 2));
     const response = await fetch(
       `http://ec2-3-84-219-120.compute-1.amazonaws.com/EventModels/Delete/${event.id}`,
       {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
       },
     );
 
