@@ -16,6 +16,7 @@ import ProfileScreen from '../ProfileScreen';
 import SettingsScreen from '../SettingsScreen';
 import FriendsScreen from '../FriendsScreen';
 import {friendsGetFriends} from '../../API/FriendsAPIHandling';
+import UserContext from '../../contexts/User';
 
 //Important links
 //https://reactnavigation.org/docs/drawer-based-navigation/
@@ -51,15 +52,16 @@ function LoggingScreen({navigation}) {
 
 function FriendScreen({navigation}) {
   const {friends, setFriends} = useContext(FriendsContext);
+  const user = useContext(UserContext);
   useEffect(() => {
     navigation.addListener('focus', async () => {
       console.log('-------Navigation (For Friends)-------------');
-      const data = await friendsGetFriends();
+      const data = await friendsGetFriends(user.name);
       // console.log(JSON.stringify(data, undefined, 2));
       console.log('set friends to data');
       setFriends(data);
     });
-  }, [navigation, setFriends]);
+  }, [navigation, setFriends, user.name]);
   return <FriendsScreen navigation={navigation} />;
 }
 

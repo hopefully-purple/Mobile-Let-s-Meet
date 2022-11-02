@@ -16,6 +16,7 @@ import GroupsContext from '../../contexts/Groups';
 import {friendsGetFriends} from '../../API/FriendsAPIHandling';
 import {BoxButton} from '../../assets/components/CustomButtons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import UserContext from '../../contexts/User';
 
 // https://bobbyhadz.com/blog/react-sort-array-of-objects
 function organizeFriends(friends) {
@@ -35,6 +36,7 @@ export default function AddGroupModal({navigation}) {
   const [groupMembersDisplayList, setGroupMembersDisplayList] = useState('');
   const {friends, setFriends} = useContext(FriendsContext);
   const {groups, setGroups} = useContext(GroupsContext);
+  const user = useContext(UserContext);
 
   this.newGroupNameInput = React.createRef();
 
@@ -131,7 +133,7 @@ export default function AddGroupModal({navigation}) {
       // console.log(JSON.stringify(friends, undefined, 2));
 
       const makeGetFriendsAPIRequest = async () => {
-        const data = await friendsGetFriends();
+        const data = await friendsGetFriends(user.name);
         // console.log(JSON.stringify(data, undefined, 2));
         console.log('set friends to data');
         setFriends(data);
@@ -144,7 +146,7 @@ export default function AddGroupModal({navigation}) {
       const newFlatL = organizeFriends(friends);
       setFlatList(newFlatL);
     },
-    [friends, setFriends],
+    [friends, setFriends, user.name],
   );
 
   return (

@@ -1,18 +1,22 @@
 import React, {useContext} from 'react';
 import {bareBonesFriendsList} from '../assets/data/HardCodedFriends';
+import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
 
 /**
  * API call to get friends of user
  * @returns json array of friend objects
  */
-export async function friendsGetFriends() {
+export async function friendsGetFriends(userName) {
   console.log('(FAPIHandling) Beginning of GetFriends');
-  // return bareBonesFriendsList;
+  let user = await getUsernameValue(userName);
   try {
     const response = await fetch(
       'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/GetFriends',
       {
         method: 'GET',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
       },
     );
     const result = await response.json();
