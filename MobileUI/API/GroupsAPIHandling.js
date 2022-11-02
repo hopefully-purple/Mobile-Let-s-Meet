@@ -1,5 +1,8 @@
 import React, {useContext} from 'react';
-import {bareBonesGroupList} from '../assets/data/HardCodedGroups';
+import {
+  bareBonesGroupList,
+  bareBonesGroupMembersList,
+} from '../assets/data/HardCodedGroups';
 import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
 
 /**
@@ -28,9 +31,40 @@ export async function groupsGetGroups(userName) {
   } catch (err) {
     console.log('something went wrong with groupsGetGroups: ' + err);
     // throw err;
-    // TODO::: Need to adjust display code for the accurate list, and figure out
-    // how to display members
+    // TODO::: Need to adjust display code for the accurate list
     return bareBonesGroupList;
+  }
+}
+
+/**
+ * API call to get members of given group
+ * If something goes wrong, catches error and goes to hardcoded functionality
+ * @param {int} groupID Identifier for group
+ * @param {string} userName The name of current user for extraction of token
+ * @returns list of group members
+ */
+export async function groupsGetGroupMembers(groupID, userName) {
+  console.log('(GAPIHandling) Beginning of GroupsGetGroupMembers');
+  let user = await getUsernameValue(userName);
+  try {
+    const response = await fetch(
+      `http://ec2-3-84-219-120.compute-1.amazonaws.com/api/getGroupMembers?groupId=${groupID}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      },
+    );
+    const result = await response.json();
+
+    console.log(JSON.stringify(result, undefined, 2));
+    return result;
+  } catch (err) {
+    console.log('something went wrong with groupsGetGroupMembers: ' + err);
+    // throw err;
+    // TODO::: Confirm response JSON structure
+    return bareBonesGroupMembersList;
   }
 }
 

@@ -104,3 +104,8 @@ export const bareBonesGroupList = [
     ],
   },
 ];
+
+export const bareBonesGroupMembersList = [
+  {id: 8, name: 'Swoop'},
+  {id: 7, name: 'Totoro'},
+];
