@@ -5,6 +5,7 @@ import {GreyPillButton} from '../assets/components/CustomButtons';
 import LogStateContext from '../contexts/LoginState';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserContext from '../contexts/User';
+import {loginAPICall} from '../API/LoginAPIHandler';
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -203,43 +204,22 @@ const LoginScreen = ({navigation}) => {
   const handleLogInButton = async () => {
     // console.log('setisloading to true');
     setIsLoading(true);
-    try {
-      // console.log('Sending Username: ' + name + ' Password: ' + password);
-      // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
-      const response = await fetch(
-        'http://ec2-3-84-219-120.compute-1.amazonaws.com/Auth/Login',
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            Username: name,
-            Password: password,
-          }),
-        },
-      );
 
-      // console.log('await response');
-      const result1 = await response.json();
-      // console.log(result1);
+    const response = await loginAPICall(name, password);
+    // console.log('await response');
+    const result1 = await response.json();
+    // console.log(result1);
 
-      // Store info in async storage
-      await storeUserLoginInfo(name, password, result1);
+    // Store info in async storage
+    await storeUserLoginInfo(name, password, result1);
 
-      // Store info in user context
-      user.name = name;
-      user.password = password;
-      user.token = result1.token;
-      user.expiration = result1.expiration;
+    // Store info in user context
+    user.name = name;
+    user.password = password;
+    user.token = result1.token;
+    user.expiration = result1.expiration;
 
-      setIsLoading(false);
-    } catch (err) {
-      setErr(err.message);
-      console.log('set is loading false. Send an alert for this eror: ' + err);
-      throw err;
-    }
+    setIsLoading(false);
 
     if (!isLoading) {
       // console.log('no longer loading, set logged in true, pull up my schedule');
