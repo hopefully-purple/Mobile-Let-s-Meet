@@ -1,28 +1,35 @@
 import React, {useContext} from 'react';
 import {bareBonesGroupList} from '../assets/data/HardCodedGroups';
+import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
 
 /**
  * API call to get groups user is in
- * @returns Hardcoded list of groups
+ * If something goes wrong, catches error and goes to hardcoded functionality
+ * @param {string} userName The name of current user for extraction of token
+ * @returns list of groups
  */
-export async function groupsGetGroups() {
+export async function groupsGetGroups(userName) {
   console.log('(GAPIHandling) Beginning of GroupsGetGroups');
-  return bareBonesGroupList;
-  //   try {
-  //     const response = await fetch(
-  //       'http://ec2-3-84-219-120.compute-1.amazonaws.com/EventModels/GetEvents',
-  //       {
-  //         method: 'GET',
-  //       },
-  //     );
-  //     const result = await response.json();
+  let user = await getUsernameValue(userName);
+  try {
+    const response = await fetch(
+      'http://ec2-3-84-219-120.compute-1.amazonaws.com/GroupModels/GetGroups',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      },
+    );
+    const result = await response.json();
 
-  //     console.log(JSON.stringify(result, undefined, 2));
-  //     return result;
-  //   } catch (err) {
-  //     console.log('something went wrong with groupsGetGroups: ' + err);
-  //     throw err;
-  //   }
+    console.log(JSON.stringify(result, undefined, 2));
+    return result;
+  } catch (err) {
+    console.log('something went wrong with groupsGetGroups: ' + err);
+    // throw err;
+    return bareBonesGroupList;
+  }
 }
 
 /**

@@ -1,13 +1,15 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {calendarGetEvents, calendarDeleteEvent} from './CalendarAPIHandling';
+import {groupsGetGroups} from './GroupsAPIHandling';
 import {classScheduleList} from '../assets/data/HardCodedEvents';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {bareBonesGroupList} from '../assets/data/HardCodedGroups';
+// import {bareBonesGroupList} from '../assets/data/HardCodedGroups';
 
 /**
  * Calls the calendarGetEvents method and returns the result
  * Still a work in progess. Can modify to stick with hardcoded data.
  * @param {string} currentCalendarName
+ * @param {string} userName The name of current user for extraction of token
  * @returns {array} Array of event objects
  */
 export const readEventData = async (currentCalendarName, userName) => {
@@ -41,27 +43,28 @@ export const readEventData = async (currentCalendarName, userName) => {
 
 /**
  * Calls the groupsGetGroups method and returns the result
- * Still a work in progess. Can modify to stick with hardcoded data.
+ * Still a work in progess.
  *
+ * @param {string} userName The name of current user for extraction of token
  * @returns {array} Array of group objects
  */
-export const readGroupData = async () => {
+export const readGroupData = async userName => {
   //TODO: change call based on calendarName?
   try {
-    const value = await AsyncStorage.getItem('Groups');
-    // const value = await groupsGetGroups(); // API call
+    // const value = await AsyncStorage.getItem('Groups');
+    const value = await groupsGetGroups(userName); // API call
     // const value = null;
     // console.log('(App.readData) value:' + value);
     if (value !== null && value !== undefined) {
       // setLanguageObj({language: language, words: JSON.parse(value)});
-      return JSON.parse(value); // initialize groups context
-      // return value; //for API call result
+      // return JSON.parse(value); // initialize groups context
+      return value; //for API call result
     } else {
       console.log(
-        '(homerootstack.readGroupData).getGroups value is null! Set to bareBonesGroupList for now',
+        '(homerootstack.readGroupData).getGroups value is null! Set to [] for now',
       );
       //TODO: probably return empty array irl
-      return bareBonesGroupList;
+      return [];
     }
   } catch (e) {
     console.log(

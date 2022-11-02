@@ -49,15 +49,16 @@ function HomeScreen({navigation}) {
 
 function GroupScreen({navigation}) {
   const {groups, setGroups} = useContext(GroupsContext);
+  const user = useContext(UserContext);
   useEffect(() => {
     navigation.addListener('focus', async () => {
       console.log('-------HomerootStackscreen (For Group)-------------');
-      const data = await readGroupData();
+      const data = await readGroupData(user.name);
       // console.log(JSON.stringify(data, undefined, 2));
       console.log('set groups to data');
       setGroups(data);
     });
-  }, [navigation, setGroups]);
+  }, [navigation, setGroups, user.name]);
   return <GroupListScreen navigation={navigation} />;
 }
 

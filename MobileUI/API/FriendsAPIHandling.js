@@ -5,6 +5,7 @@ import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
 /**
  * API call to get friends of user
  * If something goes wrong, catches error and goes to hardcoded functionality
+ * @param {string} userName The name of current user for extraction of token
  * @returns json array of friend objects
  */
 export async function friendsGetFriends(userName) {
@@ -34,6 +35,7 @@ export async function friendsGetFriends(userName) {
 /**
  * API call to get sent friend requests of user
  * If something goes wrong, catches error and goes to hardcoded functionality
+ * @param {string} userName The name of current user for extraction of token
  * @returns json array of sent friend requests
  */
 export async function friendsGetSentRequests(userName) {
@@ -63,6 +65,7 @@ export async function friendsGetSentRequests(userName) {
 /**
  * API call to get recieved requests of user
  * If something goes wrong, catches error and goes to hardcoded functionality
+ * @param {string} userName The name of current user for extraction of token
  * @returns json array of recieved friend requests
  */
 export async function friendsGetRecievedRequests(userName) {
@@ -92,6 +95,7 @@ export async function friendsGetRecievedRequests(userName) {
 /**
  * API call to create a friend request using email
  * If something goes wrong, catches error and goes to hardcoded functionality
+ * @param {string} userName The name of current user for extraction of token
  * @returns response.ok
  */
 export async function friendsCreateFriendRequestByEmail(email, userName) {
@@ -122,6 +126,7 @@ export async function friendsCreateFriendRequestByEmail(email, userName) {
 /**
  * API call to accept a friend request
  * If something goes wrong, catches error and goes to hardcoded functionality
+ * @param {string} userName The name of current user for extraction of token
  * @returns response.ok
  */
 export async function friendsAcceptRequest(friend, userName) {
@@ -150,6 +155,7 @@ export async function friendsAcceptRequest(friend, userName) {
 /**
  * API call to reject a friend request
  * If something goes wrong, catches error and goes to hardcoded functionality
+ * @param {string} userName The name of current user for extraction of token
  * @returns response.ok
  */
 export async function friendsRejectRequest(friend, userName) {
