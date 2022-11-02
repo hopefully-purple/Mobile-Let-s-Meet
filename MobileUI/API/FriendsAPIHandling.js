@@ -36,13 +36,17 @@ export async function friendsGetFriends(userName) {
  * If something goes wrong, catches error and goes to hardcoded functionality
  * @returns json array of sent friend requests
  */
-export async function friendsGetSentRequests() {
+export async function friendsGetSentRequests(userName) {
   console.log('(FAPIHandling) Beginning of GetSentRequests');
+  let user = await getUsernameValue(userName);
   try {
     const response = await fetch(
       'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/GetSentRequests',
       {
         method: 'GET',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
       },
     );
     const result = await response.json();

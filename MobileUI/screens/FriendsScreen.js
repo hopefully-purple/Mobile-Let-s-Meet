@@ -60,7 +60,7 @@ export default function FriendsScreen({navigation}) {
   // useEffect(
   //   function createPendingFriendsList() {
   //     const makeGetSentRequestsAPIRequest = async () => {
-  //       const data = await friendsGetSentRequests();
+  //       const data = await friendsGetSentRequests(user.name);
   //       // console.log(JSON.stringify(data, undefined, 2));
   //       console.log('set pending friends to data');
   //       setPendingFriendsList(data);
