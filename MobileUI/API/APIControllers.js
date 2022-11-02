@@ -10,11 +10,11 @@ import {bareBonesGroupList} from '../assets/data/HardCodedGroups';
  * @param {string} currentCalendarName
  * @returns {array} Array of event objects
  */
-export const readEventData = async currentCalendarName => {
+export const readEventData = async (currentCalendarName, userName) => {
   //TODO: change call based on calendarName?
   try {
     // const value = await AsyncStorage.getItem('Events'); // Hardcoded
-    const value = await calendarGetEvents(); // API call
+    const value = await calendarGetEvents(userName); // API call
     // console.log('(App.readData) value:' + value);
     if (value !== null && value !== undefined) {
       // return JSON.parse(value); // initialize events context for Hardcoded

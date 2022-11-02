@@ -2,7 +2,7 @@ import React, {useState, useContext, createContext, useEffect} from 'react';
 import {Text, SafeAreaView, StyleSheet, View, TextInput} from 'react-native';
 import Colors from '../../assets/styles/colors';
 import {GreyPillButton} from '../../assets/components/CustomButtons';
-import {storeUserLoginInfo} from '../LoginScreen';
+import {storeUserLoginInfo} from '../../miscHelpers/AsyncStorageMethods';
 import UserContext from '../../contexts/User';
 // import LogStateContext from '../../contexts/LoginState';
 

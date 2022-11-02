@@ -22,10 +22,11 @@ import CalendarStrip from 'react-native-calendar-strip';
 import {
   constructDateString,
   formatEventTime,
-} from '../../parsingHelpers/DateParsing';
+} from '../../miscHelpers/DateParsing';
 import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
 import {SmallBoxButton} from '../../assets/components/CustomButtons';
 import GroupsContext from '../../contexts/Groups';
+import UserContext from '../../contexts/User';
 
 const CalendarTitle = props => {
   const {groups, setGroups} = useContext(GroupsContext);
@@ -163,6 +164,7 @@ const CalendarScreen = ({navigation, calendarName}) => {
   const {currentCalendarName, setCurrentCalendarName} = useContext(
     CurrentCalendarNameContext,
   );
+  const user = useContext(UserContext);
 
   this.calendarStrip = React.createRef();
 
@@ -227,7 +229,7 @@ const CalendarScreen = ({navigation, calendarName}) => {
     //set isRefreshing to true
     setIsRefreshing(true);
     console.log('REFRESHING FLAT LIST!!!!!!');
-    const data = await readEventData(currentCalendarName); // API call
+    const data = await readEventData(currentCalendarName, user.name); // API call
     // console.log('(CalendarScreen.onRefresh) new event data:');
     // console.log(JSON.stringify(data, undefined, 2));
     setEvents(data);

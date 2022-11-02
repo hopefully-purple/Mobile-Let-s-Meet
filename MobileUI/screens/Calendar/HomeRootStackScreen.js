@@ -6,20 +6,19 @@ import AddEventModal from './AddEventModal';
 import Colors from '../../assets/styles/colors';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
 import GroupsContext from '../../contexts/Groups';
-import {friendsGetFriends} from '../../API/FriendsAPIHandling';
-import {calendarGetEvents} from '../../API/CalendarAPIHandling';
-import {groupsGetGroups} from '../../API/GroupsAPIHandling';
 import GroupListScreen from '../Groups/GroupListScreen';
 import AddGroupModal from '../Groups/AddGroupModal';
 import JoinGroupModal from '../Groups/JoinGroupModal';
 import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
 import {readEventData, readGroupData} from '../../API/APIControllers';
+import UserContext from '../../contexts/User';
 
 function HomeScreen({navigation}) {
   const {events, setEvents} = useContext(CalendarEventsContext);
   const {currentCalendarName, setCurrentCalendarName} = useContext(
     CurrentCalendarNameContext,
   );
+  const user = useContext(UserContext);
   useEffect(() => {
     navigation.addListener('focus', async () => {
       // do something
@@ -31,14 +30,14 @@ function HomeScreen({navigation}) {
         );
         setEvents([]);
       } else {
-        const data = await readEventData(currentCalendarName);
+        const data = await readEventData(currentCalendarName, user.name);
         // console.log(JSON.stringify(data, undefined, 2));
         console.log('set events to data');
         setEvents(data);
       }
       // }
     });
-  }, [navigation, setEvents, currentCalendarName]);
+  }, [navigation, setEvents, currentCalendarName, user.name]);
   console.log('****************' + currentCalendarName + '********');
   return (
     <CalendarScreen
