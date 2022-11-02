@@ -101,4 +101,34 @@ export async function groupCreateNewGroup(newGroup, userName) {
   }
 }
 
-// TODO: Do we want just anybody to be able to delete groups?
+/**
+ * API call to join a group
+ * If something goes wrong, catches error and goes to hardcoded functionality
+ * @param {string} joinCode - Code to join associated group
+ * @param {string} userName The name of current user for extraction of token
+ * @returns OK = true
+ */
+export async function groupJoinGroup(joinCode, userName) {
+  console.log('(GAPIHandling) Beginning of GroupJoinGroup');
+  let user = await getUsernameValue(userName);
+  try {
+    const response = await fetch(
+      'http://ec2-3-84-219-120.compute-1.amazonaws.com/GroupModels/JoinGroup',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: joinCode,
+      },
+    );
+
+    return response.ok;
+  } catch (err) {
+    console.log('something went wrong with groupJoinGroup: ' + err);
+    // throw err;
+    return false;
+  }
+}
