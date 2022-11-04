@@ -28,6 +28,7 @@ export default function GroupInfoModal({navigation}) {
   return (
     <View style={styles.screenContainer}>
       <View style={styles.innerContainer}>
+        <View style={styles.creamKnob} />
         <View style={styles.bodyContainer}>
           <View style={styles.mainHeader}>
             <Text style={styles.membersHeaderText}>Members:</Text>
@@ -61,20 +62,24 @@ const styles = StyleSheet.create({
     height: '50%',
     width: '100%',
     backgroundColor: Colors.DD_RED_2,
-    justifyContent: 'center',
     borderRadius: 10,
+  },
+  creamKnob: {
+    alignSelf: 'center',
+    borderRadius: 29,
+    height: 9,
+    width: 60,
+    margin: 15,
+    backgroundColor: Colors.DD_CREAM,
   },
   bodyContainer: {
     height: '80%',
     backgroundColor: Colors.DD_CREAM,
-    // flexDirection: 'column',
-    // justifyContent: 'space-evenly',
     padding: 5,
   },
   mainHeader: {
     // backgroundColor: Colors.DD_LIGHT_GRAY,
     flexDirection: 'row',
-    // justifyContent: 'space-around',
   },
   membersHeaderText: {
     fontSize: 25,
@@ -114,17 +119,14 @@ const styles = StyleSheet.create({
     // backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY,
     paddingHorizontal: 10,
     paddingTop: 10,
-    // height: '70%',
   },
   item: {
     // backgroundColor: '#f9c2ff',
     paddingVertical: 5,
     marginVertical: 5,
-    // marginHorizontal: 16,
   },
   listText: {
     fontSize: 20,
     color: Colors.DD_MEDIUM_GRAY,
-    // textAlign: 'center',
   },
 });
