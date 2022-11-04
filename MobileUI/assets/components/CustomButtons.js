@@ -33,7 +33,7 @@ export const SmallBoxButton = props => {
 
 const styles = StyleSheet.create({
   smallBoxButtonText: {
-    fontSize: 10,
+    fontSize: 20,
     // fontWeight: '500',
     color: Colors.DD_RED_2,
     // textAlign: 'center',
@@ -45,7 +45,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.DD_RED_2,
     borderWidth: 2,
     padding: 10,
-    margin: 5,
+    marginVertical: 20,
+    marginHorizontal: 18,
     borderRadius: 5,
   },
   boxButtonText: {

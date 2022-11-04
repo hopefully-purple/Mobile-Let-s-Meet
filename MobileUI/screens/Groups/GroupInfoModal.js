@@ -8,6 +8,7 @@ import {
   Button,
   Alert,
 } from 'react-native';
+import {SmallBoxButton} from '../../assets/components/CustomButtons';
 import Colors from '../../assets/styles/colors';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {bareBonesFriendsList} from '../../assets/data/HardCodedFriends';
@@ -53,12 +54,17 @@ export default function GroupInfoModal({navigation}) {
               />
             </View>
             <View style={styles.generationSide}>
-              <TouchableOpacity onPress={copyToClipboard}>
+              <SmallBoxButton
+                title={'Generate invite link'}
+                onPress={copyToClipboard}
+              />
+              <SmallBoxButton title={'Generate invite QR'} onPress={handleQR} />
+              {/* <TouchableOpacity onPress={copyToClipboard}>
                 <Text style={styles.generationText}>Generate invite link</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleQR}>
                 <Text style={styles.generationText}>Generate invite QR</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         </View>
