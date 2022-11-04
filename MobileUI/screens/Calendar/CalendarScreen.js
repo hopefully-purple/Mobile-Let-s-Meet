@@ -160,19 +160,6 @@ const CalendarScreen = ({navigation, calendarName}) => {
   const {currentCalendarName, setCurrentCalendarName} = useContext(
     CurrentCalendarNameContext,
   );
-  const {groups, setGroups} = useContext(GroupsContext);
-
-  function membersString() {
-    // console.log(JSON.stringify(groups, undefined, 2));
-    // var result = groups.find(obj => {
-    //   return obj.name === props.name;
-    // });
-    // console.log(JSON.stringify(result, undefined, 2));
-    // let members = '';
-    // result.members.map(m => (members = members + m.name + ', '));
-    // return members;
-    return 'Feature coming soon!';
-  }
 
   this.calendarStrip = React.createRef();
 
@@ -276,11 +263,11 @@ const CalendarScreen = ({navigation, calendarName}) => {
         <View style={styles.groupScheduleButtons}>
           <BoxButton
             title={'Info'}
-            onPress={() => Alert.alert(membersString())}
+            onPress={() => navigation.navigate('InfoModal')}
           />
           <BoxButton
             title={`Let's Meet!`}
-            onPress={() => Alert.alert(membersString())}
+            onPress={() => Alert.alert('feature coming soon!')}
           />
         </View>
       )}
