@@ -347,6 +347,8 @@ PODS:
     - React-perflogger (= 0.67.4)
   - RNCAsyncStorage (1.17.10):
     - React-Core
+  - RNCClipboard (1.11.1):
+    - React-Core
   - RNGestureHandler (2.6.1):
     - React-Core
   - RNReanimated (2.10.0):
@@ -445,6 +447,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -534,6 +537,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNCClipboard:
+    :path: "../node_modules/@react-native-clipboard/clipboard"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -593,6 +598,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: a9d3c82ddf7ffdad9fbe6a81c6d6f8c06385464d
   ReactCommon: 07d0c460b9ba9af3eaf1b8f5abe7daaad28c9c4e
   RNCAsyncStorage: 0c357f3156fcb16c8589ede67cc036330b6698ca
+  RNCClipboard: 2834e1c4af68697089cdd455ee4a4cdd198fa7dd
   RNGestureHandler: 28ad20bf02257791f7f137b31beef34b9549f54b
   RNReanimated: c38d82b0e910e2478439686c58c02bac6e4232e9
   RNScreens: 0df01424e9e0ed7827200d6ed1087ddd06c493f9

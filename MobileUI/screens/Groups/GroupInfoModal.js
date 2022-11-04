@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import Colors from '../../assets/styles/colors';
+import Clipboard from '@react-native-clipboard/clipboard';
 import {bareBonesFriendsList} from '../../assets/data/HardCodedFriends';
 // https://stackoverflow.com/questions/48992961/react-navigation-modal-height
 
@@ -21,6 +22,15 @@ const Item = ({name}) => {
 };
 
 export default function GroupInfoModal({navigation}) {
+  const copyToClipboard = () => {
+    Clipboard.setString('hello world');
+    Alert.alert('hello world has been copied to your clipboard!');
+  };
+
+  const handleQR = () => {
+    Alert.alert('display QR code here');
+  };
+
   const renderItem = ({item}) => {
     return <Item name={item.name} />;
   };
@@ -43,8 +53,12 @@ export default function GroupInfoModal({navigation}) {
               />
             </View>
             <View style={styles.generationSide}>
-              <Text style={styles.generationText}>Generate invite link</Text>
-              <Text style={styles.generationText}>Generate invite QR</Text>
+              <TouchableOpacity onPress={copyToClipboard}>
+                <Text style={styles.generationText}>Generate invite link</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleQR}>
+                <Text style={styles.generationText}>Generate invite QR</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
