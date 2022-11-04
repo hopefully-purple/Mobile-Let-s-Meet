@@ -59,12 +59,6 @@ export default function GroupInfoModal({navigation}) {
                 onPress={copyToClipboard}
               />
               <SmallBoxButton title={'Generate invite QR'} onPress={handleQR} />
-              {/* <TouchableOpacity onPress={copyToClipboard}>
-                <Text style={styles.generationText}>Generate invite link</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleQR}>
-                <Text style={styles.generationText}>Generate invite QR</Text>
-              </TouchableOpacity> */}
             </View>
           </View>
         </View>

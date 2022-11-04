@@ -267,7 +267,7 @@ const CalendarScreen = ({navigation, calendarName}) => {
           />
           <BoxButton
             title={`Let's Meet!`}
-            onPress={() => Alert.alert('feature coming soon!')}
+            onPress={() => navigation.navigate('MeetModal')}
           />
         </View>
       )}

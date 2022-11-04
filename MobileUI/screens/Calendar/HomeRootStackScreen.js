@@ -16,6 +16,7 @@ import GroupListScreen from '../Groups/GroupListScreen';
 import AddGroupModal from '../Groups/AddGroupModal';
 import JoinGroupModal from '../Groups/JoinGroupModal';
 import GroupInfoModal from '../Groups/GroupInfoModal';
+import LetsMeetModal from '../Groups/LetsMeetModal';
 import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
 
 const readEventData = async currentCalendarName => {
@@ -135,6 +136,10 @@ function JoinGroupModalScreen({navigation}) {
 
 function InfoModalOverlay({navigation}) {
   return <GroupInfoModal navigation={navigation} />;
+}
+
+function MeetModalOverlay({navigation}) {
+  return <LetsMeetModal navigation={navigation} />;
 }
 
 const RootStack = createStackNavigator();
@@ -258,6 +263,23 @@ export default function HomeRootStackScreen(props) {
             <RootStack.Screen
               name="InfoModal"
               component={InfoModalOverlay}
+              options={{
+                presentation: 'modal',
+                headerShown: false,
+                cardOverlayEnabled: true,
+                gestureEnabled: true,
+                gestureDirection: 'vertical',
+                gestureResponseDistance: 500,
+                cardStyle: {
+                  backgroundColor: 'transparent',
+                  opacity: 0.99,
+                  // borderRadius: 10,
+                },
+              }}
+            />
+            <RootStack.Screen
+              name="MeetModal"
+              component={MeetModalOverlay}
               options={{
                 presentation: 'modal',
                 headerShown: false,
