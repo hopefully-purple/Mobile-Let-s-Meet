@@ -69,7 +69,10 @@ export default function LetsMeetModal({navigation}) {
         </Text>
         <MiniBoxButton
           title={'Accept'}
-          onPress={() => Alert.alert(`Accepted ${s.value}`)}
+          onPress={() => {
+            Alert.alert(`Accepted ${s.value}. Adding event to calendar`);
+            navigation.goBack();
+          }}
         />
       </View>
     );
@@ -177,6 +180,7 @@ const styles = StyleSheet.create({
   },
   timeFramePicker: {
     height: 100,
+    width: '90%',
     marginBottom: 100,
   },
   timeFrameItem: {
