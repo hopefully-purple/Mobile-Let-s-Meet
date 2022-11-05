@@ -1,12 +1,13 @@
 import React, {useContext} from 'react';
 import {
-  bareBonesGroupList,
-  bareBonesGroupMembersList,
+  bareBonesGroupListAccurate,
+  accurateGetGroupResult,
+  accurateGetGroupResult0,
 } from '../assets/data/HardCodedGroups';
 import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
 
 /**
- * API call to get groups user is in
+ * API call to get all groups user is in
  * If something goes wrong, catches error and goes to hardcoded functionality
  * @param {string} userName The name of current user for extraction of token
  * @returns list of groups
@@ -32,13 +33,14 @@ export async function groupsGetGroups(userName) {
     console.log('something went wrong with groupsGetGroups: ' + err);
     // throw err;
     // TODO::: Need to adjust display code for the accurate list
-    return bareBonesGroupList;
+    return bareBonesGroupListAccurate;
   }
 }
 
 /**
  * API call to get members of given group
  * If something goes wrong, catches error and goes to hardcoded functionality
+ *
  * @param {int} groupID Identifier for group
  * @param {string} userName The name of current user for extraction of token
  * @returns list of group members
@@ -48,7 +50,7 @@ export async function groupsGetGroupMembers(groupID, userName) {
   let user = await getUsernameValue(userName);
   try {
     const response = await fetch(
-      `http://ec2-3-84-219-120.compute-1.amazonaws.com/api/getGroupMembers?groupId=${groupID}`,
+      `http://ec2-3-84-219-120.compute-1.amazonaws.com/GroupModels/GetGroup?id=${groupID}`,
       {
         method: 'GET',
         headers: {
@@ -64,7 +66,12 @@ export async function groupsGetGroupMembers(groupID, userName) {
     console.log('something went wrong with groupsGetGroupMembers: ' + err);
     // throw err;
     // TODO::: Confirm response JSON structure
-    return bareBonesGroupMembersList;
+    // return accurateGetGroupResult[groupID];
+    console.log(
+      '&&&&&&&&&&&&&&&&&&' +
+        JSON.stringify(accurateGetGroupResult[0], undefined, 2),
+    );
+    return accurateGetGroupResult0;
   }
 }
 

@@ -10,7 +10,8 @@ import {BoxButton} from '../../assets/components/CustomButtons';
 // https://bobbyhadz.com/blog/react-sort-array-of-objects
 function organizeGroups(groups) {
   let newG = {};
-  newG = [...groups].sort((a, b) => a.id - b.id);
+  // newG = [...groups].sort((a, b) => a.groupID - b.groupID);
+  newG = [...groups].sort((a, b) => (a.groupName > b.groupName ? 1 : -1));
   return newG;
 }
 
@@ -24,8 +25,10 @@ export default function GroupListScreen({navigation}) {
     const handleGroupPress = () => {
       //Grab group name
       // console.log(group.name + ' selected');
-      console.log('pulling up ' + group.name + ' calendar (eventually . . .)');
-      setCurrentCalendarName(group.name);
+      console.log(
+        'pulling up ' + group.groupName + ' calendar (eventually . . .)',
+      );
+      setCurrentCalendarName(group.groupName);
       //Set things up to trigger a correct event grab and calendar name change
       //navigate to calendar
       navigation.navigate('Home');
@@ -35,7 +38,9 @@ export default function GroupListScreen({navigation}) {
         <Card style={styles.cardStyle}>
           <Card.Content>
             <View>
-              <Text style={styles.defaultScreentext}>{group.name}</Text>
+              <Text key={group.groupID} style={styles.defaultScreentext}>
+                {group.groupName}
+              </Text>
             </View>
           </Card.Content>
         </Card>
@@ -73,7 +78,7 @@ export default function GroupListScreen({navigation}) {
       <FlatList
         data={flatList}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.groupID}
         style={{marginTop: 40}}
       />
     </SafeAreaView>
