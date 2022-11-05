@@ -67,11 +67,11 @@ export async function groupsGetGroupMembers(groupID, userName) {
     // throw err;
     // TODO::: Confirm response JSON structure
     // return accurateGetGroupResult[groupID];
-    console.log(
-      '&&&&&&&&&&&&&&&&&&' +
-        JSON.stringify(accurateGetGroupResult[0], undefined, 2),
-    );
-    return accurateGetGroupResult0;
+    // console.log(
+    //   '&&&&&&&&&&&&&&&&&&' +
+    //     JSON.stringify(accurateGetGroupResult[0], undefined, 2),
+    // );
+    return accurateGetGroupResult[groupID];
   }
 }
 

@@ -13,7 +13,7 @@ import Colors from '../../assets/styles/colors';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {bareBonesFriendsList} from '../../assets/data/HardCodedFriends';
 import {accurateGetGroupResult} from '../../assets/data/HardCodedGroups';
-import GroupsContext from '../../contexts/Groups';
+import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 // https://stackoverflow.com/questions/48992961/react-navigation-modal-height
 
 const Item = ({name}) => {
@@ -25,9 +25,8 @@ const Item = ({name}) => {
 };
 
 export default function GroupInfoModal({navigation}) {
-  const groups = useContext(GroupsContext);
-  // console.log(accurateGetGroupResult[0]);
-  // console.log()
+  const group = useContext(CurrentGroupObjectContext).currentGroup;
+
   const copyToClipboard = () => {
     Clipboard.setString('hello world');
     Alert.alert('hello world has been copied to your clipboard!');
@@ -38,7 +37,7 @@ export default function GroupInfoModal({navigation}) {
   };
 
   const renderItem = ({item}) => {
-    return <Item name={item.name} />;
+    return <Item name={`${item.firstName} ${item.lastName}`} />;
   };
 
   return (
@@ -53,9 +52,9 @@ export default function GroupInfoModal({navigation}) {
           <View style={styles.mainBody}>
             <View style={styles.flatListStyle}>
               <FlatList
-                data={bareBonesFriendsList}
+                data={group.users}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item.userID}
               />
             </View>
             <View style={styles.generationSide}>

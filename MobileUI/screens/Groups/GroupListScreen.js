@@ -6,6 +6,8 @@ import {Card} from 'react-native-paper';
 import GroupsContext from '../../contexts/Groups';
 import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import {BoxButton} from '../../assets/components/CustomButtons';
+import {groupsGetGroupMembers} from '../../API/GroupsAPIHandling';
+import UserContext from '../../contexts/User';
 
 // https://bobbyhadz.com/blog/react-sort-array-of-objects
 function organizeGroups(groups) {
@@ -18,16 +20,22 @@ function organizeGroups(groups) {
 export default function GroupListScreen({navigation}) {
   const {groups, setGroups} = useContext(GroupsContext);
   const {currentGroup, setcurrentGroup} = useContext(CurrentGroupObjectContext);
+  const user = useContext(UserContext);
 
   const GroupBox = ({group}) => {
-    const handleGroupPress = () => {
+    const handleGroupPress = async () => {
       //Grab group name
       // console.log(group.name + ' selected');
       console.log(
         'pulling up ' + group.groupName + ' calendar (eventually . . .)',
       );
-      setcurrentGroup(group);
-      console.log(JSON.stringify(group, undefined, 2));
+      // Call getGroup API to get full group object
+      const detailedGroup = await groupsGetGroupMembers(
+        group.groupID,
+        user.name,
+      );
+      console.log(JSON.stringify(detailedGroup, undefined, 2));
+      setcurrentGroup(detailedGroup);
       //Set things up to trigger a correct event grab and calendar name change
       //navigate to calendar
       navigation.navigate('GroupCalendar');
