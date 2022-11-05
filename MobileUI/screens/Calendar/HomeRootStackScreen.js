@@ -14,6 +14,7 @@ import LetsMeetModal from '../Groups/LetsMeetModal';
 import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
 import {readEventData, readGroupData} from '../../API/APIControllers';
 import UserContext from '../../contexts/User';
+import GroupCalendarScreen from '../Groups/GroupCalendarScreen';
 
 function HomeScreen({navigation}) {
   const {events, setEvents} = useContext(CalendarEventsContext);
@@ -62,6 +63,10 @@ function GroupScreen({navigation}) {
     });
   }, [navigation, setGroups, user.name]);
   return <GroupListScreen navigation={navigation} />;
+}
+
+function GroupCalendar({navigation}) {
+  return <GroupCalendarScreen navigation={navigation} />;
 }
 
 function AddEventModalScreen({navigation}) {
@@ -133,6 +138,14 @@ export default function HomeRootStackScreen(props) {
                 color: Colors.DD_CREAM,
               },
             }}>
+            <RootStack.Screen
+              name="GroupCalendar"
+              component={GroupCalendar}
+              options={{
+                headerShown: false,
+                gestureEnabled: false,
+              }}
+            />
             <RootStack.Screen
               name="AddEventModal"
               component={AddEventModalScreen}

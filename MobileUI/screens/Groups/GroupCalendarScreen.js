@@ -138,7 +138,7 @@ const Item = ({i, itemColor, time}) => {
 
 // https://openbase.com/js/react-native-calendar-strip
 // There's stuff in there that talks about localization for datetimes!
-const CalendarScreen = ({navigation, calendarName}) => {
+const GroupCalendarScreen = ({navigation, calendarName}) => {
   const nowDate = new Date();
   const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
   const [items, setItems] = useState({});
@@ -150,11 +150,6 @@ const CalendarScreen = ({navigation, calendarName}) => {
   const user = useContext(UserContext);
 
   this.calendarStrip = React.createRef();
-
-  navigation.addListener('drawerItemPress', () => {
-    console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
-    setCurrentCalendarName('My');
-  });
 
   const renderItem = ({item}) => {
     // console.log(items.length);
@@ -256,6 +251,16 @@ const CalendarScreen = ({navigation, calendarName}) => {
           refreshing={isRefreshing}
         />
       </View>
+      <View style={styles.groupScheduleButtons}>
+        <BoxButton
+          title={'Info'}
+          onPress={() => navigation.navigate('InfoModal')}
+        />
+        <BoxButton
+          title={`Let's Meet!`}
+          onPress={() => navigation.navigate('MeetModal')}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -309,7 +314,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CalendarScreen;
+export default GroupCalendarScreen;
 
 //Sources for trying to get drawer navigator to work
 //https://www.youtube.com/watch?v=EaNCi8o8H0A&ab_channel=TheNetNinja

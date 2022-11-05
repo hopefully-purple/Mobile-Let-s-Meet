@@ -32,7 +32,7 @@ export default function GroupListScreen({navigation}) {
       setCurrentCalendarName(group.groupName);
       //Set things up to trigger a correct event grab and calendar name change
       //navigate to calendar
-      navigation.navigate('Home');
+      navigation.navigate('GroupCalendar');
     };
     return (
       <TouchableOpacity onPress={handleGroupPress}>
