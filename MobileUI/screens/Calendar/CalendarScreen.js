@@ -27,23 +27,10 @@ import {
   formatEventTime,
 } from '../../parsingHelpers/DateParsing';
 import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
-import {SmallBoxButton} from '../../assets/components/CustomButtons';
+import {BoxButton} from '../../assets/components/CustomButtons';
 import GroupsContext from '../../contexts/Groups';
 
 const CalendarTitle = props => {
-  const {groups, setGroups} = useContext(GroupsContext);
-
-  function membersString() {
-    // console.log(JSON.stringify(groups, undefined, 2));
-    // var result = groups.find(obj => {
-    //   return obj.name === props.name;
-    // });
-    // console.log(JSON.stringify(result, undefined, 2));
-    // let members = '';
-    // result.members.map(m => (members = members + m.name + ', '));
-    // return members;
-    return 'Feature coming soon!';
-  }
   return (
     <View style={styles.calendarTitle}>
       <Text style={styles.calendarTitleText}>{props.name} Schedule</Text>
@@ -62,12 +49,6 @@ const CalendarTitle = props => {
         /> */}
         <Text style={styles.floatingButtonStyle}>+</Text>
       </TouchableOpacity>
-      {!props.isPersonal && (
-        <SmallBoxButton
-          title={'View Members'}
-          onPress={() => Alert.alert(membersString())}
-        />
-      )}
     </View>
   );
 };
@@ -270,13 +251,26 @@ const CalendarScreen = ({navigation, calendarName}) => {
         iconContainer={{flex: 0.1}}
         ref={this.calendarStrip}
       />
-      <View style={{backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY, height: 600}}>
+      <View
+        style={{backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY, height: '70%'}}>
         <FlatList
           data={items}
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />
       </View>
+      {!isPersonalSchedule && (
+        <View style={styles.groupScheduleButtons}>
+          <BoxButton
+            title={'Info'}
+            onPress={() => navigation.navigate('InfoModal')}
+          />
+          <BoxButton
+            title={`Let's Meet!`}
+            onPress={() => navigation.navigate('MeetModal')}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -322,6 +316,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'baseline',
+  },
+  groupScheduleButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    margin: 15,
   },
 });
 
