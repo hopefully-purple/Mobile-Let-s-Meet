@@ -11,7 +11,11 @@ import {
   Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
-import {BoxButton} from '../../assets/components/CustomButtons';
+import {
+  BoxButton,
+  SmallBoxButton,
+  MiniBoxButton,
+} from '../../assets/components/CustomButtons';
 import {Picker} from '@react-native-picker/picker';
 import Colors from '../../assets/styles/colors';
 
@@ -25,11 +29,18 @@ const TIME_FRAMES = [
   {value: 7, label: 'Within 7 days from now'},
 ];
 
+const DUMMY_SUGGESTIONS = [
+  {id: 0, value: 'Suggestion 1'},
+  {id: 1, value: 'Suggestion 2'},
+  {id: 2, value: 'Suggestion 3'},
+];
+
 export default function LetsMeetModal({navigation}) {
   const [reason, setReason] = useState('');
   const [location, setLocation] = useState('');
   const [selectedTimeFrame, setSelectedTimeFrame] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [suggested, setSuggested] = useState([]);
 
   this.reasonInput = React.createRef();
   this.locationInput = React.createRef();
@@ -40,7 +51,28 @@ export default function LetsMeetModal({navigation}) {
     // this.scrollView.scrollToEnd({animated: true});
     setTimeout(() => {
       setIsLoading(false);
+      setSuggested(DUMMY_SUGGESTIONS);
     }, 3000);
+  };
+
+  const Suggestion = ({s}) => {
+    return (
+      <View
+        key={s.id}
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}>
+        <Text
+          style={{...styles.infoText, alignSelf: 'center', marginRight: 20}}>
+          {s.value}
+        </Text>
+        <MiniBoxButton
+          title={'Accept'}
+          onPress={() => Alert.alert(`Accepted ${s.value}`)}
+        />
+      </View>
+    );
   };
 
   return (
@@ -97,6 +129,10 @@ export default function LetsMeetModal({navigation}) {
               <Text style={styles.defaultScreentext}>Loading...</Text>
             )}
           </View>
+          <Text style={styles.infoText}>Suggestions:</Text>
+          {suggested.map(s => (
+            <Suggestion s={s} />
+          ))}
           <Text> </Text>
         </ScrollView>
       </SafeAreaView>
