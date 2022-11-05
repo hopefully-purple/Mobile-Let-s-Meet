@@ -23,7 +23,6 @@ import {
   constructDateString,
   formatEventTime,
 } from '../../miscHelpers/DateParsing';
-import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
 import {BoxButton} from '../../assets/components/CustomButtons';
 import GroupsContext from '../../contexts/Groups';
 import UserContext from '../../contexts/User';

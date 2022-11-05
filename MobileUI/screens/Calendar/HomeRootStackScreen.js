@@ -11,7 +11,6 @@ import AddGroupModal from '../Groups/AddGroupModal';
 import JoinGroupModal from '../Groups/JoinGroupModal';
 import GroupInfoModal from '../Groups/GroupInfoModal';
 import LetsMeetModal from '../Groups/LetsMeetModal';
-import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
 import {readEventData, readGroupData} from '../../API/APIControllers';
 import UserContext from '../../contexts/User';
 import GroupCalendarScreen from '../Groups/GroupCalendarScreen';

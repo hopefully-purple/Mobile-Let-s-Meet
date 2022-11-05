@@ -4,7 +4,7 @@ import Colors from '../../assets/styles/colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Card} from 'react-native-paper';
 import GroupsContext from '../../contexts/Groups';
-import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
+import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import {BoxButton} from '../../assets/components/CustomButtons';
 
 // https://bobbyhadz.com/blog/react-sort-array-of-objects
@@ -17,9 +17,7 @@ function organizeGroups(groups) {
 
 export default function GroupListScreen({navigation}) {
   const {groups, setGroups} = useContext(GroupsContext);
-  const {currentCalendarName, setCurrentCalendarName} = useContext(
-    CurrentCalendarNameContext,
-  );
+  const {currentGroup, setcurrentGroup} = useContext(CurrentGroupObjectContext);
 
   const GroupBox = ({group}) => {
     const handleGroupPress = () => {
@@ -28,8 +26,8 @@ export default function GroupListScreen({navigation}) {
       console.log(
         'pulling up ' + group.groupName + ' calendar (eventually . . .)',
       );
+      setcurrentGroup(group);
       console.log(JSON.stringify(group, undefined, 2));
-      setCurrentCalendarName(group.groupName);
       //Set things up to trigger a correct event grab and calendar name change
       //navigate to calendar
       navigation.navigate('GroupCalendar');

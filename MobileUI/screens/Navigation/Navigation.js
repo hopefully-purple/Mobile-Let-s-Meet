@@ -11,7 +11,7 @@ import RegistrationScreen from '../RegistrationFlow/RegistrationScreen';
 import BaseRegistration from '../RegistrationFlow/BaseRegistration';
 import LogStateContext from '../../contexts/LoginState';
 import FriendsContext from '../../contexts/Friends';
-import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
+import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import ProfileScreen from '../ProfileScreen';
 import SettingsScreen from '../SettingsScreen';
 import FriendsScreen from '../FriendsScreen';
@@ -70,16 +70,16 @@ const Drawer = createDrawerNavigator();
 export default function Navigation() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [friends, setFriends] = useState([]);
-  const [currentCalendarName, setCurrentCalendarName] = useState('My');
-  console.log('~~~~~~~~~~~' + currentCalendarName + '~~~~~~~~~~');
+  const [currentGroup, setcurrentGroup] = useState({});
+  // console.log('~~~~~~~~~~~' + currentGroup + '~~~~~~~~~~');
 
   let logScreenLabel = isLoggedIn ? 'Log Out' : 'Log In';
   let landing = isLoggedIn ? 'My Schedule' : 'Login';
   return (
     <LogStateContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
       <FriendsContext.Provider value={{friends, setFriends}}>
-        <CurrentCalendarNameContext.Provider
-          value={{currentCalendarName, setCurrentCalendarName}}>
+        <CurrentGroupObjectContext.Provider
+          value={{currentGroup, setcurrentGroup}}>
           <NavigationContainer>
             <Drawer.Navigator
               initialRouteName={landing}
@@ -181,7 +181,7 @@ export default function Navigation() {
               />
             </Drawer.Navigator>
           </NavigationContainer>
-        </CurrentCalendarNameContext.Provider>
+        </CurrentGroupObjectContext.Provider>
       </FriendsContext.Provider>
     </LogStateContext.Provider>
   );
