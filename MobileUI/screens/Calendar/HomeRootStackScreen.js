@@ -18,36 +18,19 @@ import GroupCalendarScreen from '../Groups/GroupCalendarScreen';
 
 function HomeScreen({navigation}) {
   const {events, setEvents} = useContext(CalendarEventsContext);
-  const {currentCalendarName, setCurrentCalendarName} = useContext(
-    CurrentCalendarNameContext,
-  );
   const user = useContext(UserContext);
   useEffect(() => {
     navigation.addListener('focus', async () => {
       // do something
       console.log('-------HomerootStackscreen (For calendar)-------------');
-      // if (events.length === 0) {
-      if (currentCalendarName !== 'My') {
-        console.log(
-          '@@@@@@@@@@@@grabbing events for groups needs to be implemented @@@@@@@@@@@@',
-        );
-        setEvents([]);
-      } else {
-        const data = await readEventData(currentCalendarName, user.name);
-        // console.log(JSON.stringify(data, undefined, 2));
-        console.log('set events to data');
-        setEvents(data);
-      }
-      // }
+
+      const data = await readEventData('My', user.name);
+      // console.log(JSON.stringify(data, undefined, 2));
+      console.log('set events to data');
+      setEvents(data);
     });
-  }, [navigation, setEvents, currentCalendarName, user.name]);
-  console.log('****************' + currentCalendarName + '********');
-  return (
-    <CalendarScreen
-      calendarName={currentCalendarName}
-      navigation={navigation}
-    />
-  );
+  }, [navigation, setEvents, user.name]);
+  return <CalendarScreen navigation={navigation} />;
 }
 
 function GroupScreen({navigation}) {
@@ -66,6 +49,10 @@ function GroupScreen({navigation}) {
 }
 
 function GroupCalendar({navigation}) {
+  console.log(
+    '@@@@@@@@@@@@grabbing events for groups needs to be implemented @@@@@@@@@@@@',
+  );
+  // setEvents([]);
   return <GroupCalendarScreen navigation={navigation} />;
 }
 

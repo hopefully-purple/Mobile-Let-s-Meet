@@ -138,23 +138,15 @@ const Item = ({i, itemColor, time}) => {
 
 // https://openbase.com/js/react-native-calendar-strip
 // There's stuff in there that talks about localization for datetimes!
-const CalendarScreen = ({navigation, calendarName}) => {
+const CalendarScreen = ({navigation}) => {
   const nowDate = new Date();
   const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
   const [items, setItems] = useState({});
   const [isRefreshing, setIsRefreshing] = useState(false);
   const {events, setEvents} = useContext(CalendarEventsContext);
-  const {currentCalendarName, setCurrentCalendarName} = useContext(
-    CurrentCalendarNameContext,
-  );
   const user = useContext(UserContext);
 
   this.calendarStrip = React.createRef();
-
-  navigation.addListener('drawerItemPress', () => {
-    console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
-    setCurrentCalendarName('My');
-  });
 
   const renderItem = ({item}) => {
     // console.log(items.length);
@@ -212,7 +204,7 @@ const CalendarScreen = ({navigation, calendarName}) => {
     //set isRefreshing to true
     setIsRefreshing(true);
     console.log('REFRESHING FLAT LIST!!!!!!');
-    const data = await readEventData(currentCalendarName, user.name); // API call
+    const data = await readEventData('My', user.name); // API call
     // console.log('(CalendarScreen.onRefresh) new event data:');
     // console.log(JSON.stringify(data, undefined, 2));
     setEvents(data);
@@ -227,7 +219,7 @@ const CalendarScreen = ({navigation, calendarName}) => {
   // }, [selectedDay]);
   return (
     <SafeAreaView style={styles.container}>
-      <CalendarTitle name={currentCalendarName} navigation={navigation} />
+      <CalendarTitle name={'My'} navigation={navigation} />
       <CalendarStrip
         selectedDate={selectedDay}
         onDateSelected={handleDateSelected}

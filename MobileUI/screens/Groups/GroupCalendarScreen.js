@@ -24,13 +24,17 @@ import {
   formatEventTime,
 } from '../../miscHelpers/DateParsing';
 import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
-import {BoxButton} from '../../assets/components/CustomButtons';
+import {BoxButton, MiniBoxButton} from '../../assets/components/CustomButtons';
 import GroupsContext from '../../contexts/Groups';
 import UserContext from '../../contexts/User';
 
 const CalendarTitle = props => {
   return (
     <View style={styles.calendarTitle}>
+      <MiniBoxButton
+        title={'< Back'}
+        onPress={() => props.navigation.navigate('Group')}
+      />
       <Text style={styles.calendarTitleText}>{props.name} Schedule</Text>
       <TouchableOpacity
         activeOpacity={0.7}
