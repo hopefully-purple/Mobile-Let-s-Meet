@@ -128,11 +128,11 @@ export default function LetsMeetModal({navigation}) {
           <Text style={styles.infoText}>Meeting duration: 1 hour</Text>
           <View style={styles.button}>
             <BoxButton title={`Let's Meet!`} onPress={handleLetsMeet} />
-            {!!isLoading && (
-              <Text style={styles.defaultScreentext}>Loading...</Text>
-            )}
           </View>
           <Text style={styles.infoText}>Suggestions:</Text>
+          {!!isLoading && (
+            <Text style={styles.defaultScreentext}>Loading...</Text>
+          )}
           {suggested.map(s => (
             <Suggestion s={s} />
           ))}
