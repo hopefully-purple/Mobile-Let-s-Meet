@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {View, Text, Button} from 'react-native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import CalendarScreen from './CalendarScreen';
 import AddEventModal from './AddEventModal';
 import Colors from '../../assets/styles/colors';
@@ -9,6 +9,8 @@ import GroupsContext from '../../contexts/Groups';
 import GroupListScreen from '../Groups/GroupListScreen';
 import AddGroupModal from '../Groups/AddGroupModal';
 import JoinGroupModal from '../Groups/JoinGroupModal';
+import GroupInfoModal from '../Groups/GroupInfoModal';
+import LetsMeetModal from '../Groups/LetsMeetModal';
 import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
 import {readEventData, readGroupData} from '../../API/APIControllers';
 import UserContext from '../../contexts/User';
@@ -72,6 +74,14 @@ function AddGroupModalScreen({navigation}) {
 
 function JoinGroupModalScreen({navigation}) {
   return <JoinGroupModal navigation={navigation} />;
+}
+
+function InfoModalOverlay({navigation}) {
+  return <GroupInfoModal navigation={navigation} />;
+}
+
+function MeetModalOverlay({navigation}) {
+  return <LetsMeetModal navigation={navigation} />;
 }
 
 const RootStack = createStackNavigator();
@@ -190,14 +200,40 @@ export default function HomeRootStackScreen(props) {
                     title="Cancel"
                   />
                 ),
-                // headerRight: () => (
-                //   <Button
-                //     onPress={() => {
-                //       props.navigation.navigate('Group');
-                //     }}
-                //     title="Done"
-                //   />
-                // ),
+              }}
+            />
+            <RootStack.Screen
+              name="InfoModal"
+              component={InfoModalOverlay}
+              options={{
+                presentation: 'modal',
+                headerShown: false,
+                cardOverlayEnabled: true,
+                gestureEnabled: true,
+                gestureDirection: 'vertical',
+                gestureResponseDistance: 500,
+                cardStyle: {
+                  backgroundColor: 'transparent',
+                  opacity: 0.99,
+                  // borderRadius: 10,
+                },
+              }}
+            />
+            <RootStack.Screen
+              name="MeetModal"
+              component={MeetModalOverlay}
+              options={{
+                presentation: 'modal',
+                headerShown: false,
+                cardOverlayEnabled: true,
+                gestureEnabled: true,
+                gestureDirection: 'vertical',
+                gestureResponseDistance: 500,
+                cardStyle: {
+                  backgroundColor: 'transparent',
+                  opacity: 0.99,
+                  // borderRadius: 10,
+                },
               }}
             />
           </RootStack.Group>

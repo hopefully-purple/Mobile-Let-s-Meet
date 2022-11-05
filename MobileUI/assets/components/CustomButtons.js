@@ -31,9 +31,30 @@ export const SmallBoxButton = props => {
   );
 };
 
+export const MiniBoxButton = props => {
+  const {onPress, title = 'Yes'} = props;
+  return (
+    <TouchableOpacity style={styles.miniBoxButton} onPress={onPress}>
+      <Text style={styles.miniBoxButtonText}>{title}</Text>
+    </TouchableOpacity>
+  );
+};
+
 const styles = StyleSheet.create({
+  miniBoxButtonText: {
+    fontSize: 15,
+    color: Colors.DD_RED_2,
+  },
+  miniBoxButton: {
+    alignSelf: 'flex-start', //<<< !! This is what makes the width adjust to content size
+    backgroundColor: Colors.DD_CREAM,
+    borderColor: Colors.DD_RED_2,
+    borderWidth: 2,
+    padding: 5,
+    borderRadius: 5,
+  },
   smallBoxButtonText: {
-    fontSize: 10,
+    fontSize: 20,
     // fontWeight: '500',
     color: Colors.DD_RED_2,
     // textAlign: 'center',
@@ -45,7 +66,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.DD_RED_2,
     borderWidth: 2,
     padding: 10,
-    margin: 5,
+    marginVertical: 20,
+    marginHorizontal: 18,
     borderRadius: 5,
   },
   boxButtonText: {
