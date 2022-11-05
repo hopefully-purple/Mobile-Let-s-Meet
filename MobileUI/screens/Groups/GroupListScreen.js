@@ -28,6 +28,7 @@ export default function GroupListScreen({navigation}) {
       console.log(
         'pulling up ' + group.groupName + ' calendar (eventually . . .)',
       );
+      console.log(JSON.stringify(group, undefined, 2));
       setCurrentCalendarName(group.groupName);
       //Set things up to trigger a correct event grab and calendar name change
       //navigate to calendar

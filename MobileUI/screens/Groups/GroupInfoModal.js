@@ -13,6 +13,7 @@ import Colors from '../../assets/styles/colors';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {bareBonesFriendsList} from '../../assets/data/HardCodedFriends';
 import {accurateGetGroupResult} from '../../assets/data/HardCodedGroups';
+import GroupsContext from '../../contexts/Groups';
 // https://stackoverflow.com/questions/48992961/react-navigation-modal-height
 
 const Item = ({name}) => {
@@ -24,7 +25,9 @@ const Item = ({name}) => {
 };
 
 export default function GroupInfoModal({navigation}) {
-  console.log(accurateGetGroupResult[0]);
+  const groups = useContext(GroupsContext);
+  // console.log(accurateGetGroupResult[0]);
+  // console.log()
   const copyToClipboard = () => {
     Clipboard.setString('hello world');
     Alert.alert('hello world has been copied to your clipboard!');
