@@ -7,16 +7,16 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import Colors from '../assets/styles/colors';
+import Colors from '../../assets/styles/colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Card, TextInput} from 'react-native-paper';
-import FriendsContext from '../contexts/Friends';
-import {BoxButton} from '../assets/components/CustomButtons';
+import FriendsContext from '../../contexts/Friends';
+import {BoxButton} from '../../assets/components/CustomButtons';
 import {
   friendsGetSentRequests,
   friendsCreateFriendRequestByEmail,
-} from '../API/FriendsAPIHandling';
-import UserContext from '../contexts/User';
+} from '../../API/FriendsAPIHandling';
+import UserContext from '../../contexts/User';
 
 // https://bobbyhadz.com/blog/react-sort-array-of-objects
 function organizeFriends(friends) {
@@ -107,20 +107,6 @@ export default function FriendsScreen({navigation}) {
   const showPendingSent = pendingFriendsList.length > 0;
   return (
     <SafeAreaView style={styles.screenContainer}>
-      <TextInput
-        label="Enter a new friend's email"
-        value={newFriendEmail}
-        onChangeText={text => setNewFriendEmail(text)}
-        mode="outlined"
-        style={styles.input}
-        activeOutlineColor={Colors.DD_RED_2}
-        autoCorrect={false}
-        autoCapitalize="none"
-        ref={this.friendEmailInput}
-      />
-      <View style={styles.buttons}>
-        <BoxButton title={'Add New Friend'} onPress={addFriendHandler} />
-      </View>
       {showPendingSent && (
         <Text style={styles.defaultScreentext}>
           Sent Pending Requests: {sentPendingReqsString}
@@ -135,6 +121,20 @@ export default function FriendsScreen({navigation}) {
         keyExtractor={item => item.id}
         style={{marginTop: 10}}
       />
+      <TextInput
+        label="Enter a new friend's email"
+        value={newFriendEmail}
+        onChangeText={text => setNewFriendEmail(text)}
+        mode="outlined"
+        style={styles.input}
+        activeOutlineColor={Colors.DD_RED_2}
+        autoCorrect={false}
+        autoCapitalize="none"
+        ref={this.friendEmailInput}
+      />
+      <View style={styles.buttons}>
+        <BoxButton title={'Add New Friend'} onPress={addFriendHandler} />
+      </View>
     </SafeAreaView>
   );
 }

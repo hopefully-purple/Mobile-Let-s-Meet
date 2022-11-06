@@ -14,6 +14,9 @@ import LetsMeetModal from '../Groups/LetsMeetModal';
 import {readEventData, readGroupData} from '../../API/APIControllers';
 import UserContext from '../../contexts/User';
 import GroupCalendarScreen from '../Groups/GroupCalendarScreen';
+import FriendsScreen from '../Friends/FriendsScreen';
+import FriendsContext from '../../contexts/Friends';
+import {friendsGetFriends} from '../../API/FriendsAPIHandling';
 
 function HomeScreen({navigation}) {
   const {events, setEvents} = useContext(CalendarEventsContext);
@@ -75,6 +78,21 @@ function MeetModalOverlay({navigation}) {
   return <LetsMeetModal navigation={navigation} />;
 }
 
+function FriendScreen({navigation}) {
+  const {friends, setFriends} = useContext(FriendsContext);
+  const user = useContext(UserContext);
+  useEffect(() => {
+    navigation.addListener('focus', async () => {
+      console.log('-------Navigation (For Friends)-------------');
+      const data = await friendsGetFriends(user.name);
+      // console.log(JSON.stringify(data, undefined, 2));
+      console.log('set friends to data');
+      setFriends(data);
+    });
+  }, [navigation, setFriends, user.name]);
+  return <FriendsScreen navigation={navigation} />;
+}
+
 const RootStack = createStackNavigator();
 
 export default function HomeRootStackScreen(props) {
@@ -83,13 +101,13 @@ export default function HomeRootStackScreen(props) {
   // const {currentCalendar, setCurrentCalendar} = useContext(
   //   CurrentCalendarContext,
   // );
-
+  console.log('-------------------' + props.calendarName + '-----------------');
   return (
     <GroupsContext.Provider value={{groups, setGroups}}>
       <CalendarEventsContext.Provider value={{events, setEvents}}>
         <RootStack.Navigator>
           <RootStack.Group>
-            {props.calendarName !== 'My' ? (
+            {props.calendarName === 'Group' && (
               <RootStack.Screen
                 name="Group"
                 component={GroupScreen}
@@ -107,12 +125,32 @@ export default function HomeRootStackScreen(props) {
                   },
                 }}
               />
-            ) : (
+            )}
+            {props.calendarName === 'My' && (
               <RootStack.Screen
                 name="Home"
                 component={HomeScreen}
                 options={{
                   headerShown: false,
+                }}
+              />
+            )}
+            {props.calendarName === 'Friends' && (
+              <RootStack.Screen
+                name="Friend"
+                component={FriendScreen}
+                options={{
+                  title: 'Friends',
+                  headerShown: true,
+                  headerStyle: {
+                    backgroundColor: Colors.DD_RED_2,
+                  },
+                  headerTitleStyle: {
+                    color: Colors.DD_CREAM,
+                    fontSize: 25,
+                    fontWeight: '500',
+                    marginBottom: 10,
+                  },
                 }}
               />
             )}
