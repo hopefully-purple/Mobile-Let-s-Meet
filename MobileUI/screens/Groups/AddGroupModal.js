@@ -72,7 +72,14 @@ export default function AddGroupModal({navigation}) {
       // ASYNC Stuff
       if (!apiResult) {
         //Save to async storage (for now until dev server is fixed)
-        asyncSaveDataResult = await saveData(newGroup);
+        const asyncNewGroup = {
+          groupID: `${groups.length + 1} ${newGroupName}`,
+          groupName: newGroupName,
+          joinCode: '5-fa746dbd',
+        };
+        let newG = groups;
+        newG.push(asyncNewGroup);
+        asyncSaveDataResult = await saveData(newG);
       }
 
       //Clear inputs
