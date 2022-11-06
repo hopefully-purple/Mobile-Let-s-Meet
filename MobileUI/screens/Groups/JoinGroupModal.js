@@ -7,6 +7,7 @@ import {
   Keyboard,
   Button,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,6 +19,8 @@ import {
 } from 'react-native-vision-camera';
 import {BoxButton} from '../../assets/components/CustomButtons';
 import {CaptureButton} from './views/CaptureButton';
+import UserContext from '../../contexts/User';
+import {groupJoinGroup} from '../../API/GroupsAPIHandling';
 
 // https://mrousavy.com/react-native-vision-camera/docs/guides/
 // https://github.com/mrousavy/react-native-vision-camera/blob/1d6f720f8b499c03e91de32fabce64e9db293702/example/src/App.tsx
@@ -25,6 +28,7 @@ import {CaptureButton} from './views/CaptureButton';
 
 export default function JoinGroupModal({navigation}) {
   const [joinGroupLink, setJoinGroupLink] = useState('');
+  const user = useContext(UserContext);
 
   const camera = useRef();
   const [cameraPermission, setCameraPermission] = useState();
@@ -57,6 +61,18 @@ export default function JoinGroupModal({navigation}) {
   //   }
   // }, [camera, onMediaCaptured, takePhotoOptions]);
 
+  const handleLinkSubmit = async () => {
+    console.log('Group Link! ' + joinGroupLink);
+    const response = await groupJoinGroup(joinGroupLink, user.name);
+    if (!response) {
+      Alert.alert('Failed to join group :(');
+    } else {
+      Alert.alert('Successfully joined group!');
+      navigation.goBack();
+    }
+    this.joinGroupLinkInput.current.clear();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <TextInput
@@ -67,6 +83,7 @@ export default function JoinGroupModal({navigation}) {
         style={styles.input}
         activeOutlineColor={Colors.DD_RED_2}
         autoCorrect={false}
+        onSubmitEditing={handleLinkSubmit}
         ref={this.joinGroupLinkInput}
       />
       <BoxButton
