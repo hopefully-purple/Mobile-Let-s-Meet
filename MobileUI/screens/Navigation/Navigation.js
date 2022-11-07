@@ -14,8 +14,6 @@ import FriendsContext from '../../contexts/Friends';
 import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import ProfileScreen from '../ProfileScreen';
 import SettingsScreen from '../SettingsScreen';
-import FriendsScreen from '../FriendsScreen';
-import {friendsGetFriends} from '../../API/FriendsAPIHandling';
 import UserContext from '../../contexts/User';
 
 //Important links
@@ -51,18 +49,7 @@ function LoggingScreen({navigation}) {
 }
 
 function FriendScreen({navigation}) {
-  const {friends, setFriends} = useContext(FriendsContext);
-  const user = useContext(UserContext);
-  useEffect(() => {
-    navigation.addListener('focus', async () => {
-      console.log('-------Navigation (For Friends)-------------');
-      const data = await friendsGetFriends(user.name);
-      // console.log(JSON.stringify(data, undefined, 2));
-      console.log('set friends to data');
-      setFriends(data);
-    });
-  }, [navigation, setFriends, user.name]);
-  return <FriendsScreen navigation={navigation} />;
+  return <HomeRootStackScreen calendarName="Friends" navigation={navigation} />;
 }
 
 const Drawer = createDrawerNavigator();
@@ -128,17 +115,20 @@ export default function Navigation() {
                   name="Friends"
                   component={FriendScreen}
                   options={{
-                    headerStyle: {
-                      backgroundColor: Colors.DD_RED_2,
-                    },
-                    headerTitleStyle: {
-                      color: Colors.DD_CREAM,
-                      fontSize: 25,
-                      fontWeight: '500',
-                      marginBottom: 10,
-                    },
-                    headerBackVisible: false,
+                    headerShown: false,
                   }}
+                  // options={{
+                  //   headerStyle: {
+                  //     backgroundColor: Colors.DD_RED_2,
+                  //   },
+                  //   headerTitleStyle: {
+                  //     color: Colors.DD_CREAM,
+                  //     fontSize: 25,
+                  //     fontWeight: '500',
+                  //     marginBottom: 10,
+                  //   },
+                  //   headerBackVisible: false,
+                  // }}
                 />
               )}
               {isLoggedIn && (

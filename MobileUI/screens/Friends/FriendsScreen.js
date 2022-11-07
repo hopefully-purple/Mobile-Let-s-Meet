@@ -7,16 +7,16 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import Colors from '../assets/styles/colors';
+import Colors from '../../assets/styles/colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Card, TextInput} from 'react-native-paper';
-import FriendsContext from '../contexts/Friends';
-import {BoxButton} from '../assets/components/CustomButtons';
+import FriendsContext from '../../contexts/Friends';
+import {BoxButton} from '../../assets/components/CustomButtons';
 import {
   friendsGetSentRequests,
   friendsCreateFriendRequestByEmail,
-} from '../API/FriendsAPIHandling';
-import UserContext from '../contexts/User';
+} from '../../API/FriendsAPIHandling';
+import UserContext from '../../contexts/User';
 
 // https://bobbyhadz.com/blog/react-sort-array-of-objects
 function organizeFriends(friends) {
@@ -27,7 +27,6 @@ function organizeFriends(friends) {
 
 export default function FriendsScreen({navigation}) {
   const [newFriendEmail, setNewFriendEmail] = useState('');
-  const [sentPendingReqsString, setSentPendingReqsString] = useState('');
   const {friends, setFriends} = useContext(FriendsContext);
   const user = useContext(UserContext);
 
@@ -56,25 +55,6 @@ export default function FriendsScreen({navigation}) {
     return <FriendBox friend={item} />;
   };
 
-  const [pendingFriendsList, setPendingFriendsList] = useState([]);
-  // useEffect(
-  //   function createPendingFriendsList() {
-  //     const makeGetSentRequestsAPIRequest = async () => {
-  //       const data = await friendsGetSentRequests(user.name);
-  //       // console.log(JSON.stringify(data, undefined, 2));
-  //       console.log('set pending friends to data');
-  //       setPendingFriendsList(data);
-  //     };
-
-  //     // if (pendingFriendsList.length === 0) {
-  //     makeGetSentRequestsAPIRequest();
-  //     // }
-  //     // console.log('create new pending friends list');
-  //     // const newFlatL = organizeFriends(pendingFriendsList);
-  //     // setPendingFriendsList(newFlatL);
-  //   },
-  //   [pendingFriendsList],
-  // );
   const [existingFriendsList, setExistingFriendsList] = useState([]);
   useEffect(
     function createExistingFriendsList() {
@@ -86,12 +66,6 @@ export default function FriendsScreen({navigation}) {
 
   const addFriendHandler = async () => {
     console.log('Create friend request to ' + newFriendEmail);
-    let newPending = [];
-    newPending = pendingFriendsList;
-    newPending.push({id: pendingFriendsList.length + 1, email: newFriendEmail});
-    setPendingFriendsList(newPending);
-
-    setSentPendingReqsString(sentPendingReqsString + newFriendEmail + ', ');
 
     let result = await friendsCreateFriendRequestByEmail(
       newFriendEmail,
@@ -104,29 +78,10 @@ export default function FriendsScreen({navigation}) {
     this.friendEmailInput.current.clear();
     this.friendEmailInput.current.blur();
   };
-  const showPendingSent = pendingFriendsList.length > 0;
+
   return (
     <SafeAreaView style={styles.screenContainer}>
-      <TextInput
-        label="Enter a new friend's email"
-        value={newFriendEmail}
-        onChangeText={text => setNewFriendEmail(text)}
-        mode="outlined"
-        style={styles.input}
-        activeOutlineColor={Colors.DD_RED_2}
-        autoCorrect={false}
-        autoCapitalize="none"
-        ref={this.friendEmailInput}
-      />
-      <View style={styles.buttons}>
-        <BoxButton title={'Add New Friend'} onPress={addFriendHandler} />
-      </View>
-      {showPendingSent && (
-        <Text style={styles.defaultScreentext}>
-          Sent Pending Requests: {sentPendingReqsString}
-        </Text>
-      )}
-      <Text style={{...styles.defaultScreentext, marginTop: 20}}>
+      <Text style={{...styles.defaultScreentext, marginTop: -30}}>
         My Friends:
       </Text>
       <FlatList
@@ -135,6 +90,24 @@ export default function FriendsScreen({navigation}) {
         keyExtractor={item => item.id}
         style={{marginTop: 10}}
       />
+      <View style={styles.buttons}>
+        <TextInput
+          label="Enter a new friend's email"
+          value={newFriendEmail}
+          onChangeText={text => setNewFriendEmail(text)}
+          mode="outlined"
+          style={styles.input}
+          activeOutlineColor={Colors.DD_RED_2}
+          autoCorrect={false}
+          autoCapitalize="none"
+          ref={this.friendEmailInput}
+        />
+        <BoxButton title={'Add New Friend'} onPress={addFriendHandler} />
+        <BoxButton
+          title={'View Requests'}
+          onPress={() => navigation.navigate('RequestsModal')}
+        />
+      </View>
     </SafeAreaView>
   );
 }
@@ -155,9 +128,13 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   buttons: {
-    flexDirection: 'row',
-    // position: 'absolute',
-    margin: 10,
+    // backgroundColor: Colors.DD_RED_2,
+    borderTopColor: Colors.DD_RED_2,
+    borderTopWidth: 10,
+    width: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: 10,
   },
   cardStyle: {
     backgroundColor: Colors.DD_CREAM,
