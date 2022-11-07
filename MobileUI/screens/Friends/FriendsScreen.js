@@ -129,6 +129,8 @@ const styles = StyleSheet.create({
   },
   buttons: {
     // backgroundColor: Colors.DD_RED_2,
+    borderTopColor: Colors.DD_RED_2,
+    borderTopWidth: 10,
     width: '100%',
     flexDirection: 'column',
     alignItems: 'center',
