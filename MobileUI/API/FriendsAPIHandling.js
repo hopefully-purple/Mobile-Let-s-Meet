@@ -58,7 +58,11 @@ export async function friendsGetSentRequests(userName) {
   } catch (err) {
     console.log('something went wrong with friendsGetSentRequests: ' + err);
     // throw err;
-    return [];
+    return [
+      {id: 0, name: 'NewFriend1'},
+      {id: 1, name: 'NewFriend2'},
+      {id: 2, name: 'NewFriend3'},
+    ];
   }
 }
 
@@ -68,7 +72,7 @@ export async function friendsGetSentRequests(userName) {
  * @param {string} userName The name of current user for extraction of token
  * @returns json array of recieved friend requests
  */
-export async function friendsGetRecievedRequests(userName) {
+export async function friendsGetReceivedRequests(userName) {
   console.log('(FAPIHandling) Beginning of GetReceivedRequests');
   let user = await getUsernameValue(userName);
   try {
@@ -88,7 +92,11 @@ export async function friendsGetRecievedRequests(userName) {
   } catch (err) {
     console.log('something went wrong with friendsGetReceivedRequests: ' + err);
     // throw err;
-    return [];
+    return [
+      {id: 0, name: 'NewFriend4'},
+      {id: 1, name: 'NewFriend5'},
+      {id: 2, name: 'NewFriend6'},
+    ];
   }
 }
 

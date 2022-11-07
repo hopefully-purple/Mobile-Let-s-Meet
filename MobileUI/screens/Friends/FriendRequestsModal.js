@@ -3,20 +3,22 @@ import {
   Text,
   StyleSheet,
   View,
+  SafeAreaView,
   FlatList,
-  TouchableOpacity,
-  Button,
   Alert,
 } from 'react-native';
-import {SmallBoxButton} from '../../assets/components/CustomButtons';
+import {MiniBoxButton} from '../../assets/components/CustomButtons';
 import Colors from '../../assets/styles/colors';
-import Clipboard from '@react-native-clipboard/clipboard';
-import {bareBonesFriendsList} from '../../assets/data/HardCodedFriends';
-import {accurateGetGroupResult} from '../../assets/data/HardCodedGroups';
-import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
+import {
+  friendsGetSentRequests,
+  friendsGetReceivedRequests,
+  friendsAcceptRequest,
+  friendsRejectRequest,
+} from '../../API/FriendsAPIHandling';
+import UserContext from '../../contexts/User';
 // https://stackoverflow.com/questions/48992961/react-navigation-modal-height
 
-const Item = ({name}) => {
+const SentItem = ({name}) => {
   return (
     <View style={styles.item}>
       <Text style={styles.listText}>{name}</Text>
@@ -24,49 +26,94 @@ const Item = ({name}) => {
   );
 };
 
-export default function FriendRequestModal({navigation}) {
-  const group = useContext(CurrentGroupObjectContext).currentGroup;
+export default function FriendRequestModal({
+  navigation,
+  sentRequests,
+  receivedRequests,
+}) {
+  // console.log('sentRequests = ' + JSON.stringify(sentRequests, undefined, 2));
+  // const [sentReqs, setSentReqs] = useState(sentRequests);
+  // const [receivedReqs, setReceivedReqs] = useState(receivedRequests);
+  const user = useContext(UserContext);
+  console.log('sentReqs = ' + JSON.stringify(sentRequests, undefined, 2));
+  console.log(
+    'receivedReqs = ' + JSON.stringify(receivedRequests, undefined, 2),
+  );
 
-  const copyToClipboard = () => {
-    Clipboard.setString('hello world');
-    Alert.alert('hello world has been copied to your clipboard!');
+  const ReceivedItem = ({item}) => {
+    return (
+      <View
+        key={item.id}
+        style={{
+          ...styles.item,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}>
+        <Text style={{...styles.listText, alignSelf: 'center'}}>
+          {item.name}
+        </Text>
+        <View style={styles.acceptRejectButtons}>
+          <MiniBoxButton
+            title={'Accept'}
+            onPress={async () => {
+              await friendsAcceptRequest(item, user.name);
+              Alert.alert(`Accepted ${item.name} request`);
+            }}
+          />
+        </View>
+        <View style={styles.acceptRejectButtons}>
+          <MiniBoxButton
+            title={'Reject'}
+            onPress={async () => {
+              await friendsRejectRequest(item, user.name);
+              Alert.alert(`Rejected ${item.name} request`);
+            }}
+          />
+        </View>
+      </View>
+    );
   };
 
-  const handleQR = () => {
-    Alert.alert('display QR code here');
+  const renderSentItem = ({item}) => {
+    return <SentItem name={item.name} />;
   };
 
-  const renderItem = ({item}) => {
-    return <Item name={`${item.firstName} ${item.lastName}`} />;
+  const renderReceivedItem = ({item}) => {
+    return <ReceivedItem item={item} />;
   };
 
   return (
     <View style={styles.screenContainer}>
-      <View style={styles.innerContainer}>
+      <SafeAreaView style={styles.innerContainer}>
         <View style={styles.creamKnob} />
-        <View style={styles.bodyContainer}>
-          <View style={styles.mainHeader}>
-            <Text style={styles.membersHeaderText}>Members:</Text>
-            <Text style={styles.generationHeaderText}>Invite:</Text>
+        <SafeAreaView style={styles.bodyContainer}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>Received Requests:</Text>
           </View>
-          <View style={styles.mainBody}>
+          <View style={styles.flatListWrapper}>
             <View style={styles.flatListStyle}>
               <FlatList
-                data={group.users}
-                renderItem={renderItem}
-                keyExtractor={item => item.userID}
+                data={receivedRequests}
+                renderItem={renderReceivedItem}
+                keyExtractor={item => item.id}
               />
-            </View>
-            <View style={styles.generationSide}>
-              <SmallBoxButton
-                title={'Generate invite link'}
-                onPress={copyToClipboard}
-              />
-              <SmallBoxButton title={'Generate invite QR'} onPress={handleQR} />
             </View>
           </View>
-        </View>
-      </View>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>Sent Requests:</Text>
+          </View>
+          <View style={styles.flatListWrapper}>
+            <View style={styles.flatListStyle}>
+              <FlatList
+                data={sentRequests}
+                // data={[]}
+                renderItem={renderSentItem}
+                keyExtractor={item => item.id}
+              />
+            </View>
+          </View>
+        </SafeAreaView>
+      </SafeAreaView>
     </View>
   );
 }
@@ -81,6 +128,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: Colors.DD_RED_2,
     borderRadius: 10,
+    paddingBottom: 10,
   },
   creamKnob: {
     alignSelf: 'center',
@@ -94,44 +142,24 @@ const styles = StyleSheet.create({
     height: '80%',
     backgroundColor: Colors.DD_CREAM,
     padding: 5,
+    marginBottom: 100,
+    // justifyContent: 'space-evenly',
   },
-  mainHeader: {
+  header: {
     // backgroundColor: Colors.DD_LIGHT_GRAY,
     flexDirection: 'row',
   },
-  membersHeaderText: {
+  headerText: {
     fontSize: 25,
     fontWeight: 'bold',
     color: Colors.DD_MEDIUM_GRAY,
     paddingLeft: 5,
   },
-  generationHeaderText: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: Colors.DD_MEDIUM_GRAY,
-    marginLeft: 120,
-  },
-  mainBody: {
+  flatListWrapper: {
     // backgroundColor: Colors.DD_WHITE,
     flexDirection: 'row',
-    height: '90%',
-  },
-  generationSide: {
-    // backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY,
-    flexDirection: 'column',
-    borderLeftWidth: 5,
-    borderColor: Colors.DD_LIGHT_GRAY,
-    margin: 20,
-    justifyContent: 'center',
-    flexShrink: 1,
-  },
-  generationText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.DD_MEDIUM_GRAY,
-    textAlign: 'center',
-    paddingVertical: 20,
-    paddingHorizontal: 10,
+    height: '40%',
+    width: '90%',
   },
   flatListStyle: {
     // backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY,
@@ -145,6 +173,11 @@ const styles = StyleSheet.create({
   },
   listText: {
     fontSize: 20,
+    marginRight: 20,
     color: Colors.DD_MEDIUM_GRAY,
+  },
+  acceptRejectButtons: {
+    // flexDirection: 'row',
+    marginRight: 10,
   },
 });

@@ -16,7 +16,12 @@ import UserContext from '../../contexts/User';
 import GroupCalendarScreen from '../Groups/GroupCalendarScreen';
 import FriendsScreen from '../Friends/FriendsScreen';
 import FriendsContext from '../../contexts/Friends';
-import {friendsGetFriends} from '../../API/FriendsAPIHandling';
+import {
+  friendsGetSentRequests,
+  friendsGetFriends,
+  friendsGetReceivedRequests,
+} from '../../API/FriendsAPIHandling';
+import FriendRequestModal from '../Friends/FriendRequestsModal';
 
 function HomeScreen({navigation}) {
   const {events, setEvents} = useContext(CalendarEventsContext);
@@ -93,6 +98,32 @@ function FriendScreen({navigation}) {
   return <FriendsScreen navigation={navigation} />;
 }
 
+function RequestsModalOverlay({navigation}) {
+  const [sent, setSent] = useState([]);
+  const [received, setReceived] = useState([]);
+  const user = useContext(UserContext);
+  // useEffect(() => {
+  navigation.addListener('focus', async () => {
+    console.log('-------Navigation (For RequestsOVerlay)-------------');
+    const dataSent = await friendsGetSentRequests(user.name);
+    const dataRec = await friendsGetReceivedRequests(user.name);
+    // console.log(JSON.stringify(data, undefined, 2));
+    console.log('set sent to dataSent and received to dataRec');
+    setSent(dataSent);
+    setReceived(dataRec);
+  });
+  // }, [navigation, user.name]);
+  console.log(JSON.stringify(sent, undefined, 2));
+  console.log(JSON.stringify(received, undefined, 2));
+  return (
+    <FriendRequestModal
+      navigation={navigation}
+      sentRequests={sent}
+      receivedRequests={received}
+    />
+  );
+}
+
 const RootStack = createStackNavigator();
 
 export default function HomeRootStackScreen(props) {
@@ -101,7 +132,11 @@ export default function HomeRootStackScreen(props) {
   // const {currentCalendar, setCurrentCalendar} = useContext(
   //   CurrentCalendarContext,
   // );
-  console.log('-------------------' + props.calendarName + '-----------------');
+  console.log(
+    '(HomeRootStackScreen)-------------------' +
+      props.calendarName +
+      '-----------------',
+  );
   return (
     <GroupsContext.Provider value={{groups, setGroups}}>
       <CalendarEventsContext.Provider value={{events, setEvents}}>
@@ -252,7 +287,6 @@ export default function HomeRootStackScreen(props) {
                 cardStyle: {
                   backgroundColor: 'transparent',
                   opacity: 0.99,
-                  // borderRadius: 10,
                 },
               }}
             />
@@ -269,7 +303,22 @@ export default function HomeRootStackScreen(props) {
                 cardStyle: {
                   backgroundColor: 'transparent',
                   opacity: 0.99,
-                  // borderRadius: 10,
+                },
+              }}
+            />
+            <RootStack.Screen
+              name="RequestsModal"
+              component={RequestsModalOverlay}
+              options={{
+                presentation: 'modal',
+                headerShown: false,
+                cardOverlayEnabled: true,
+                gestureEnabled: true,
+                gestureDirection: 'vertical',
+                gestureResponseDistance: 500,
+                cardStyle: {
+                  backgroundColor: 'transparent',
+                  opacity: 0.99,
                 },
               }}
             />

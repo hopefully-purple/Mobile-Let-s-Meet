@@ -3,6 +3,7 @@ import {
   Text,
   StyleSheet,
   View,
+  SafeAreaView,
   FlatList,
   TouchableOpacity,
   Button,
@@ -42,7 +43,7 @@ export default function GroupInfoModal({navigation}) {
 
   return (
     <View style={styles.screenContainer}>
-      <View style={styles.innerContainer}>
+      <SafeAreaView style={styles.innerContainer}>
         <View style={styles.creamKnob} />
         <View style={styles.bodyContainer}>
           <View style={styles.mainHeader}>
@@ -66,7 +67,7 @@ export default function GroupInfoModal({navigation}) {
             </View>
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     </View>
   );
 }
