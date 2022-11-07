@@ -35,12 +35,10 @@ export default function FriendRequestModal({
   // const [sentReqs, setSentReqs] = useState(sentRequests);
   // const [receivedReqs, setReceivedReqs] = useState(receivedRequests);
   const user = useContext(UserContext);
-  console.log('sentReqs = ' + JSON.stringify(sentRequests, undefined, 2));
-  console.log(
-    'receivedReqs = ' + JSON.stringify(receivedRequests, undefined, 2),
-  );
 
   const ReceivedItem = ({item}) => {
+    const [showAccRej, setShowAccRej] = useState(true);
+    const [result, setResult] = useState('');
     return (
       <View
         key={item.id}
@@ -52,24 +50,37 @@ export default function FriendRequestModal({
         <Text style={{...styles.listText, alignSelf: 'center'}}>
           {item.name}
         </Text>
-        <View style={styles.acceptRejectButtons}>
-          <MiniBoxButton
-            title={'Accept'}
-            onPress={async () => {
-              await friendsAcceptRequest(item, user.name);
-              Alert.alert(`Accepted ${item.name} request`);
-            }}
-          />
-        </View>
-        <View style={styles.acceptRejectButtons}>
-          <MiniBoxButton
-            title={'Reject'}
-            onPress={async () => {
-              await friendsRejectRequest(item, user.name);
-              Alert.alert(`Rejected ${item.name} request`);
-            }}
-          />
-        </View>
+        {showAccRej && (
+          <View style={styles.acceptRejectButtons}>
+            <MiniBoxButton
+              title={'Accept'}
+              onPress={async () => {
+                await friendsAcceptRequest(item, user.name);
+                Alert.alert(`Accepted ${item.name} request`);
+                setShowAccRej(false);
+                setResult('Accepted');
+              }}
+            />
+          </View>
+        )}
+        {showAccRej && (
+          <View style={styles.acceptRejectButtons}>
+            <MiniBoxButton
+              title={'Reject'}
+              onPress={async () => {
+                await friendsRejectRequest(item, user.name);
+                Alert.alert(`Rejected ${item.name} request`);
+                setShowAccRej(false);
+                setResult('Rejected');
+              }}
+            />
+          </View>
+        )}
+        {!showAccRej && (
+          <Text style={{...styles.listText, fontStyle: 'italic'}}>
+            {result}
+          </Text>
+        )}
       </View>
     );
   };
