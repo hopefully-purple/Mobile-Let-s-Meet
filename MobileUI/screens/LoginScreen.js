@@ -97,7 +97,7 @@ const LoginScreen = ({navigation}) => {
           No account? Click to sign up
         </Text>
         <TextInput
-          placeholder="User Name"
+          placeholder="Username"
           style={styles.userName}
           placeholderTextColor={Colors.DD_LIGHT_GRAY}
           onChangeText={newText => setName(newText)}
