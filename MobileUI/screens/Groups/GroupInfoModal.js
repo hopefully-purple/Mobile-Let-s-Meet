@@ -12,9 +12,14 @@ import {
 import {SmallBoxButton} from '../../assets/components/CustomButtons';
 import Colors from '../../assets/styles/colors';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {
+  groupsGenerateLink,
+  groupsGenerateQRCode,
+} from '../../API/GroupsAPIHandling';
 import {bareBonesFriendsList} from '../../assets/data/HardCodedFriends';
 import {accurateGetGroupResult} from '../../assets/data/HardCodedGroups';
 import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
+import UserContext from '../../contexts/User';
 // https://stackoverflow.com/questions/48992961/react-navigation-modal-height
 
 const Item = ({name}) => {
@@ -27,14 +32,17 @@ const Item = ({name}) => {
 
 export default function GroupInfoModal({navigation}) {
   const group = useContext(CurrentGroupObjectContext).currentGroup;
+  const user = useContext(UserContext);
 
-  const copyToClipboard = () => {
-    Clipboard.setString('hello world');
+  const copyToClipboard = async () => {
+    const link = await groupsGenerateLink(group.groupID, user.name);
+    Clipboard.setString(link);
     Alert.alert('hello world has been copied to your clipboard!');
   };
 
-  const handleQR = () => {
-    Alert.alert('display QR code here');
+  const handleQR = async () => {
+    const qr = await groupsGenerateQRCode(group.groupID, user.name);
+    Alert.alert('display QR code here: ' + qr);
   };
 
   const renderItem = ({item}) => {

@@ -199,8 +199,8 @@ export async function groupsGenerateLink(groupID, userName) {
     return result;
   } catch (err) {
     console.log('something went wrong with groupsGenerateLink: ' + err);
-    throw err;
-    // return accurateGetGroupResult[groupID];
+    // throw err;
+    return 'hello world';
   }
 }
 
@@ -231,7 +231,7 @@ export async function groupsGenerateQRCode(groupID, userName) {
     return result;
   } catch (err) {
     console.log('something went wrong with groupsGenerateQRCode: ' + err);
-    throw err;
-    // return accurateGetGroupResult[groupID];
+    // throw err;
+    return 'qr';
   }
 }
