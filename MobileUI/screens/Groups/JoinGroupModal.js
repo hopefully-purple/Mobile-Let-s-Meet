@@ -16,11 +16,20 @@ import {
   Camera,
   useCameraDevices,
   CameraPermissionStatus,
+  useFrameProcessor,
 } from 'react-native-vision-camera';
 import {BoxButton} from '../../assets/components/CustomButtons';
 import {CaptureButton} from './views/CaptureButton';
 import UserContext from '../../contexts/User';
 import {groupJoinGroup} from '../../API/GroupsAPIHandling';
+import QRCodeScanner from 'react-native-qrcode-scanner'; //TODO uninstall
+// import { Camera, useCameraDevices, useFrameProcessor } from 'react-native-vision-camera';
+import {
+  DBRConfig,
+  decode,
+  TextResult,
+} from 'vision-camera-dynamsoft-barcode-reader';
+import * as REA from 'react-native-reanimated';
 
 // https://mrousavy.com/react-native-vision-camera/docs/guides/
 // https://github.com/mrousavy/react-native-vision-camera/blob/1d6f720f8b499c03e91de32fabce64e9db293702/example/src/App.tsx
@@ -35,6 +44,19 @@ export default function JoinGroupModal({navigation}) {
   const [openCamera, setOpenCamera] = useState(false);
   const devices = useCameraDevices('wide-angle-camera');
   const device = devices.back;
+  const [barcodeResults, setBarcodeResults] = useState([]);
+
+  const frameProcessor = useFrameProcessor(frame => {
+    'worklet';
+    const config = {};
+    config.template =
+      '{"ImageParameter":{"BarcodeFormatIds":["BF_QR_CODE"],"Description":"","Name":"Settings"},"Version":"3.0"}'; //scan qrcode only
+
+    const results = decode(frame, config);
+    REA.runOnJS(setBarcodeResults)(results);
+    console.log('-------------FRAME PROCESSOR BARCODERESULTS:::');
+    console.log(barcodeResults);
+  }, []);
 
   this.joinGroupLinkInput = React.createRef();
 
@@ -48,18 +70,6 @@ export default function JoinGroupModal({navigation}) {
     // still loading
     return null;
   }
-
-  // const takePhoto = useCallback(async () => {
-  //   try {
-  //     if (camera.current == null) throw new Error('Camera ref is null!');
-
-  //     console.log('Taking photo...');
-  //     const photo = await camera.current.takePhoto(takePhotoOptions);
-  //     onMediaCaptured(photo, 'photo');
-  //   } catch (e) {
-  //     console.error('Failed to take photo!', e);
-  //   }
-  // }, [camera, onMediaCaptured, takePhotoOptions]);
 
   const handleLinkSubmit = async () => {
     console.log('Group Link! ' + joinGroupLink);
@@ -99,19 +109,9 @@ export default function JoinGroupModal({navigation}) {
             style={StyleSheet.absoluteFill}
             device={device}
             isActive={true}
-            photo={true}
+            frameProcessor={frameProcessor}
+            frameProcessorFps={5}
           />
-          {/* <CaptureButton
-            style={styles.captureButton}
-            camera={camera}
-            onMediaCaptured={onMediaCaptured}
-            cameraZoom={zoom}
-            minZoom={minZoom}
-            maxZoom={maxZoom}
-            flash={supportsFlash ? flash : 'off'}
-            enabled={isCameraInitialized && isActive}
-            setIsPressingButton={setIsPressingButton}
-          /> */}
         </>
       )}
     </SafeAreaView>
