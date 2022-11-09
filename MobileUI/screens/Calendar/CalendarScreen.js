@@ -149,6 +149,7 @@ const CalendarScreen = ({navigation}) => {
 
   const renderItem = ({item}) => {
     // console.log(items.length);
+    // console.log(item);
     const itemColor = item.color;
     const time = formatEventTime(item.start, item.end);
     // console.log('rendering ' + item.id);
@@ -211,6 +212,10 @@ const CalendarScreen = ({navigation}) => {
     setIsRefreshing(false);
   };
 
+  const Empty = () => {
+    return <Text style={styles.emptyText}>No events on this day</Text>;
+  };
+
   // useEffect(() => {
   //   if (selectedDay !== undefined) {
   //     this.calendarStrip.current.updateWeekView(selectedDay);
@@ -244,6 +249,7 @@ const CalendarScreen = ({navigation}) => {
           renderItem={renderItem}
           keyExtractor={item => item.id}
           onRefresh={onRefresh}
+          // ListEmptyComponent={<Empty />}
           refreshing={isRefreshing}
         />
       </View>
@@ -266,6 +272,10 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     marginTop: 17,
+  },
+  emptyText: {
+    color: Colors.DD_DARK_GRAY,
+    fontSize: 20,
   },
   cardStyle: {
     backgroundColor: Colors.DD_CREAM_LIGHT,
