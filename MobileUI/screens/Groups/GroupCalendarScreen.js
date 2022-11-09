@@ -31,10 +31,12 @@ import UserContext from '../../contexts/User';
 const CalendarTitle = props => {
   return (
     <View style={styles.calendarTitle}>
-      <MiniBoxButton
-        title={'< Back'}
-        onPress={() => props.navigation.navigate('Group')}
-      />
+      <View style={styles.backButtonWrapper}>
+        <MiniBoxButton
+          title={'< Back'}
+          onPress={() => props.navigation.navigate('Group')}
+        />
+      </View>
       <Text style={styles.calendarTitleText}>{props.name} Schedule</Text>
       <TouchableOpacity
         activeOpacity={0.7}
@@ -305,15 +307,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: Colors.DD_CREAM,
     borderColor: Colors.DD_CREAM,
+    marginLeft: 10,
+    marginRight: 20,
+  },
+  backButtonWrapper: {
+    marginLeft: 20,
+    marginRight: 10,
   },
   calendarTitleText: {
+    flexShrink: 1,
+    flexWrap: 'wrap',
     fontSize: 25,
     fontWeight: '500',
     color: Colors.DD_CREAM,
     marginTop: 10,
     marginBottom: 10,
-    // paddingHorizontal: 90,
-    paddingHorizontal: 10,
     textAlign: 'center',
   },
   calendarTitle: {
