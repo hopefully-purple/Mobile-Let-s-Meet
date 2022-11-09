@@ -4,6 +4,8 @@ import UserContext from './contexts/User';
 
 const user = {
   name: '',
+  first: '',
+  last: '',
   password: '',
   token: '',
   expiration: '',
