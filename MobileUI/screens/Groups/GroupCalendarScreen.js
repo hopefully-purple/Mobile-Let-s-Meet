@@ -56,11 +56,11 @@ const CalendarTitle = props => {
 };
 
 function organizeIntoDates(events) {
-  let newFL = {};
+  let newFL = [];
   // console.log(JSON.stringify(events, undefined, 2));
   console.log('(calendarScreen.organizeIntoDates) events=' + events.length);
   if (events.length === 0) {
-    console.log('events currently empty, return {}');
+    console.log('events currently empty, return []');
     return newFL;
   }
 
@@ -145,7 +145,7 @@ const Item = ({i, itemColor, time}) => {
 const GroupCalendarScreen = ({navigation, calendarName}) => {
   const nowDate = new Date();
   const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
-  const [items, setItems] = useState({});
+  const [items, setItems] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const {events, setEvents} = useContext(CalendarEventsContext);
   const {currentGroup, setcurrentGroup} = useContext(CurrentGroupObjectContext);
@@ -171,7 +171,7 @@ const GroupCalendarScreen = ({navigation, calendarName}) => {
     if (dayEvents !== undefined) {
       setItems(dayEvents);
     } else {
-      setItems({});
+      setItems([]);
     }
     // console.log(dateKey);
   };
@@ -217,6 +217,10 @@ const GroupCalendarScreen = ({navigation, calendarName}) => {
     setIsRefreshing(false);
   };
 
+  const Empty = ({item}) => {
+    return <Text style={styles.emptyText}>No events on this day</Text>;
+  };
+
   // useEffect(() => {
   //   if (selectedDay !== undefined) {
   //     this.calendarStrip.current.updateWeekView(selectedDay);
@@ -250,6 +254,7 @@ const GroupCalendarScreen = ({navigation, calendarName}) => {
           renderItem={renderItem}
           keyExtractor={item => item.id}
           onRefresh={onRefresh}
+          ListEmptyComponent={Empty}
           refreshing={isRefreshing}
         />
       </View>
@@ -282,6 +287,13 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     marginTop: 17,
+  },
+  emptyText: {
+    color: Colors.DD_MEDIUM_GRAY,
+    fontSize: 20,
+    padding: 10,
+    fontStyle: 'italic',
+    alignSelf: 'center',
   },
   cardStyle: {
     backgroundColor: Colors.DD_CREAM_LIGHT,

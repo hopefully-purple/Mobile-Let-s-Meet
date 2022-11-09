@@ -51,11 +51,11 @@ const CalendarTitle = props => {
 };
 
 function organizeIntoDates(events) {
-  let newFL = {};
+  let newFL = [];
   // console.log(JSON.stringify(events, undefined, 2));
   console.log('(calendarScreen.organizeIntoDates) events=' + events.length);
   if (events.length === 0) {
-    console.log('events currently empty, return {}');
+    console.log('events currently empty, return []');
     return newFL;
   }
 
@@ -140,7 +140,7 @@ const Item = ({i, itemColor, time}) => {
 const CalendarScreen = ({navigation}) => {
   const nowDate = new Date();
   const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
-  const [items, setItems] = useState({});
+  const [items, setItems] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const {events, setEvents} = useContext(CalendarEventsContext);
   const user = useContext(UserContext);
@@ -166,7 +166,7 @@ const CalendarScreen = ({navigation}) => {
     if (dayEvents !== undefined) {
       setItems(dayEvents);
     } else {
-      setItems({});
+      setItems([]);
     }
     // console.log(dateKey);
   };
@@ -212,7 +212,7 @@ const CalendarScreen = ({navigation}) => {
     setIsRefreshing(false);
   };
 
-  const Empty = () => {
+  const Empty = ({item}) => {
     return <Text style={styles.emptyText}>No events on this day</Text>;
   };
 
@@ -249,7 +249,7 @@ const CalendarScreen = ({navigation}) => {
           renderItem={renderItem}
           keyExtractor={item => item.id}
           onRefresh={onRefresh}
-          // ListEmptyComponent={<Empty />}
+          ListEmptyComponent={Empty}
           refreshing={isRefreshing}
         />
       </View>
@@ -274,8 +274,11 @@ const styles = StyleSheet.create({
     marginTop: 17,
   },
   emptyText: {
-    color: Colors.DD_DARK_GRAY,
+    color: Colors.DD_MEDIUM_GRAY,
     fontSize: 20,
+    padding: 10,
+    fontStyle: 'italic',
+    alignSelf: 'center',
   },
   cardStyle: {
     backgroundColor: Colors.DD_CREAM_LIGHT,
