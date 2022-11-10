@@ -31,13 +31,21 @@ import {
 } from 'vision-camera-dynamsoft-barcode-reader';
 import * as REA from 'react-native-reanimated';
 import IsCameraOpenContext from '../../contexts/IsCameraOpen';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
-// https://mrousavy.com/react-native-vision-camera/docs/guides/
-// https://github.com/mrousavy/react-native-vision-camera/blob/1d6f720f8b499c03e91de32fabce64e9db293702/example/src/App.tsx
-// Be prepared to spend a whole 24 hours on figuring this out! Yay!
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false,
+};
+
+// https://www.dynamsoft.com/codepool/react-native-qr-code-scanner-vision-camera.html
 
 export default function JoinGroupModal({navigation}) {
   const [joinGroupLink, setJoinGroupLink] = useState('');
+  const [qrJoinLink, setQRJoinLink] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isQRScanComplete, setIsQRScanComplete] = useState(false);
+  // const [isJoinSuccess, setIsJoinSuccess] = useState(false);
   const user = useContext(UserContext);
 
   const camera = useRef();
@@ -54,11 +62,13 @@ export default function JoinGroupModal({navigation}) {
       '{"ImageParameter":{"BarcodeFormatIds":["BF_QR_CODE"],"Description":"","Name":"Settings"},"Version":"3.0"}'; //scan qrcode only
 
     const results = decode(frame, config);
-    // console.log('-------------FRAME PROCESSOR BARCODERESULTS:::');
+
     if (results[0] !== undefined) {
       console.log(results[0].barcodeText);
-      // setJoinGroupLink(results[0].barcodeText);
-      // setIsCameraOpen(false);
+      REA.runOnJS(ReactNativeHapticFeedback.trigger)('impactHeavy', options);
+      REA.runOnJS(setQRJoinLink)(results[0].barcodeText);
+      REA.runOnJS(setIsCameraOpen)(false);
+      REA.runOnJS(setIsQRScanComplete)(true);
     }
     REA.runOnJS(setBarcodeResults)(results);
   }, []);
@@ -77,15 +87,26 @@ export default function JoinGroupModal({navigation}) {
   }
 
   const handleLinkSubmit = async () => {
-    console.log('Group Link! ' + joinGroupLink);
-    const response = await groupJoinGroup(joinGroupLink, user.name);
+    let link = joinGroupLink === '' ? qrJoinLink : joinGroupLink;
+
+    console.log('Group Link! ' + link);
+    setIsLoading(true);
+    const response = await groupJoinGroup(link, user.name);
     if (!response) {
+      setIsQRScanComplete(false);
+      setIsLoading(false);
+      // setIsJoinSuccess(false);
       Alert.alert('Failed to join group :(');
+      this.joinGroupLinkInput.current.clear();
+      setJoinGroupLink('');
+      setQRJoinLink('');
     } else {
+      setIsLoading(false);
       Alert.alert('Successfully joined group!');
+      this.joinGroupLinkInput.current.clear();
       navigation.goBack();
     }
-    this.joinGroupLinkInput.current.clear();
+    console.log('Reachable code? JoinGroupModal.handleLinkSubmit');
   };
 
   return (
@@ -102,16 +123,37 @@ export default function JoinGroupModal({navigation}) {
         ref={this.joinGroupLinkInput}
       />
       <BoxButton
-        title={'Scan QR Code'}
+        title={isCameraOpen ? 'Close Camera' : 'Scan QR Code'}
         onPress={() => {
-          setIsCameraOpen(true);
+          setIsCameraOpen(isCameraOpen ? false : true);
         }}
       />
+      {isQRScanComplete && !isCameraOpen && !isLoading && (
+        <View style={styles.qrResultsWrapper}>
+          <Text style={styles.joinQuestion}>Join</Text>
+          <Text style={styles.qrLinkText}>{qrJoinLink}</Text>
+          <Text style={styles.joinQuestion}>?</Text>
+          <View style={styles.joinButtons}>
+            <BoxButton title={'Yes'} onPress={handleLinkSubmit} />
+            <BoxButton
+              title={'No'}
+              onPress={() => {
+                setIsQRScanComplete(false);
+                setQRJoinLink('');
+              }}
+            />
+          </View>
+        </View>
+      )}
+      {isLoading && (
+        <View style={styles.loadingWrapper}>
+          <Text style={styles.joinQuestion}>Joining . . . </Text>
+        </View>
+      )}
       {isCameraOpen && !devNu && (
         <>
           <Camera
             ref={camera}
-            // style={StyleSheet.absoluteFill}
             style={styles.camera}
             device={device}
             isActive={true}
@@ -137,6 +179,31 @@ const styles = StyleSheet.create({
     color: Colors.DD_DARK_GRAY,
     fontSize: 20,
     margin: 10,
+  },
+  qrResultsWrapper: {
+    marginTop: 70,
+    // justifyContent: 'center',
+  },
+  joinQuestion: {
+    fontSize: 50,
+    fontWeight: '500',
+    color: Colors.DD_RED_2,
+    textAlign: 'center',
+    marginBottom: 46,
+  },
+  qrLinkText: {
+    fontSize: 40,
+    fontWeight: '500',
+    color: Colors.DD_RED_1,
+    textAlign: 'center',
+    marginBottom: 46,
+  },
+  joinButtons: {
+    // justifyContent: 'center',
+    // alignContent: 'center',
+    flexDirection: 'row',
+    alignSelf: 'center',
+    // alignItems: 'center',
   },
   camera: {
     height: '70%',

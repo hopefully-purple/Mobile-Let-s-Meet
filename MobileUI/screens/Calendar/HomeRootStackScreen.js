@@ -263,13 +263,9 @@ export default function HomeRootStackScreen(props) {
                   headerLeft: () => (
                     <Button
                       onPress={() => {
-                        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-                        console.log(isCameraOpen);
-                        isCameraOpen
-                          ? setIsCameraOpen(false)
-                          : props.navigation.navigate('Group');
+                        props.navigation.navigate('Group');
                       }}
-                      title={isCameraOpen ? 'Close' : 'Cancel'}
+                      title={'Cancel'}
                       // title={'Close'}
                     />
                   ),
