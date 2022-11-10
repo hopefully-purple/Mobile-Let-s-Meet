@@ -1,4 +1,5 @@
 import React, {useContext} from 'react';
+import {bareBonesUsersCalendars} from '../assets/data/HardCodedCalendars';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
 
@@ -135,6 +136,6 @@ export async function calendarGetCalendars(userName) {
   } catch (err) {
     console.log('something went wrong with calendarGetCalendars: ' + err);
     // throw err;
-    return [{id: 1}, {id: 2}, {id: 7}];
+    return bareBonesUsersCalendars;
   }
 }
