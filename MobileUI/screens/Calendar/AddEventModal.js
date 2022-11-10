@@ -12,6 +12,7 @@ import {
 import {TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DatePicker from 'react-native-date-picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 import {SliderPicker, HuePicker} from 'react-color';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
 import {calendarCreateNewEvent} from '../../API/CalendarAPIHandling';
@@ -56,7 +57,7 @@ import UserContext from '../../contexts/User';
 //   return;
 // };
 
-export default function AddEventModal({navigation}) {
+export default function AddEventModal({navigation, calendars}) {
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [startDate, setStartDate] = useState(new Date());
@@ -64,6 +65,13 @@ export default function AddEventModal({navigation}) {
   const [calColor, setCalColor] = useState('#0D852F');
   const {events, setEvents} = useContext(CalendarEventsContext);
   const user = useContext(UserContext);
+
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  // const [items, setItems] = useState([
+  //   {label: 'Apple', value: 'apple'},
+  //   {label: 'Banana', value: 'banana'},
+  // ]);
 
   this.titleInput = React.createRef();
   this.locationInput = React.createRef();
@@ -154,6 +162,21 @@ export default function AddEventModal({navigation}) {
         autoCorrect={false}
         ref={this.locationInput}
       />
+      <DropDownPicker
+        placeholder="Select a calendar"
+        open={open}
+        value={value}
+        items={calendars}
+        setOpen={setOpen}
+        setValue={setValue}
+        // setItems={setItems}
+        dropDownDirection="BOTTOM"
+        listMode="SCROLLVIEW"
+        containerStyle={{
+          width: '95%',
+          margin: 10,
+        }}
+      />
       <Text style={styles.text}>
         Start: {startDate.toLocaleDateString()} {startDate.toLocaleTimeString()}
       </Text>
@@ -166,7 +189,6 @@ export default function AddEventModal({navigation}) {
         End: {endDate.toLocaleDateString()} {endDate.toLocaleTimeString()}
       </Text>
       <DatePicker date={endDate} onDateChange={setEndDate} minuteInterval={5} />
-      <Text style={styles.text}>Pick color aka calendar soon</Text>
       {/* <CalendarThing calColor={calColor} setCalColor={setCalColor} /> */}
       <Button onPress={doneHandler} title="Done" style={{margin: 100}} />
       <Text> </Text>
