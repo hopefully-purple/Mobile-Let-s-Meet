@@ -208,6 +208,12 @@ const CalendarScreen = ({navigation}) => {
     // console.log('(CalendarScreen.onRefresh) new event data:');
     // console.log(JSON.stringify(data, undefined, 2));
     setEvents(data);
+    //Try updating calendar strip
+    console.log('On refresh, getSelectedDate()');
+    const selected = this.calendarStrip.current.getSelectedDate();
+    // this.calendarStrip.current.updateWeekView('2022-11-07T19:00:00.000Z');
+    // this.calendarStrip.current.updateWeekView(selected);
+    this.calendarStrip.current.setSelectedDate(selected);
     // and set isRefreshing to false
     setIsRefreshing(false);
   };
