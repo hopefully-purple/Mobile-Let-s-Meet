@@ -98,7 +98,12 @@ function organizeIntoDates(events) {
   return newFL;
 }
 
-const Item = ({i, itemColor, time}) => {
+const Empty = ({item}) => {
+  return <Text style={styles.emptyText}>No events on this day</Text>;
+};
+
+const Item = props => {
+  const {i, itemColor, time} = props;
   const {events, setEvents} = useContext(CalendarEventsContext);
   const user = useContext(UserContext);
 
@@ -106,6 +111,9 @@ const Item = ({i, itemColor, time}) => {
     console.log('(calendarScreen.deleteItem) user = ' + user.name);
     if (await deleteEvent(i, events, setEvents, user.name)) {
       console.log('(calendarScreen.deleteItemInEvents) delete succeeded');
+      const selected = this.calendarStrip.current.getSelectedDate();
+      // console.log(selected);
+      this.calendarStrip.current.setSelectedDate(selected);
     } else {
       Alert.alert('Delete did not succeed');
     }
@@ -218,15 +226,6 @@ const CalendarScreen = ({navigation}) => {
     setIsRefreshing(false);
   };
 
-  const Empty = ({item}) => {
-    return <Text style={styles.emptyText}>No events on this day</Text>;
-  };
-
-  // useEffect(() => {
-  //   if (selectedDay !== undefined) {
-  //     this.calendarStrip.current.updateWeekView(selectedDay);
-  //   }
-  // }, [selectedDay]);
   return (
     <SafeAreaView style={styles.container}>
       <CalendarTitle name={'My'} navigation={navigation} />
