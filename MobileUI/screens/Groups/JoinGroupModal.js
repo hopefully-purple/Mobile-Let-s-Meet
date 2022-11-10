@@ -122,12 +122,15 @@ export default function JoinGroupModal({navigation}) {
         onSubmitEditing={handleLinkSubmit}
         ref={this.joinGroupLinkInput}
       />
-      <BoxButton
-        title={isCameraOpen ? 'Close Camera' : 'Scan QR Code'}
-        onPress={() => {
-          setIsCameraOpen(isCameraOpen ? false : true);
-        }}
-      />
+      <Text style={styles.text}>OR</Text>
+      <View style={styles.scanWrapper}>
+        <BoxButton
+          title={isCameraOpen ? 'Close Camera' : 'Scan QR Code'}
+          onPress={() => {
+            setIsCameraOpen(isCameraOpen ? false : true);
+          }}
+        />
+      </View>
       {isQRScanComplete && !isCameraOpen && !isLoading && (
         <View style={styles.qrResultsWrapper}>
           <Text style={styles.joinQuestion}>Join</Text>
@@ -176,9 +179,13 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   text: {
-    color: Colors.DD_DARK_GRAY,
-    fontSize: 20,
+    color: Colors.DD_RED_2,
+    fontSize: 30,
     margin: 10,
+    alignSelf: 'center',
+  },
+  scanWrapper: {
+    alignSelf: 'center',
   },
   qrResultsWrapper: {
     marginTop: 70,
