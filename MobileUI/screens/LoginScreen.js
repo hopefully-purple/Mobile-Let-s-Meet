@@ -12,7 +12,7 @@ import {GreyPillButton} from '../assets/components/CustomButtons';
 import LogStateContext from '../contexts/LoginState';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserContext from '../contexts/User';
-import {loginAPICall} from '../API/LoginAPIHandler';
+import {loginAPICall} from '../API/LoginAndRegistrationAPIHandling.js';
 import {storeUserLoginInfo, clearAll} from '../miscHelpers/AsyncStorageMethods';
 
 const LoginScreen = ({navigation}) => {
@@ -36,6 +36,8 @@ const LoginScreen = ({navigation}) => {
       this.nameInput.current.clear();
       await clearAll();
       user.name = '';
+      user.first = '';
+      user.last = '';
       user.password = '';
       user.token = '';
       user.expiration = '';
@@ -95,7 +97,7 @@ const LoginScreen = ({navigation}) => {
           No account? Click to sign up
         </Text>
         <TextInput
-          placeholder="User Name"
+          placeholder="Username"
           style={styles.userName}
           placeholderTextColor={Colors.DD_LIGHT_GRAY}
           onChangeText={newText => setName(newText)}

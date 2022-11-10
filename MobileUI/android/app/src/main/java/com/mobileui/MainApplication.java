@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.mkuczera.RNReactNativeHapticFeedbackPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.clipsub.RNSweetAlert.RNSweetAlertPackage;
 import com.clipsub.RNSweetAlert.RNSweetAlertPackage;
@@ -13,6 +14,9 @@ import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
+import com.visioncameradynamsoftbarcodereader.VisionCameraDynamsoftBarcodeReaderPackage;
+
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -29,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
+          packages.add(new VisionCameraDynamsoftBarcodeReaderPackage()); //added
           return packages;
         }
 

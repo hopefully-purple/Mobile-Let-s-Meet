@@ -139,3 +139,99 @@ export async function groupJoinGroup(joinCode, userName) {
     return false;
   }
 }
+
+/**
+ * API call to start Let's Meet algorithm
+ * If something goes wrong, catches error and goes to hardcoded functionality
+ *
+ * @param {int} groupID Identifier for group
+ * @param {string} userName The name of current user for extraction of token
+ * @returns List of suggested times?
+ */
+export async function groupsLetsMeet(groupID, userName) {
+  console.log('(GAPIHandling) Beginning of groupsLetsMeet');
+  let user = await getUsernameValue(userName);
+  try {
+    const response = await fetch(
+      `http://ec2-3-84-219-120.compute-1.amazonaws.com/`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      },
+    );
+    const result = await response.json();
+
+    console.log(JSON.stringify(result, undefined, 2));
+    return result;
+  } catch (err) {
+    console.log('something went wrong with groupsLetsMeet: ' + err);
+    throw err;
+    // return accurateGetGroupResult[groupID];
+  }
+}
+
+/**
+ * API call to generate join group link
+ * If something goes wrong, catches error and goes to hardcoded functionality
+ *
+ * @param {int} groupID Identifier for group
+ * @param {string} userName The name of current user for extraction of token
+ * @returns join group link?
+ */
+export async function groupsGenerateLink(groupID, userName) {
+  console.log('(GAPIHandling) Beginning of groupsGenerateLink');
+  let user = await getUsernameValue(userName);
+  try {
+    const response = await fetch(
+      `http://ec2-3-84-219-120.compute-1.amazonaws.com/`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      },
+    );
+    const result = await response.json();
+
+    console.log(JSON.stringify(result, undefined, 2));
+    return result;
+  } catch (err) {
+    console.log('something went wrong with groupsGenerateLink: ' + err);
+    // throw err;
+    return 'hello world';
+  }
+}
+
+/**
+ * API call to generate QR code
+ * If something goes wrong, catches error and goes to hardcoded functionality
+ *
+ * @param {int} groupID Identifier for group
+ * @param {string} userName The name of current user for extraction of token
+ * @returns QR thing?
+ */
+export async function groupsGenerateQRCode(groupID, userName) {
+  console.log('(GAPIHandling) Beginning of groupsGenerateQRCode');
+  let user = await getUsernameValue(userName);
+  try {
+    const response = await fetch(
+      `http://ec2-3-84-219-120.compute-1.amazonaws.com/`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      },
+    );
+    const result = await response.json();
+
+    console.log(JSON.stringify(result, undefined, 2));
+    return result;
+  } catch (err) {
+    console.log('something went wrong with groupsGenerateQRCode: ' + err);
+    // throw err;
+    return 'qr';
+  }
+}

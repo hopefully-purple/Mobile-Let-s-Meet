@@ -1,4 +1,5 @@
 import React, {useContext} from 'react';
+import {bareBonesUsersCalendars} from '../assets/data/HardCodedCalendars';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
 
@@ -101,5 +102,40 @@ export async function calendarDeleteEvent(event, userName) {
   } catch (err) {
     console.log('something went wrong with calendarDeleteEvent: ' + err);
     throw err;
+  }
+}
+
+/**
+ * API call to get calendars belonging to user
+ * FYI: under postmanTest1, capstone project calendar id = 7
+ * @param {string} userName The name of current user for extraction of token
+ * @returns result of GetCalendars API request as a JSON object
+ */
+export async function calendarGetCalendars(userName) {
+  // const user = useContext(UserContext);
+  console.log('(CAPIHandling) Beginning of CalendarGetCalendars');
+  let user = await getUsernameValue(userName);
+  try {
+    // console.log('Sending Username: ' + name + ' Password: ' + password);
+    // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
+    const response = await fetch(
+      'http://ec2-3-84-219-120.compute-1.amazonaws.com/CalendarModels/GetCalendars',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      },
+    );
+
+    // console.log('await response');
+    const result = await response.json();
+    console.log('(CAPIHandling) calendarGetCalendars result:');
+    console.log(JSON.stringify(result, undefined, 2));
+    return result;
+  } catch (err) {
+    console.log('something went wrong with calendarGetCalendars: ' + err);
+    // throw err;
+    return bareBonesUsersCalendars;
   }
 }
