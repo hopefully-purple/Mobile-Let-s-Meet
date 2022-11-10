@@ -2,6 +2,7 @@ import React, {useState, useContext, useEffect, useRef} from 'react';
 import Colors from '../../assets/styles/colors';
 import {
   SafeAreaView,
+  ScrollView,
   View,
   Text,
   Keyboard,
@@ -132,7 +133,7 @@ export default function JoinGroupModal({navigation}) {
         />
       </View>
       {isQRScanComplete && !isCameraOpen && !isLoading && (
-        <View style={styles.qrResultsWrapper}>
+        <ScrollView style={styles.qrResultsWrapper}>
           <Text style={styles.joinQuestion}>Join</Text>
           <Text style={styles.qrLinkText}>{qrJoinLink}</Text>
           <Text style={styles.joinQuestion}>?</Text>
@@ -146,7 +147,7 @@ export default function JoinGroupModal({navigation}) {
               }}
             />
           </View>
-        </View>
+        </ScrollView>
       )}
       {isLoading && (
         <View style={styles.loadingWrapper}>
@@ -188,7 +189,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   qrResultsWrapper: {
-    marginTop: 70,
+    marginTop: 60,
+    marginBottom: 30,
     // justifyContent: 'center',
   },
   joinQuestion: {
@@ -204,6 +206,7 @@ const styles = StyleSheet.create({
     color: Colors.DD_RED_1,
     textAlign: 'center',
     marginBottom: 46,
+    padding: 20,
   },
   joinButtons: {
     // justifyContent: 'center',
