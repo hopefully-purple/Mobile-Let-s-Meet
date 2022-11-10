@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {View, Text, Button} from 'react-native';
-import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import CalendarScreen from './CalendarScreen';
 import AddEventModal from './AddEventModal';
 import Colors from '../../assets/styles/colors';
@@ -12,6 +12,7 @@ import JoinGroupModal from '../Groups/JoinGroupModal';
 import GroupInfoModal from '../Groups/GroupInfoModal';
 import LetsMeetModal from '../Groups/LetsMeetModal';
 import {readEventData, readGroupData} from '../../API/APIControllers';
+import {calendarGetCalendars} from '../../API/CalendarAPIHandling';
 import UserContext from '../../contexts/User';
 import GroupCalendarScreen from '../Groups/GroupCalendarScreen';
 import FriendsScreen from '../Friends/FriendsScreen';
@@ -22,6 +23,7 @@ import {
   friendsGetReceivedRequests,
 } from '../../API/FriendsAPIHandling';
 import FriendRequestModal from '../Friends/FriendRequestsModal';
+import IsCameraOpenContext from '../../contexts/IsCameraOpen';
 
 function HomeScreen({navigation}) {
   const {events, setEvents} = useContext(CalendarEventsContext);
@@ -64,7 +66,16 @@ function GroupCalendar({navigation}) {
 }
 
 function AddEventModalScreen({navigation}) {
-  return <AddEventModal navigation={navigation} />;
+  const [calendars, setCalendars] = useState([]);
+  const user = useContext(UserContext);
+  navigation.addListener('focus', async () => {
+    console.log('-------Navigation (For AddEventModal)-------------');
+    const data = await calendarGetCalendars(user.name);
+    // console.log(JSON.stringify(data, undefined, 2));
+    console.log('set calendars to data');
+    setCalendars(data);
+  });
+  return <AddEventModal navigation={navigation} calendars={calendars} />;
 }
 
 function AddGroupModalScreen({navigation}) {
@@ -72,6 +83,10 @@ function AddGroupModalScreen({navigation}) {
 }
 
 function JoinGroupModalScreen({navigation}) {
+  // navigation.addListener('gestureCancel', e => {
+  //   console.log('{{{{{{{{{{{{{{{{????????????????');
+  //   navigation.navigate('JoinGroupModal');
+  // });
   return <JoinGroupModal navigation={navigation} />;
 }
 
@@ -129,6 +144,7 @@ const RootStack = createStackNavigator();
 export default function HomeRootStackScreen(props) {
   const [events, setEvents] = useState([]);
   const [groups, setGroups] = useState([]);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   // const {currentCalendar, setCurrentCalendar} = useContext(
   //   CurrentCalendarContext,
   // );
@@ -140,190 +156,199 @@ export default function HomeRootStackScreen(props) {
   return (
     <GroupsContext.Provider value={{groups, setGroups}}>
       <CalendarEventsContext.Provider value={{events, setEvents}}>
-        <RootStack.Navigator>
-          <RootStack.Group>
-            {props.calendarName === 'Group' && (
+        <IsCameraOpenContext.Provider value={{isCameraOpen, setIsCameraOpen}}>
+          <RootStack.Navigator>
+            <RootStack.Group>
+              {props.calendarName === 'Group' && (
+                <RootStack.Screen
+                  name="Group"
+                  component={GroupScreen}
+                  options={{
+                    title: 'Groups',
+                    headerShown: true,
+                    headerStyle: {
+                      backgroundColor: Colors.DD_RED_2,
+                    },
+                    headerTitleStyle: {
+                      color: Colors.DD_CREAM,
+                      fontSize: 25,
+                      fontWeight: '500',
+                      marginBottom: 10,
+                    },
+                  }}
+                />
+              )}
+              {props.calendarName === 'My' && (
+                <RootStack.Screen
+                  name="Home"
+                  component={HomeScreen}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+              )}
+              {props.calendarName === 'Friends' && (
+                <RootStack.Screen
+                  name="Friend"
+                  component={FriendScreen}
+                  options={{
+                    title: 'Friends',
+                    headerShown: true,
+                    headerStyle: {
+                      backgroundColor: Colors.DD_RED_2,
+                    },
+                    headerTitleStyle: {
+                      color: Colors.DD_CREAM,
+                      fontSize: 25,
+                      fontWeight: '500',
+                      marginBottom: 10,
+                    },
+                  }}
+                />
+              )}
+            </RootStack.Group>
+            {/* <RootStack.Group screenOptions={{presentation: 'modal'}}> */}
+            <RootStack.Group
+              screenOptions={{
+                headerStyle: {
+                  color: Colors.DD_CREAM,
+                },
+              }}>
               <RootStack.Screen
-                name="Group"
-                component={GroupScreen}
-                options={{
-                  title: 'Groups',
-                  headerShown: true,
-                  headerStyle: {
-                    backgroundColor: Colors.DD_RED_2,
-                  },
-                  headerTitleStyle: {
-                    color: Colors.DD_CREAM,
-                    fontSize: 25,
-                    fontWeight: '500',
-                    marginBottom: 10,
-                  },
-                }}
-              />
-            )}
-            {props.calendarName === 'My' && (
-              <RootStack.Screen
-                name="Home"
-                component={HomeScreen}
+                name="GroupCalendar"
+                component={GroupCalendar}
                 options={{
                   headerShown: false,
+                  gestureEnabled: false,
                 }}
               />
-            )}
-            {props.calendarName === 'Friends' && (
               <RootStack.Screen
-                name="Friend"
-                component={FriendScreen}
+                name="AddEventModal"
+                component={AddEventModalScreen}
                 options={{
-                  title: 'Friends',
-                  headerShown: true,
+                  title: 'New Event',
+                  headerTitleStyle: {
+                    color: Colors.DD_CREAM,
+                    fontSize: 20,
+                  },
+                  animation: 'slide_from_right',
                   headerStyle: {
                     backgroundColor: Colors.DD_RED_2,
                   },
+                  headerLeft: () => (
+                    <Button
+                      onPress={() => {
+                        props.navigation.navigate('Home');
+                      }}
+                      title="Cancel"
+                    />
+                  ),
+                }}
+              />
+              <RootStack.Screen
+                name="JoinGroupModal"
+                component={JoinGroupModalScreen}
+                options={{
+                  title: 'Join A Group',
                   headerTitleStyle: {
                     color: Colors.DD_CREAM,
-                    fontSize: 25,
-                    fontWeight: '500',
-                    marginBottom: 10,
+                    fontSize: 20,
+                  },
+                  animation: 'slide_from_right',
+                  headerStyle: {
+                    backgroundColor: Colors.DD_RED_2,
+                  },
+                  // headerBackTitleVisible: false,
+                  // headerBackTitle: 'Lbhadlskfj',
+                  headerLeft: () => (
+                    <Button
+                      onPress={() => {
+                        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+                        console.log(isCameraOpen);
+                        isCameraOpen
+                          ? setIsCameraOpen(false)
+                          : props.navigation.navigate('Group');
+                      }}
+                      title={isCameraOpen ? 'Close' : 'Cancel'}
+                      // title={'Close'}
+                    />
+                  ),
+                }}
+              />
+              <RootStack.Screen
+                name="AddGroupModal"
+                component={AddGroupModalScreen}
+                options={{
+                  title: 'New Group',
+                  headerTitleStyle: {
+                    color: Colors.DD_CREAM,
+                    fontSize: 20,
+                  },
+                  animation: 'slide_from_right',
+                  headerStyle: {
+                    backgroundColor: Colors.DD_RED_2,
+                  },
+                  headerLeft: () => (
+                    <Button
+                      onPress={() => {
+                        props.navigation.navigate('Group');
+                      }}
+                      title="Cancel"
+                    />
+                  ),
+                }}
+              />
+              <RootStack.Screen
+                name="InfoModal"
+                component={InfoModalOverlay}
+                options={{
+                  presentation: 'modal',
+                  headerShown: false,
+                  cardOverlayEnabled: true,
+                  gestureEnabled: true,
+                  gestureDirection: 'vertical',
+                  gestureResponseDistance: 500,
+                  cardStyle: {
+                    backgroundColor: 'transparent',
+                    opacity: 0.99,
                   },
                 }}
               />
-            )}
-          </RootStack.Group>
-          {/* <RootStack.Group screenOptions={{presentation: 'modal'}}> */}
-          <RootStack.Group
-            screenOptions={{
-              headerStyle: {
-                color: Colors.DD_CREAM,
-              },
-            }}>
-            <RootStack.Screen
-              name="GroupCalendar"
-              component={GroupCalendar}
-              options={{
-                headerShown: false,
-                gestureEnabled: false,
-              }}
-            />
-            <RootStack.Screen
-              name="AddEventModal"
-              component={AddEventModalScreen}
-              options={{
-                title: 'New Event',
-                headerTitleStyle: {
-                  color: Colors.DD_CREAM,
-                  fontSize: 20,
-                },
-                animation: 'slide_from_right',
-                headerStyle: {
-                  backgroundColor: Colors.DD_RED_2,
-                },
-                headerLeft: () => (
-                  <Button
-                    onPress={() => {
-                      props.navigation.navigate('Home');
-                    }}
-                    title="Cancel"
-                  />
-                ),
-              }}
-            />
-            <RootStack.Screen
-              name="JoinGroupModal"
-              component={JoinGroupModalScreen}
-              options={{
-                title: 'Join A Group',
-                headerTitleStyle: {
-                  color: Colors.DD_CREAM,
-                  fontSize: 20,
-                },
-                animation: 'slide_from_right',
-                headerStyle: {
-                  backgroundColor: Colors.DD_RED_2,
-                },
-                headerLeft: () => (
-                  <Button
-                    onPress={() => {
-                      props.navigation.navigate('Group');
-                    }}
-                    title="Cancel"
-                  />
-                ),
-              }}
-            />
-            <RootStack.Screen
-              name="AddGroupModal"
-              component={AddGroupModalScreen}
-              options={{
-                title: 'New Group',
-                headerTitleStyle: {
-                  color: Colors.DD_CREAM,
-                  fontSize: 20,
-                },
-                animation: 'slide_from_right',
-                headerStyle: {
-                  backgroundColor: Colors.DD_RED_2,
-                },
-                headerLeft: () => (
-                  <Button
-                    onPress={() => {
-                      props.navigation.navigate('Group');
-                    }}
-                    title="Cancel"
-                  />
-                ),
-              }}
-            />
-            <RootStack.Screen
-              name="InfoModal"
-              component={InfoModalOverlay}
-              options={{
-                presentation: 'modal',
-                headerShown: false,
-                cardOverlayEnabled: true,
-                gestureEnabled: true,
-                gestureDirection: 'vertical',
-                gestureResponseDistance: 500,
-                cardStyle: {
-                  backgroundColor: 'transparent',
-                  opacity: 0.99,
-                },
-              }}
-            />
-            <RootStack.Screen
-              name="MeetModal"
-              component={MeetModalOverlay}
-              options={{
-                presentation: 'modal',
-                headerShown: false,
-                cardOverlayEnabled: true,
-                gestureEnabled: true,
-                gestureDirection: 'vertical',
-                gestureResponseDistance: 500,
-                cardStyle: {
-                  backgroundColor: 'transparent',
-                  opacity: 0.99,
-                },
-              }}
-            />
-            <RootStack.Screen
-              name="RequestsModal"
-              component={RequestsModalOverlay}
-              options={{
-                presentation: 'modal',
-                headerShown: false,
-                cardOverlayEnabled: true,
-                gestureEnabled: true,
-                gestureDirection: 'vertical',
-                gestureResponseDistance: 500,
-                cardStyle: {
-                  backgroundColor: 'transparent',
-                  opacity: 0.99,
-                },
-              }}
-            />
-          </RootStack.Group>
-        </RootStack.Navigator>
+              <RootStack.Screen
+                name="MeetModal"
+                component={MeetModalOverlay}
+                options={{
+                  presentation: 'modal',
+                  headerShown: false,
+                  cardOverlayEnabled: true,
+                  gestureEnabled: true,
+                  gestureDirection: 'vertical',
+                  gestureResponseDistance: 500,
+                  cardStyle: {
+                    backgroundColor: 'transparent',
+                    opacity: 0.99,
+                  },
+                }}
+              />
+              <RootStack.Screen
+                name="RequestsModal"
+                component={RequestsModalOverlay}
+                options={{
+                  presentation: 'modal',
+                  headerShown: false,
+                  cardOverlayEnabled: true,
+                  gestureEnabled: true,
+                  gestureDirection: 'vertical',
+                  gestureResponseDistance: 500,
+                  cardStyle: {
+                    backgroundColor: 'transparent',
+                    opacity: 0.99,
+                  },
+                }}
+              />
+            </RootStack.Group>
+          </RootStack.Navigator>
+        </IsCameraOpenContext.Provider>
       </CalendarEventsContext.Provider>
     </GroupsContext.Provider>
   );

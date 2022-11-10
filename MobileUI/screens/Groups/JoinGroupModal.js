@@ -30,6 +30,7 @@ import {
   TextResult,
 } from 'vision-camera-dynamsoft-barcode-reader';
 import * as REA from 'react-native-reanimated';
+import IsCameraOpenContext from '../../contexts/IsCameraOpen';
 
 // https://mrousavy.com/react-native-vision-camera/docs/guides/
 // https://github.com/mrousavy/react-native-vision-camera/blob/1d6f720f8b499c03e91de32fabce64e9db293702/example/src/App.tsx
@@ -41,7 +42,7 @@ export default function JoinGroupModal({navigation}) {
 
   const camera = useRef();
   const [cameraPermission, setCameraPermission] = useState();
-  const [openCamera, setOpenCamera] = useState(false);
+  const {isCameraOpen, setIsCameraOpen} = useContext(IsCameraOpenContext);
   const devices = useCameraDevices('wide-angle-camera');
   const device = devices.back;
   const [barcodeResults, setBarcodeResults] = useState([]);
@@ -53,9 +54,13 @@ export default function JoinGroupModal({navigation}) {
       '{"ImageParameter":{"BarcodeFormatIds":["BF_QR_CODE"],"Description":"","Name":"Settings"},"Version":"3.0"}'; //scan qrcode only
 
     const results = decode(frame, config);
+    // console.log('-------------FRAME PROCESSOR BARCODERESULTS:::');
+    if (results[0] !== undefined) {
+      console.log(results[0].barcodeText);
+      // setJoinGroupLink(results[0].barcodeText);
+      // setIsCameraOpen(false);
+    }
     REA.runOnJS(setBarcodeResults)(results);
-    console.log('-------------FRAME PROCESSOR BARCODERESULTS:::');
-    console.log(barcodeResults);
   }, []);
 
   this.joinGroupLinkInput = React.createRef();
@@ -99,14 +104,15 @@ export default function JoinGroupModal({navigation}) {
       <BoxButton
         title={'Scan QR Code'}
         onPress={() => {
-          setOpenCamera(true);
+          setIsCameraOpen(true);
         }}
       />
-      {openCamera && !devNu && (
+      {isCameraOpen && !devNu && (
         <>
           <Camera
             ref={camera}
-            style={StyleSheet.absoluteFill}
+            // style={StyleSheet.absoluteFill}
+            style={styles.camera}
             device={device}
             isActive={true}
             frameProcessor={frameProcessor}
@@ -131,6 +137,9 @@ const styles = StyleSheet.create({
     color: Colors.DD_DARK_GRAY,
     fontSize: 20,
     margin: 10,
+  },
+  camera: {
+    height: '70%',
   },
 });
 
