@@ -5,6 +5,7 @@ import {classScheduleList} from '../assets/data/HardCodedEvents';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import {bareBonesGroupList} from '../assets/data/HardCodedGroups';
 
+//Don't forget to update Info.plist
 export const URL = 'http://ec2-34-204-67-135.compute-1.amazonaws.com';
 
 /**
