@@ -7,7 +7,7 @@ export async function loginAPICall(name, password) {
   try {
     console.log('Sending Username: ' + name + ' Password: ' + password);
     // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
-    const response = await fetch(`${URL}/Login`, {
+    const response = await fetch(`${URL}/Auth/Login`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -29,7 +29,7 @@ export async function loginAPICall(name, password) {
 }
 
 export async function registerAPICall(name, firstN, lastN, email, password) {
-  console.log('Beginning of loginAPICall');
+  console.log('Beginning of registerAPICall');
   try {
     // console.log('Sending Username: ' + name + ' Password: ' + password);
     // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
