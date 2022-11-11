@@ -26,19 +26,19 @@ import FriendRequestModal from '../Friends/FriendRequestsModal';
 import IsCameraOpenContext from '../../contexts/IsCameraOpen';
 
 function HomeScreen({navigation}) {
-  const {events, setEvents} = useContext(CalendarEventsContext);
-  const user = useContext(UserContext);
-  useEffect(() => {
-    navigation.addListener('focus', async () => {
-      // do something
-      console.log('-------HomerootStackscreen (For calendar)-------------');
+  // const {events, setEvents} = useContext(CalendarEventsContext);
+  // const user = useContext(UserContext);
+  // useEffect(() => {
+  //   navigation.addListener('focus', async () => {
+  //     // do something
+  //     console.log('-------HomerootStackscreen (For calendar)-------------');
 
-      const data = await readEventData('My', user.name);
-      // console.log(JSON.stringify(data, undefined, 2));
-      console.log('set events to data');
-      setEvents(data);
-    });
-  }, [navigation, setEvents, user.name]);
+  //     const data = await readEventData('My', user.name);
+  //     // console.log(JSON.stringify(data, undefined, 2));
+  //     console.log('set events to data');
+  //     setEvents(data);
+  //   });
+  // }, [navigation, setEvents, user.name]);
   return <CalendarScreen navigation={navigation} />;
 }
 

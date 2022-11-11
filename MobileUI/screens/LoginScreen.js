@@ -75,7 +75,7 @@ const LoginScreen = ({navigation}) => {
     if (!isLoading) {
       // console.log('no longer loading, set logged in true, pull up my schedule');
       setIsLoggedIn(true);
-      navigation.navigate('My Schedule');
+      navigation.navigate('Profile');
     }
   };
 

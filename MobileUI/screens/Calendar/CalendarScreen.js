@@ -51,54 +51,6 @@ const CalendarTitle = props => {
   );
 };
 
-function organizeIntoDates(events) {
-  let newFL = [];
-  // console.log(JSON.stringify(events, undefined, 2));
-  console.log('(calendarScreen.organizeIntoDates) events=' + events.length);
-  if (events.length === 0) {
-    console.log('events currently empty, return []');
-    return newFL;
-  }
-
-  for (let i of events) {
-    // console.log('i.start=' + i.start);
-    // let iMonth = constructMonth(i.start);
-    // let iDay = constructDay(i.start);
-    let iDateString = constructDateString(i.start);
-    // console.log('iDateString=' + iDateString);
-    // if (month.month === iMonth) {
-    // console.log('iMonth= ' + iMonth + ' iDay= ' + iDay);
-    if (!newFL[iDateString]) {
-      // console.log('add iDateString to array');
-      newFL[iDateString] = [];
-      // console.log('newFL size=' + newFL.length);
-    }
-    // console.log('month.day =' + month.day + '');
-    if (!newFL[iDateString].includes(i)) {
-      // console.log('push: ' + i.title + ' ' + i.start);
-      var localStartDate = new Date(i.start); //.toLocaleTimeString('en-US', {
-      //   timeZone: 'UTC',
-      //   hour12: true,
-      //   hour: 'numeric',
-      //   minute: 'numeric',
-      // });
-      var localEndDate = new Date(i.end);
-      console.log('##################' + localStartDate + '  ' + localEndDate);
-      const convertedI = {
-        ...i,
-        start: localStartDate,
-        end: localEndDate,
-      };
-      newFL[iDateString].push(convertedI);
-    }
-  }
-
-  // console.log('newFL:');
-  // console.log(JSON.stringify(newFL, undefined, 2));
-
-  return newFL;
-}
-
 const Empty = ({item}) => {
   return <Text style={styles.emptyText}>No events on this day</Text>;
 };
@@ -155,10 +107,22 @@ const CalendarScreen = ({navigation}) => {
   const {events, setEvents} = useContext(CalendarEventsContext);
   const user = useContext(UserContext);
 
+  // navigation.addListener('drawerItemPress', () => {
+  //   // console.log('FOCUSSSSSS');
+  //   // do something
+  //   console.log('-------Calendar Focus Listener-------------');
+
+  //   readEventData('My', user.name).then(data => {
+  //     // console.log(JSON.stringify(data, undefined, 2));
+  //     console.log('set events to data');
+  //     setEvents(data);
+  //   });
+  // });
+
   const renderItem = ({item}) => {
     // console.log(items.length);
-    console.log('RENDERITEM::: item below');
-    console.log(item);
+    // console.log('RENDERITEM::: item below');
+    // console.log(item);
     const itemColor = item.color;
     const time = formatEventTime(item.start, item.end);
     // console.log('rendering ' + item.id);
@@ -173,11 +137,11 @@ const CalendarScreen = ({navigation}) => {
     //date is a moment object
     const dateKey = date.format('YYYY-MM-DD');
     // console.log(flatList[dateKey]);
-    const dayEvents = flatList[dateKey];
+    const dayEvents = events[dateKey];
     if (dayEvents !== undefined) {
       setItems(dayEvents);
     } else {
-      console.log('createItemsList: flatList[dateKey] undefined, setItems([])');
+      console.log('createItemsList: events[dateKey] undefined, setItems([])');
       setItems([]);
     }
   };
@@ -198,23 +162,23 @@ const CalendarScreen = ({navigation}) => {
   };
 
   const markedDatesFunc = date => {
-    if (flatList[date.format('YYYY-MM-DD')]) {
+    if (events[date.format('YYYY-MM-DD')]) {
       return {dots: [{color: Colors.DD_RED_1}]};
     }
     return {};
   };
 
-  const [flatList, setFlatList] = useState([]);
-  useEffect(
-    function createFlatList() {
-      const newFlatL = organizeIntoDates(events);
-      setFlatList(newFlatL);
-      // console.log(moment());
-      // console.log('creaateFlatListEffect: call createItemsList');
-      // createItemsList(moment(), newFlatL);
-    },
-    [events],
-  );
+  // const [flatList, setFlatList] = useState([]);
+  // useEffect(
+  //   function createFlatList() {
+  //     const newFlatL = organizeIntoDates(events);
+  //     setFlatList(newFlatL);
+  //     // console.log(moment());
+  //     // console.log('creaateFlatListEffect: call createItemsList');
+  //     // createItemsList(moment(), newFlatL);
+  //   },
+  //   [events],
+  // );
 
   const onRefresh = async () => {
     //set isRefreshing to true
