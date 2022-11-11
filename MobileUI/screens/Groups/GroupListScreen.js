@@ -32,7 +32,7 @@ export default function GroupListScreen({navigation}) {
       // Call getGroup API to get full group object
       const detailedGroup = await groupsGetGroupMembers(
         group.groupID,
-        user.name,
+        user.token,
       );
       console.log(JSON.stringify(detailedGroup, undefined, 2));
       setcurrentGroup(detailedGroup);

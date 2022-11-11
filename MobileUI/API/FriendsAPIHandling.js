@@ -106,6 +106,9 @@ export async function friendsCreateFriendRequestByEmail(email, userToken) {
     );
 
     console.log('(FAPIHANDLING) CreateRequestEmail status: ' + response.status);
+    if (response.status !== 200) {
+      console.log(JSON.stringify(response, undefined, 2));
+    }
     return response.ok;
   } catch (err) {
     console.log(
@@ -135,6 +138,9 @@ export async function friendsAcceptRequest(friendID, userToken) {
     });
 
     console.log('(FAPIHandling) Return Accepted status: ' + response.status);
+    if (response.status !== 200) {
+      console.log(JSON.stringify(response, undefined, 2));
+    }
     return response.ok;
   } catch (err) {
     console.log('something went wrong with friendsAcceptRequest: ' + err);
@@ -162,6 +168,9 @@ export async function friendsRejectRequest(friendID, userToken) {
     });
 
     console.log('(FAPIHandling) Return Rejected status: ' + response.status);
+    if (response.status !== 200) {
+      console.log(JSON.stringify(response, undefined, 2));
+    }
     return response.ok;
   } catch (err) {
     console.log('something went wrong with friendsRejectRequest: ' + err);

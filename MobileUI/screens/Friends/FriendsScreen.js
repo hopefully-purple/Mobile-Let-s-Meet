@@ -67,20 +67,23 @@ export default function FriendsScreen({navigation}) {
   );
 
   const addFriendHandler = async () => {
-    console.log('Create friend request to ' + newFriendEmail);
+    if (newFriendEmail !== '') {
+      console.log('Create friend request to ' + newFriendEmail);
+      let result = await friendsCreateFriendRequestByEmail(
+        newFriendEmail,
+        user.token,
+      );
+      if (result) {
+        Alert.alert('Request sent!');
+      } else {
+        Alert.alert('Friend request failed?');
+      }
 
-    let result = await friendsCreateFriendRequestByEmail(
-      newFriendEmail,
-      user.token,
-    );
-    if (result) {
-      Alert.alert('Request sent!');
+      this.friendEmailInput.current.clear();
+      this.friendEmailInput.current.blur();
     } else {
-      Alert.alert('Friend request failed?');
+      Alert.alert('Enter the email of a new friend');
     }
-
-    this.friendEmailInput.current.clear();
-    this.friendEmailInput.current.blur();
   };
 
   return (

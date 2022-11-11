@@ -41,53 +41,23 @@ export default function AddGroupModal({navigation}) {
 
   this.newGroupNameInput = React.createRef();
 
-  const saveData = async newGroup => {
-    try {
-      let newG = [];
-      newG = groups;
-      console.log(JSON.stringify(newG, undefined, 2));
-      newG.push(newGroup);
-      await AsyncStorage.setItem('Groups', JSON.stringify(newG));
-      console.log('(saveData) Data successfully saved');
-      return true;
-    } catch (e) {
-      console.log('(saveData) Failed to save the data to the storage');
-      throw e;
-    }
-  };
-
   const doneHandler = async () => {
     if (newGroupName !== '' && addedFriends.length !== 0) {
       console.log(addedFriends);
       const newGroup = {
-        // id: `${groups.length + 1} ${newGroupName}`, // << unsure!!
         name: newGroupName,
         friendIds: addedFriends,
       };
       // console.log('NEW EVENT MADE, events context:');
 
       console.log('NEW GROUP MADE > Post API call > result');
-      let asyncSaveDataResult = false;
-      let apiResult = await groupCreateNewGroup(newGroup, user.name);
-      // ASYNC Stuff
-      if (!apiResult) {
-        //Save to async storage (for now until dev server is fixed)
-        const asyncNewGroup = {
-          groupID: `${groups.length + 1} ${newGroupName}`,
-          groupName: newGroupName,
-          joinCode: '5-fa746dbd',
-        };
-        let newG = groups;
-        newG.push(asyncNewGroup);
-        asyncSaveDataResult = await saveData(newG);
-      }
+      let apiResult = await groupCreateNewGroup(newGroup, user.token);
 
-      //Clear inputs
-      this.newGroupNameInput.current.clear();
-      setNewGroupName('');
-
-      if (asyncSaveDataResult || apiResult) {
-        //Go back to schedule
+      if (apiResult) {
+        //Clear inputs
+        this.newGroupNameInput.current.clear();
+        setNewGroupName('');
+        //Go back to group list screen
         console.log('go back');
         navigation.goBack();
       }
@@ -96,17 +66,15 @@ export default function AddGroupModal({navigation}) {
     }
   };
 
-  const FriendBox = ({friend}) => {
+  const FriendBox = ({friend, name}) => {
     const handleFriendPress = () => {
-      console.log('selected ' + friend.name);
+      console.log('selected ' + name);
       let addF = addedFriends;
-      if (!addF.includes(friend.id)) {
-        addF.push(friend.id);
+      if (!addF.includes(friend.userID)) {
+        addF.push(friend.userID);
         setAddedFriends(addF);
         // console.log(JSON.stringify(addedFriends, undefined, 2));
-        setGroupMembersDisplayList(
-          groupMembersDisplayList + friend.name + ', ',
-        );
+        setGroupMembersDisplayList(groupMembersDisplayList + name + ', ');
       }
     };
     return (
@@ -114,7 +82,7 @@ export default function AddGroupModal({navigation}) {
         <Card style={styles.cardStyle}>
           <Card.Content>
             <View>
-              <Text style={styles.defaultScreentext}>{friend.name}</Text>
+              <Text style={styles.defaultScreentext}>{name}</Text>
             </View>
           </Card.Content>
         </Card>
@@ -125,7 +93,9 @@ export default function AddGroupModal({navigation}) {
   const renderItem = ({item}) => {
     // console.log(items.length);
     // console.log('rendering ' + item.id);
-    return <FriendBox friend={item} />;
+    return (
+      <FriendBox friend={item} name={`${item.firstName} ${item.lastName}`} />
+    );
   };
 
   const handleGroupNameSubmit = async () => {
@@ -138,7 +108,7 @@ export default function AddGroupModal({navigation}) {
       // console.log(JSON.stringify(friends, undefined, 2));
 
       const makeGetFriendsAPIRequest = async () => {
-        const data = await friendsGetFriends(user.name);
+        const data = await friendsGetFriends(user.token);
         // console.log(JSON.stringify(data, undefined, 2));
         console.log('set friends to data');
         setFriends(data);
@@ -151,7 +121,7 @@ export default function AddGroupModal({navigation}) {
       const newFlatL = organizeFriends(friends);
       setFlatList(newFlatL);
     },
-    [friends, setFriends, user.name],
+    [friends, setFriends, user.token],
   );
 
   return (
@@ -190,7 +160,7 @@ export default function AddGroupModal({navigation}) {
       <FlatList
         data={flatList}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.userID}
         style={{marginTop: 40}}
       />
     </SafeAreaView>
