@@ -108,10 +108,19 @@ export async function groupCreateNewGroup(newGroup, userName) {
  * @param {string} userName The name of current user for extraction of token
  * @returns OK = true
  */
-export async function groupJoinGroup(joinCode, userName) {
+export async function groupJoinGroup(joinLink, userName) {
   console.log('(GAPIHandling) Beginning of GroupJoinGroup');
   //Pull out joincode from:
-  //`${URL}/GroupModels/JoinGroupRedirect?joinCode=${joinCode}`
+  //`http://ec2-34-204-67-135.compute-1.amazonaws.com/GroupModels/JoinGroupRedirect?joinCode=1589`
+
+  var regex = /[?&]([^=#]+)=([^&#]*)/g,
+    params = {},
+    match;
+  while ((match = regex.exec(joinLink))) {
+    params[match[1]] = match[2];
+  }
+  console.log(params.joinCode);
+  // return false;
   let user = await getUsernameValue(userName);
   try {
     const response = await fetch(`${URL}/GroupModels/JoinGroup`, {
@@ -121,7 +130,7 @@ export async function groupJoinGroup(joinCode, userName) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${user.token}`,
       },
-      body: {joinCode}, //shorthand might not work??
+      body: {joinCode: params.joinCode}, //shorthand might not work??
     });
 
     return response.ok;
