@@ -62,7 +62,7 @@ export default function AddEventModal({navigation, calendars}) {
   const [location, setLocation] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [calColor, setCalColor] = useState('#0D852F');
+  const [calColor, setCalColor] = useState(Colors.DD_EXTRA_LIGHT_GRAY);
   const {events, setEvents} = useContext(CalendarEventsContext);
   const user = useContext(UserContext);
 
@@ -90,6 +90,7 @@ export default function AddEventModal({navigation, calendars}) {
   };
 
   const doneHandler = async () => {
+    // console.log(calendars)
     if (title === '' && location === '') {
       Alert.alert(
         'EventModels/Create does not currently work due to AWS out of date',
@@ -100,13 +101,13 @@ export default function AddEventModal({navigation, calendars}) {
       navigation.goBack();
       return;
     }
+    // id: `${events.length + 1} ${title}`, //ASYNC WAY
     const newEvent = {
-      id: `${events.length + 1} ${title}`,
       title,
-      start: startDate, //.toUTCString(),
-      end: endDate, //.toUTCString(),
+      startTime: startDate.toISOString(), //yyyy-MM-dd'T'HH:mm:ss.fff'Z' <whatever this is
+      endTime: endDate.toISOString(),
       location,
-      color: calColor,
+      // calendarID: NEED TO PUT IN
     };
     // console.log('NEW EVENT MADE, events context:');
 
@@ -164,14 +165,25 @@ export default function AddEventModal({navigation, calendars}) {
       />
       <DropDownPicker
         placeholder="Select a calendar"
+        schema={{
+          label: 'name',
+          value: 'id',
+        }}
         open={open}
         value={value}
         items={calendars}
         setOpen={setOpen}
         setValue={setValue}
+        onSelectItem={item => {
+          console.log(item);
+          setCalColor(item.color);
+        }}
         // setItems={setItems}
         dropDownDirection="BOTTOM"
         listMode="SCROLLVIEW"
+        style={{
+          backgroundColor: `${calColor}`,
+        }}
         containerStyle={{
           width: '95%',
           margin: 10,

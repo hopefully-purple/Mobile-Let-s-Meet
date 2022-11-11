@@ -7,29 +7,6 @@ import UserContext from '../contexts/User';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Button} from 'react-native-paper';
 
-const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.DD_CREAM,
-    color: Colors.DD_RED_2,
-  },
-  defaultScreentext: {
-    fontSize: 25,
-    fontWeight: '500',
-    color: Colors.DD_RED_2,
-    textAlign: 'center',
-  },
-  clearButton: {
-    backgroundColor: Colors.DD_LIGHT_GRAY,
-    borderRadius: 12,
-    width: 200,
-    alignSelf: 'center',
-    margin: 10,
-  },
-});
-
 export default function SettingsScreen({navigation}) {
   const user = useContext(UserContext);
   const [output, setOutput] = useState('');
@@ -121,3 +98,26 @@ export default function SettingsScreen({navigation}) {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.DD_CREAM,
+    color: Colors.DD_RED_2,
+  },
+  defaultScreentext: {
+    fontSize: 25,
+    fontWeight: '500',
+    color: Colors.DD_RED_2,
+    textAlign: 'center',
+  },
+  clearButton: {
+    backgroundColor: Colors.DD_LIGHT_GRAY,
+    borderRadius: 12,
+    width: 200,
+    alignSelf: 'center',
+    margin: 10,
+  },
+});

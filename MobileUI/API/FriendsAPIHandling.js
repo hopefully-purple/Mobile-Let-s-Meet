@@ -1,6 +1,7 @@
 import React, {useContext} from 'react';
 import {bareBonesFriendsList} from '../assets/data/HardCodedFriends';
 import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
+import {URL} from './APIControllers';
 
 /**
  * API call to get friends of user
@@ -12,15 +13,12 @@ export async function friendsGetFriends(userName) {
   console.log('(FAPIHandling) Beginning of GetFriends');
   let user = await getUsernameValue(userName);
   try {
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/GetFriends',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    const response = await fetch(`${URL}/FriendsModels/GetFriends`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user.token}`,
       },
-    );
+    });
     const result = await response.json();
 
     console.log(JSON.stringify(result, undefined, 2));
@@ -42,15 +40,12 @@ export async function friendsGetSentRequests(userName) {
   console.log('(FAPIHandling) Beginning of GetSentRequests');
   let user = await getUsernameValue(userName);
   try {
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/GetSentRequests',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    const response = await fetch(`${URL}/FriendsModels/GetSentRequests`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user.token}`,
       },
-    );
+    });
     const result = await response.json();
 
     console.log(JSON.stringify(result, undefined, 2));
@@ -76,15 +71,12 @@ export async function friendsGetReceivedRequests(userName) {
   console.log('(FAPIHandling) Beginning of GetReceivedRequests');
   let user = await getUsernameValue(userName);
   try {
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/GetReceivedRequests',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    const response = await fetch(`${URL}/FriendsModels/GetReceivedRequests`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user.token}`,
       },
-    );
+    });
     const result = await response.json();
 
     console.log(JSON.stringify(result, undefined, 2));
@@ -111,7 +103,7 @@ export async function friendsCreateFriendRequestByEmail(email, userName) {
   let user = await getUsernameValue(userName);
   try {
     const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/CreateFriendRequestByEmail',
+      `${URL}/FriendsModels/CreateFriendRequestByEmail`,
       {
         method: 'POST',
         headers: {
@@ -141,16 +133,13 @@ export async function friendsAcceptRequest(friend, userName) {
   console.log('(FAPIHandling) Beginning of AcceptRequest');
   let user = await getUsernameValue(userName);
   try {
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/AcceptRequest',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: friend.id,
+    const response = await fetch(`${URL}/FriendsModels/AcceptRequest`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${user.token}`,
       },
-    );
+      body: friend.id,
+    });
 
     return response.ok;
   } catch (err) {
@@ -170,16 +159,13 @@ export async function friendsRejectRequest(friend, userName) {
   console.log('(FAPIHandling) Beginning of RejectRequest');
   let user = await getUsernameValue(userName);
   try {
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/RejectRequest',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: friend.id,
+    const response = await fetch(`${URL}/FriendsModels/RejectRequest`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${user.token}`,
       },
-    );
+      body: friend.id,
+    });
 
     return response.ok;
   } catch (err) {

@@ -26,6 +26,7 @@ import {
 import {BoxButton} from '../../assets/components/CustomButtons';
 import GroupsContext from '../../contexts/Groups';
 import UserContext from '../../contexts/User';
+import moment from 'moment';
 
 const CalendarTitle = props => {
   return (
@@ -98,7 +99,12 @@ function organizeIntoDates(events) {
   return newFL;
 }
 
-const Item = ({i, itemColor, time}) => {
+const Empty = ({item}) => {
+  return <Text style={styles.emptyText}>No events on this day</Text>;
+};
+
+const Item = props => {
+  const {i, itemColor, time} = props;
   const {events, setEvents} = useContext(CalendarEventsContext);
   const user = useContext(UserContext);
 
@@ -106,6 +112,8 @@ const Item = ({i, itemColor, time}) => {
     console.log('(calendarScreen.deleteItem) user = ' + user.name);
     if (await deleteEvent(i, events, setEvents, user.name)) {
       console.log('(calendarScreen.deleteItemInEvents) delete succeeded');
+      const selected = this.calendarStrip.current.getSelectedDate();
+      this.calendarStrip.current.setSelectedDate(selected);
     } else {
       Alert.alert('Delete did not succeed');
     }
@@ -138,6 +146,8 @@ const Item = ({i, itemColor, time}) => {
 // https://openbase.com/js/react-native-calendar-strip
 // There's stuff in there that talks about localization for datetimes!
 const CalendarScreen = ({navigation}) => {
+  this.calendarStrip = React.createRef();
+
   const nowDate = new Date();
   const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
   const [items, setItems] = useState([]);
@@ -145,11 +155,10 @@ const CalendarScreen = ({navigation}) => {
   const {events, setEvents} = useContext(CalendarEventsContext);
   const user = useContext(UserContext);
 
-  this.calendarStrip = React.createRef();
-
   const renderItem = ({item}) => {
     // console.log(items.length);
-    // console.log(item);
+    console.log('RENDERITEM::: item below');
+    console.log(item);
     const itemColor = item.color;
     const time = formatEventTime(item.start, item.end);
     // console.log('rendering ' + item.id);
@@ -158,18 +167,22 @@ const CalendarScreen = ({navigation}) => {
 
   const handleDateSelected = date => {
     setSelectedDay(date);
-    //date is a moment object
     // Set items to the array in Flatlist corresponding to date
+    console.log('handleDateSelected: createItemsList');
+    // createItemsList(date, flatList);
+    //date is a moment object
     const dateKey = date.format('YYYY-MM-DD');
     // console.log(flatList[dateKey]);
     const dayEvents = flatList[dateKey];
     if (dayEvents !== undefined) {
       setItems(dayEvents);
     } else {
+      console.log('createItemsList: flatList[dateKey] undefined, setItems([])');
       setItems([]);
     }
-    // console.log(dateKey);
   };
+
+  // const createItemsList = ({date, list}) => {};
 
   const customDatesStylesFunc = date => {
     if (date.format('ddd MMM DD YYYY') === nowDate.toDateString()) {
@@ -196,6 +209,9 @@ const CalendarScreen = ({navigation}) => {
     function createFlatList() {
       const newFlatL = organizeIntoDates(events);
       setFlatList(newFlatL);
+      // console.log(moment());
+      // console.log('creaateFlatListEffect: call createItemsList');
+      // createItemsList(moment(), newFlatL);
     },
     [events],
   );
@@ -208,19 +224,16 @@ const CalendarScreen = ({navigation}) => {
     // console.log('(CalendarScreen.onRefresh) new event data:');
     // console.log(JSON.stringify(data, undefined, 2));
     setEvents(data);
+    //Try updating calendar strip
+    console.log('On refresh, getSelectedDate()');
+    const selected = this.calendarStrip.current.getSelectedDate();
+    // this.calendarStrip.current.updateWeekView('2022-11-07T19:00:00.000Z');
+    // this.calendarStrip.current.updateWeekView(selected);
+    this.calendarStrip.current.setSelectedDate(selected);
     // and set isRefreshing to false
     setIsRefreshing(false);
   };
 
-  const Empty = ({item}) => {
-    return <Text style={styles.emptyText}>No events on this day</Text>;
-  };
-
-  // useEffect(() => {
-  //   if (selectedDay !== undefined) {
-  //     this.calendarStrip.current.updateWeekView(selectedDay);
-  //   }
-  // }, [selectedDay]);
   return (
     <SafeAreaView style={styles.container}>
       <CalendarTitle name={'My'} navigation={navigation} />
