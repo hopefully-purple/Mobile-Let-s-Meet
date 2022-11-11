@@ -56,6 +56,8 @@ export default function JoinGroupModal({navigation}) {
   const device = devices.back;
   const [barcodeResults, setBarcodeResults] = useState([]);
 
+  const newCameraPermission =  Camera.requestCameraPermission()
+
   const frameProcessor = useFrameProcessor(frame => {
     'worklet';
     const config = {};
@@ -162,7 +164,9 @@ export default function JoinGroupModal({navigation}) {
             device={device}
             isActive={true}
             frameProcessor={frameProcessor}
-            frameProcessorFps={5}
+            frameProcessorFps={5} /*The number here for Android might not matter because of what's listed in this post https://github.com/mrousavy/react-native-vision-camera/issues/1202 
+                                    So the Android side of things might flicker until I find a fix, but it might not be possible to fix because of the CameraX library vision-camera is based off of
+                                    The QR code will still scan, but the camera will flicker lots*/
           />
         </>
       )}
