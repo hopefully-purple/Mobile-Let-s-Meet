@@ -5,6 +5,8 @@ import {classScheduleList} from '../assets/data/HardCodedEvents';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import {bareBonesGroupList} from '../assets/data/HardCodedGroups';
 
+export const URL = 'http://ec2-34-204-67-135.compute-1.amazonaws.com';
+
 /**
  * Calls the calendarGetEvents method and returns the result
  * Still a work in progess. Can modify to stick with hardcoded data.
