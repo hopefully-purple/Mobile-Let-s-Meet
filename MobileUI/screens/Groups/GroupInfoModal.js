@@ -34,14 +34,14 @@ export default function GroupInfoModal({navigation}) {
   const group = useContext(CurrentGroupObjectContext).currentGroup;
   const user = useContext(UserContext);
 
-  const copyToClipboard = async () => {
-    const link = await groupsGenerateLink(group.groupID, user.name);
+  const copyToClipboard = () => {
+    const link = groupsGenerateLink(group.joinCode);
     Clipboard.setString(link);
-    Alert.alert('hello world has been copied to your clipboard!');
+    Alert.alert('The join link has been copied to your clipboard!');
   };
 
-  const handleQR = async () => {
-    const qr = await groupsGenerateQRCode(group.groupID, user.name);
+  const handleQR = () => {
+    const qr = groupsGenerateQRCode(group.joinCode);
     Alert.alert('display QR code here: ' + qr);
   };
 

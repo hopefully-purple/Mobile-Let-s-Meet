@@ -21,7 +21,7 @@ import UserContext from '../../contexts/User';
 // https://bobbyhadz.com/blog/react-sort-array-of-objects
 function organizeFriends(friends) {
   let newF = {};
-  newF = [...friends].sort((a, b) => (a.name > b.name ? 1 : -1));
+  newF = [...friends].sort((a, b) => (a.firstName > b.firstName ? 1 : -1));
   return newF;
 }
 
@@ -32,16 +32,16 @@ export default function FriendsScreen({navigation}) {
 
   this.friendEmailInput = React.createRef();
 
-  const FriendBox = ({friend}) => {
+  const FriendBox = ({friend, name}) => {
     const handleFriendPress = () => {
-      console.log('selected ' + friend.name);
+      console.log('selected ' + JSON.stringify(friend, undefined, 2));
     };
     return (
       <TouchableOpacity onPress={handleFriendPress}>
         <Card style={styles.cardStyle}>
           <Card.Content>
             <View>
-              <Text style={styles.defaultScreentext}>{friend.name}</Text>
+              <Text style={styles.defaultScreentext}>{name}</Text>
             </View>
           </Card.Content>
         </Card>
@@ -52,7 +52,9 @@ export default function FriendsScreen({navigation}) {
   const renderItem = ({item}) => {
     // console.log(items.length);
     // console.log('rendering ' + item.id);
-    return <FriendBox friend={item} />;
+    return (
+      <FriendBox friend={item} name={`${item.firstName} ${item.lastName}`} />
+    );
   };
 
   const [existingFriendsList, setExistingFriendsList] = useState([]);
@@ -65,18 +67,23 @@ export default function FriendsScreen({navigation}) {
   );
 
   const addFriendHandler = async () => {
-    console.log('Create friend request to ' + newFriendEmail);
+    if (newFriendEmail !== '') {
+      console.log('Create friend request to ' + newFriendEmail);
+      let result = await friendsCreateFriendRequestByEmail(
+        newFriendEmail,
+        user.token,
+      );
+      if (result) {
+        Alert.alert('Request sent!');
+      } else {
+        Alert.alert('Friend request failed?');
+      }
 
-    let result = await friendsCreateFriendRequestByEmail(
-      newFriendEmail,
-      user.name,
-    );
-    if (!result) {
-      Alert.alert('Friend request failed?');
+      this.friendEmailInput.current.clear();
+      this.friendEmailInput.current.blur();
+    } else {
+      Alert.alert('Enter the email of a new friend');
     }
-
-    this.friendEmailInput.current.clear();
-    this.friendEmailInput.current.blur();
   };
 
   return (
@@ -87,7 +94,7 @@ export default function FriendsScreen({navigation}) {
       <FlatList
         data={existingFriendsList}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.userID}
         style={{marginTop: 10}}
       />
       <View style={styles.buttons}>
