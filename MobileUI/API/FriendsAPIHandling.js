@@ -90,7 +90,7 @@ export async function friendsGetReceivedRequests(userToken) {
  * @param {string} userName The name of current user for extraction of token
  * @returns response.ok
  */
-export async function friendsCreateFriendRequestByEmail(email, userToken) {
+export async function friendsCreateFriendRequestByEmail(email1, userToken) {
   console.log('(FAPIHandling) Beginning of CreateFriendRequestByEmail');
   // let user = await getUsernameValue(userName);
   try {
@@ -99,16 +99,23 @@ export async function friendsCreateFriendRequestByEmail(email, userToken) {
       {
         method: 'POST',
         headers: {
+          // Accept: 'application/json',
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${userToken}`,
         },
-        body: {email},
+        // body: {email},
+        body: JSON.stringify({
+          email: email1,
+        }),
       },
     );
 
-    console.log('(FAPIHANDLING) CreateRequestEmail status: ' + response.status);
-    if (response.status !== 200) {
-      console.log(JSON.stringify(response, undefined, 2));
-    }
+    console.log('(FAPIHANDLING) CreateRequestEmail status: ');
+    console.log(JSON.stringify(response, undefined, 2));
+
+    // if (response.status !== 200) {
+    //   console.log(JSON.stringify(response, undefined, 2));
+    // }
     return response.ok;
   } catch (err) {
     console.log(

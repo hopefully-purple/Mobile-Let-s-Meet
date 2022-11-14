@@ -24,7 +24,7 @@ export async function calendarGetEvents(userName) {
       },
     });
 
-    // console.log('await response');
+    console.log(JSON.stringify(response, undefined, 2));
     const result = await response.json();
     console.log('(CAPIHandling) calendarGetEvents result:');
     console.log(JSON.stringify(result, undefined, 2));
