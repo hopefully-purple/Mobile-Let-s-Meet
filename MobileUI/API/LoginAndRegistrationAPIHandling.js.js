@@ -1,25 +1,23 @@
 import React, {useContext} from 'react';
 import {Alert} from 'react-native';
+import {URL} from './APIControllers';
 
 export async function loginAPICall(name, password) {
   console.log('Beginning of loginAPICall');
   try {
     console.log('Sending Username: ' + name + ' Password: ' + password);
     // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/Auth/Login',
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          Username: name,
-          Password: password,
-        }),
+    const response = await fetch(`${URL}/Auth/Login`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify({
+        Username: name,
+        Password: password,
+      }),
+    });
 
     console.log('(loginAPICall) return response');
     return response;
@@ -31,27 +29,24 @@ export async function loginAPICall(name, password) {
 }
 
 export async function registerAPICall(name, firstN, lastN, email, password) {
-  console.log('Beginning of loginAPICall');
+  console.log('Beginning of registerAPICall');
   try {
     // console.log('Sending Username: ' + name + ' Password: ' + password);
     // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/Auth/CreateUser',
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          Username: name,
-          FirstName: firstN,
-          LastName: lastN,
-          Email: email,
-          Password: password,
-        }),
+    const response = await fetch(`${URL}/Auth/CreateUser`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify({
+        Username: name,
+        FirstName: firstN,
+        LastName: lastN,
+        Email: email,
+        Password: password,
+      }),
+    });
 
     // console.log('await response');
     const result1 = await response.json();

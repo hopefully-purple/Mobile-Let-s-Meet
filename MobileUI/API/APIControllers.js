@@ -6,6 +6,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {constructDateString} from '../miscHelpers/DateParsing';
 // import {bareBonesGroupList} from '../assets/data/HardCodedGroups';
 
+//Don't forget to update Info.plist
+export const URL = 'http://ec2-34-204-67-135.compute-1.amazonaws.com';
+
 /**
  * Calls the calendarGetEvents method and returns the result
  * Still a work in progess. Can modify to stick with hardcoded data.

@@ -30,7 +30,7 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>ec2-3-84-219-120.compute-1.amazonaws.com</key>
+			<key>ec2-34-204-67-135.compute-1.amazonaws.com</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>

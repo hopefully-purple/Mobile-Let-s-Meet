@@ -5,6 +5,7 @@ import {
   accurateGetGroupResult0,
 } from '../assets/data/HardCodedGroups';
 import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
+import {URL} from './APIControllers';
 
 /**
  * API call to get all groups user is in
@@ -16,15 +17,12 @@ export async function groupsGetGroups(userName) {
   console.log('(GAPIHandling) Beginning of GroupsGetGroups');
   let user = await getUsernameValue(userName);
   try {
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/GroupModels/GetGroups',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    const response = await fetch(`${URL}/GroupModels/GetGroups`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user.token}`,
       },
-    );
+    });
     const result = await response.json();
 
     console.log(JSON.stringify(result, undefined, 2));
@@ -45,19 +43,16 @@ export async function groupsGetGroups(userName) {
  * @param {string} userName The name of current user for extraction of token
  * @returns list of group members
  */
-export async function groupsGetGroupMembers(groupID, userName) {
+export async function groupsGetGroupMembers(groupID, userToken) {
   console.log('(GAPIHandling) Beginning of GroupsGetGroupMembers');
-  let user = await getUsernameValue(userName);
+  // let user = await getUsernameValue(userName);
   try {
-    const response = await fetch(
-      `http://ec2-3-84-219-120.compute-1.amazonaws.com/GroupModels/GetGroup?id=${groupID}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    const response = await fetch(`${URL}/GroupModels/GetGroup?id=${groupID}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
       },
-    );
+    });
     const result = await response.json();
 
     console.log(JSON.stringify(result, undefined, 2));
@@ -82,23 +77,20 @@ export async function groupsGetGroupMembers(groupID, userName) {
  * @param {string} userName The name of current user for extraction of token
  * @returns OK = true
  */
-export async function groupCreateNewGroup(newGroup, userName) {
+export async function groupCreateNewGroup(newGroup, userToken) {
   console.log('(GAPIHandling) Beginning of GroupCreateNewGroup');
-  let user = await getUsernameValue(userName);
+  // let user = await getUsernameValue(userName);
   try {
     console.log('New Group:' + JSON.stringify(newGroup, undefined, 2));
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/GroupModels/CreateGroup',
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: newGroup,
+    const response = await fetch(`${URL}/GroupModels/CreateGroup`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userToken}`,
       },
-    );
+      body: {newGroup},
+    });
 
     return response.ok;
   } catch (err) {
@@ -110,34 +102,80 @@ export async function groupCreateNewGroup(newGroup, userName) {
 
 /**
  * API call to join a group
+ * TO BE CALLED FROM HANDLE LINK SUBMIT
  * If something goes wrong, catches error and goes to hardcoded functionality
  * @param {string} joinCode - Code to join associated group
  * @param {string} userName The name of current user for extraction of token
  * @returns OK = true
  */
-export async function groupJoinGroup(joinCode, userName) {
+export async function groupJoinGroup(joinLink, userToken) {
   console.log('(GAPIHandling) Beginning of GroupJoinGroup');
-  let user = await getUsernameValue(userName);
-  try {
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/GroupModels/JoinGroup',
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: joinCode,
-      },
-    );
+  //Pull out joincode from:
+  //`http://ec2-34-204-67-135.compute-1.amazonaws.com/GroupModels/JoinGroupRedirect?joinCode=1589`
 
+  var regex = /[?&]([^=#]+)=([^&#]*)/g,
+    params = {},
+    match;
+  while ((match = regex.exec(joinLink))) {
+    params[match[1]] = match[2];
+  }
+  console.log(params.joinCode);
+  // return false;
+  // let user = await getUsernameValue(user);
+  try {
+    const response = await fetch(`${URL}/GroupModels/JoinGroup`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userToken}`,
+      },
+      body: {joinCode: params.joinCode},
+    });
+
+    console.log('GAPIHandling: joingroup response status: ' + response.status);
+    if (response.status !== 200) {
+      console.log(JSON.stringify(response, undefined, 2));
+    }
     return response.ok;
   } catch (err) {
     console.log('something went wrong with groupJoinGroup: ' + err);
     // throw err;
     return false;
   }
+}
+
+/**
+ * API call to generate join group link
+ * If something goes wrong, catches error and goes to hardcoded functionality
+ *
+ * @param {int} groupID Identifier for group
+ * @returns join group link?
+ */
+export function groupsGenerateLink(joinCode) {
+  console.log('(GAPIHandling) Beginning of groupsGenerateLink');
+  //`${URL}/GroupModels/JoinGroupRedirect?joinCode=${joinCode}`
+  // ^^ the join link!!!!!!!!! (for web)
+  console.log(
+    `LINK!! ${URL}/GroupModels/JoinGroupRedirect?joinCode=${joinCode}`,
+  );
+  return `${URL}/GroupModels/JoinGroupRedirect?joinCode=${joinCode}`;
+}
+
+/**
+ * API call to generate QR code
+ * If something goes wrong, catches error and goes to hardcoded functionality
+ *
+ * @param {int} groupID Identifier for group
+ * @param {string} userName The name of current user for extraction of token
+ * @returns QR thing?
+ */
+export function groupsGenerateQRCode(joinCode) {
+  console.log('(GAPIHandling) Beginning of groupsGenerateQRCode');
+  const link = `LINK!! ${URL}/GroupModels/JoinGroupRedirect?joinCode=${joinCode}`;
+  console.log(link);
+  console.log('need to transform into a qr picture');
+  return '';
 }
 
 /**
@@ -152,15 +190,12 @@ export async function groupsLetsMeet(groupID, userName) {
   console.log('(GAPIHandling) Beginning of groupsLetsMeet');
   let user = await getUsernameValue(userName);
   try {
-    const response = await fetch(
-      `http://ec2-3-84-219-120.compute-1.amazonaws.com/`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    const response = await fetch(`${URL}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user.token}`,
       },
-    );
+    });
     const result = await response.json();
 
     console.log(JSON.stringify(result, undefined, 2));
@@ -169,69 +204,5 @@ export async function groupsLetsMeet(groupID, userName) {
     console.log('something went wrong with groupsLetsMeet: ' + err);
     throw err;
     // return accurateGetGroupResult[groupID];
-  }
-}
-
-/**
- * API call to generate join group link
- * If something goes wrong, catches error and goes to hardcoded functionality
- *
- * @param {int} groupID Identifier for group
- * @param {string} userName The name of current user for extraction of token
- * @returns join group link?
- */
-export async function groupsGenerateLink(groupID, userName) {
-  console.log('(GAPIHandling) Beginning of groupsGenerateLink');
-  let user = await getUsernameValue(userName);
-  try {
-    const response = await fetch(
-      `http://ec2-3-84-219-120.compute-1.amazonaws.com/`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      },
-    );
-    const result = await response.json();
-
-    console.log(JSON.stringify(result, undefined, 2));
-    return result;
-  } catch (err) {
-    console.log('something went wrong with groupsGenerateLink: ' + err);
-    // throw err;
-    return 'hello world';
-  }
-}
-
-/**
- * API call to generate QR code
- * If something goes wrong, catches error and goes to hardcoded functionality
- *
- * @param {int} groupID Identifier for group
- * @param {string} userName The name of current user for extraction of token
- * @returns QR thing?
- */
-export async function groupsGenerateQRCode(groupID, userName) {
-  console.log('(GAPIHandling) Beginning of groupsGenerateQRCode');
-  let user = await getUsernameValue(userName);
-  try {
-    const response = await fetch(
-      `http://ec2-3-84-219-120.compute-1.amazonaws.com/`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      },
-    );
-    const result = await response.json();
-
-    console.log(JSON.stringify(result, undefined, 2));
-    return result;
-  } catch (err) {
-    console.log('something went wrong with groupsGenerateQRCode: ' + err);
-    // throw err;
-    return 'qr';
   }
 }

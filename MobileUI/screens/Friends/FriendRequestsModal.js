@@ -36,29 +36,35 @@ export default function FriendRequestModal({
   // const [receivedReqs, setReceivedReqs] = useState(receivedRequests);
   const user = useContext(UserContext);
 
-  const ReceivedItem = ({item}) => {
+  const ReceivedItem = ({item, name}) => {
     const [showAccRej, setShowAccRej] = useState(true);
     const [result, setResult] = useState('');
     return (
       <View
-        key={item.id}
+        key={item.friendsID}
         style={{
           ...styles.item,
           flexDirection: 'row',
           alignItems: 'center',
         }}>
-        <Text style={{...styles.listText, alignSelf: 'center'}}>
-          {item.name}
-        </Text>
+        <Text style={{...styles.listText, alignSelf: 'center'}}>{name}</Text>
         {showAccRej && (
           <View style={styles.acceptRejectButtons}>
             <MiniBoxButton
               title={'Accept'}
               onPress={async () => {
-                await friendsAcceptRequest(item, user.name);
-                Alert.alert(`Accepted ${item.name} request`);
-                setShowAccRej(false);
-                setResult('Accepted');
+                console.log(item.friendsID);
+                const r = await friendsAcceptRequest(
+                  item.friendsID,
+                  user.token,
+                );
+                if (r) {
+                  Alert.alert(`Accepted ${name} request`);
+                  setShowAccRej(false);
+                  setResult('Accepted');
+                } else {
+                  Alert.alert('PROBLEMS!!');
+                }
               }}
             />
           </View>
@@ -68,10 +74,18 @@ export default function FriendRequestModal({
             <MiniBoxButton
               title={'Reject'}
               onPress={async () => {
-                await friendsRejectRequest(item, user.name);
-                Alert.alert(`Rejected ${item.name} request`);
-                setShowAccRej(false);
-                setResult('Rejected');
+                console.log(item.friendsID);
+                const r = await friendsRejectRequest(
+                  item.friendsID,
+                  user.token,
+                );
+                if (r) {
+                  Alert.alert(`Rejected ${name} request`);
+                  setShowAccRej(false);
+                  setResult('Rejected');
+                } else {
+                  Alert.alert('PROBLEMS!!');
+                }
               }}
             />
           </View>
@@ -86,11 +100,20 @@ export default function FriendRequestModal({
   };
 
   const renderSentItem = ({item}) => {
-    return <SentItem name={item.name} />;
+    return (
+      <SentItem
+        name={`${item.requestedTo.firstName} ${item.requestedTo.lastName}`}
+      />
+    );
   };
 
   const renderReceivedItem = ({item}) => {
-    return <ReceivedItem item={item} />;
+    return (
+      <ReceivedItem
+        item={item}
+        name={`${item.requestedBy.firstName} ${item.requestedBy.lastName}`}
+      />
+    );
   };
 
   return (
@@ -106,7 +129,7 @@ export default function FriendRequestModal({
               <FlatList
                 data={receivedRequests}
                 renderItem={renderReceivedItem}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item.friendsID}
               />
             </View>
           </View>
@@ -117,9 +140,8 @@ export default function FriendRequestModal({
             <View style={styles.flatListStyle}>
               <FlatList
                 data={sentRequests}
-                // data={[]}
                 renderItem={renderSentItem}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item.friendsID}
               />
             </View>
           </View>

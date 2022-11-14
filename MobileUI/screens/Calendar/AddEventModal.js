@@ -101,13 +101,13 @@ export default function AddEventModal({navigation, calendars}) {
       navigation.goBack();
       return;
     }
+    // id: `${events.length + 1} ${title}`, //ASYNC WAY
     const newEvent = {
-      id: `${events.length + 1} ${title}`, //ASYNC WAY
       title,
-      start: startDate, //.toUTCString(),
-      end: endDate, //.toUTCString(),
+      startTime: startDate.toISOString(), //yyyy-MM-dd'T'HH:mm:ss.fff'Z' <whatever this is
+      endTime: endDate.toISOString(),
       location,
-      color: calColor,
+      // calendarID: NEED TO PUT IN
     };
     // console.log('NEW EVENT MADE, events context:');
 

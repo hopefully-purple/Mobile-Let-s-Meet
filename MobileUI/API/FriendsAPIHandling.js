@@ -1,6 +1,7 @@
 import React, {useContext} from 'react';
 import {bareBonesFriendsList} from '../assets/data/HardCodedFriends';
 import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
+import {URL} from './APIControllers';
 
 /**
  * API call to get friends of user
@@ -8,19 +9,16 @@ import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
  * @param {string} userName The name of current user for extraction of token
  * @returns json array of friend objects
  */
-export async function friendsGetFriends(userName) {
+export async function friendsGetFriends(userToken) {
   console.log('(FAPIHandling) Beginning of GetFriends');
-  let user = await getUsernameValue(userName);
+  // let user = await getUsernameValue(userName);
   try {
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/GetFriends',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    const response = await fetch(`${URL}/FriendsModels/GetFriends`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
       },
-    );
+    });
     const result = await response.json();
 
     console.log(JSON.stringify(result, undefined, 2));
@@ -28,7 +26,7 @@ export async function friendsGetFriends(userName) {
   } catch (err) {
     console.log('something went wrong with friendsGetFriends: ' + err);
     // throw err;
-    return bareBonesFriendsList;
+    return [];
   }
 }
 
@@ -38,19 +36,16 @@ export async function friendsGetFriends(userName) {
  * @param {string} userName The name of current user for extraction of token
  * @returns json array of sent friend requests
  */
-export async function friendsGetSentRequests(userName) {
+export async function friendsGetSentRequests(userToken) {
   console.log('(FAPIHandling) Beginning of GetSentRequests');
-  let user = await getUsernameValue(userName);
+  // let user = await getUsernameValue(userName);
   try {
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/GetSentRequests',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    const response = await fetch(`${URL}/FriendsModels/GetSentRequests`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
       },
-    );
+    });
     const result = await response.json();
 
     console.log(JSON.stringify(result, undefined, 2));
@@ -58,11 +53,7 @@ export async function friendsGetSentRequests(userName) {
   } catch (err) {
     console.log('something went wrong with friendsGetSentRequests: ' + err);
     // throw err;
-    return [
-      {id: 0, name: 'NewFriend1'},
-      {id: 1, name: 'NewFriend2'},
-      {id: 2, name: 'NewFriend3'},
-    ];
+    return [];
   }
 }
 
@@ -72,19 +63,16 @@ export async function friendsGetSentRequests(userName) {
  * @param {string} userName The name of current user for extraction of token
  * @returns json array of recieved friend requests
  */
-export async function friendsGetReceivedRequests(userName) {
+export async function friendsGetReceivedRequests(userToken) {
   console.log('(FAPIHandling) Beginning of GetReceivedRequests');
-  let user = await getUsernameValue(userName);
+  // let user = await getUsernameValue(userName);
   try {
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/GetReceivedRequests',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    const response = await fetch(`${URL}/FriendsModels/GetReceivedRequests`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
       },
-    );
+    });
     const result = await response.json();
 
     console.log(JSON.stringify(result, undefined, 2));
@@ -92,11 +80,7 @@ export async function friendsGetReceivedRequests(userName) {
   } catch (err) {
     console.log('something went wrong with friendsGetReceivedRequests: ' + err);
     // throw err;
-    return [
-      {id: 0, name: 'NewFriend4'},
-      {id: 1, name: 'NewFriend5'},
-      {id: 2, name: 'NewFriend6'},
-    ];
+    return [];
   }
 }
 
@@ -106,28 +90,39 @@ export async function friendsGetReceivedRequests(userName) {
  * @param {string} userName The name of current user for extraction of token
  * @returns response.ok
  */
-export async function friendsCreateFriendRequestByEmail(email, userName) {
+export async function friendsCreateFriendRequestByEmail(email1, userToken) {
   console.log('(FAPIHandling) Beginning of CreateFriendRequestByEmail');
-  let user = await getUsernameValue(userName);
+  // let user = await getUsernameValue(userName);
   try {
     const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/CreateFriendRequestByEmail',
+      `${URL}/FriendsModels/CreateFriendRequestByEmail`,
       {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          // Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userToken}`,
         },
-        body: email,
+        // body: {email},
+        body: JSON.stringify({
+          email: email1,
+        }),
       },
     );
 
+    console.log('(FAPIHANDLING) CreateRequestEmail status: ');
+    console.log(JSON.stringify(response, undefined, 2));
+
+    // if (response.status !== 200) {
+    //   console.log(JSON.stringify(response, undefined, 2));
+    // }
     return response.ok;
   } catch (err) {
     console.log(
       'something went wrong with friendsCreateFriendRequestByEmail: ' + err,
     );
     // throw err;
-    return true;
+    return false;
   }
 }
 
@@ -137,26 +132,27 @@ export async function friendsCreateFriendRequestByEmail(email, userName) {
  * @param {string} userName The name of current user for extraction of token
  * @returns response.ok
  */
-export async function friendsAcceptRequest(friend, userName) {
+export async function friendsAcceptRequest(friendID, userToken) {
   console.log('(FAPIHandling) Beginning of AcceptRequest');
-  let user = await getUsernameValue(userName);
+  // let user = await getUsernameValue(userName);
   try {
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/AcceptRequest',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: friend.id,
+    const response = await fetch(`${URL}/FriendsModels/AcceptRequest`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
       },
-    );
+      body: JSON.stringify({id: friendID}),
+    });
 
+    console.log('(FAPIHandling) Return Accepted status: ' + response.status);
+    if (response.status !== 200) {
+      console.log(JSON.stringify(response, undefined, 2));
+    }
     return response.ok;
   } catch (err) {
     console.log('something went wrong with friendsAcceptRequest: ' + err);
     // throw err;
-    return true;
+    return false;
   }
 }
 
@@ -166,25 +162,26 @@ export async function friendsAcceptRequest(friend, userName) {
  * @param {string} userName The name of current user for extraction of token
  * @returns response.ok
  */
-export async function friendsRejectRequest(friend, userName) {
+export async function friendsRejectRequest(friendID, userToken) {
   console.log('(FAPIHandling) Beginning of RejectRequest');
-  let user = await getUsernameValue(userName);
+  // let user = await getUsernameValue(userName);
   try {
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/FriendsModels/RejectRequest',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: friend.id,
+    const response = await fetch(`${URL}/FriendsModels/RejectRequest`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
       },
-    );
+      body: {id: friendID},
+    });
 
+    console.log('(FAPIHandling) Return Rejected status: ' + response.status);
+    if (response.status !== 200) {
+      console.log(JSON.stringify(response, undefined, 2));
+    }
     return response.ok;
   } catch (err) {
     console.log('something went wrong with friendsRejectRequest: ' + err);
     // throw err;
-    return true;
+    return false;
   }
 }

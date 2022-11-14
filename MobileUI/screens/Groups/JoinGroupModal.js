@@ -92,8 +92,13 @@ export default function JoinGroupModal({navigation}) {
 
     console.log('Group Link! ' + link);
     setIsLoading(true);
-    const response = await groupJoinGroup(link, user.name);
-    if (!response) {
+    const response = await groupJoinGroup(link, user.token);
+    if (response) {
+      setIsLoading(false);
+      Alert.alert('Successfully joined group!');
+      this.joinGroupLinkInput.current.clear();
+      navigation.goBack();
+    } else {
       setIsQRScanComplete(false);
       setIsLoading(false);
       // setIsJoinSuccess(false);
@@ -101,11 +106,6 @@ export default function JoinGroupModal({navigation}) {
       this.joinGroupLinkInput.current.clear();
       setJoinGroupLink('');
       setQRJoinLink('');
-    } else {
-      setIsLoading(false);
-      Alert.alert('Successfully joined group!');
-      this.joinGroupLinkInput.current.clear();
-      navigation.goBack();
     }
     console.log('Reachable code? JoinGroupModal.handleLinkSubmit');
   };
@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: Colors.DD_RED_2,
     textAlign: 'center',
+    marginTop: 60,
     marginBottom: 46,
   },
   qrLinkText: {

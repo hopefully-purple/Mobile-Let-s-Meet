@@ -104,12 +104,12 @@ function FriendScreen({navigation}) {
   useEffect(() => {
     navigation.addListener('focus', async () => {
       console.log('-------Navigation (For Friends)-------------');
-      const data = await friendsGetFriends(user.name);
+      const data = await friendsGetFriends(user.token);
       // console.log(JSON.stringify(data, undefined, 2));
       console.log('set friends to data');
       setFriends(data);
     });
-  }, [navigation, setFriends, user.name]);
+  }, [navigation, setFriends, user.token]);
   return <FriendsScreen navigation={navigation} />;
 }
 
@@ -120,15 +120,17 @@ function RequestsModalOverlay({navigation}) {
   // useEffect(() => {
   navigation.addListener('focus', async () => {
     console.log('-------Navigation (For RequestsOVerlay)-------------');
-    const dataSent = await friendsGetSentRequests(user.name);
-    const dataRec = await friendsGetReceivedRequests(user.name);
+    const dataSent = await friendsGetSentRequests(user.token);
+    const dataRec = await friendsGetReceivedRequests(user.token);
     // console.log(JSON.stringify(data, undefined, 2));
     console.log('set sent to dataSent and received to dataRec');
     setSent(dataSent);
     setReceived(dataRec);
   });
   // }, [navigation, user.name]);
+  console.log('sent:');
   console.log(JSON.stringify(sent, undefined, 2));
+  console.log('recieved:');
   console.log(JSON.stringify(received, undefined, 2));
   return (
     <FriendRequestModal

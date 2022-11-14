@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import {bareBonesUsersCalendars} from '../assets/data/HardCodedCalendars';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
+import {URL} from './APIControllers';
 
 /**
  * API call to get calendar events
@@ -16,17 +17,14 @@ export async function calendarGetEvents(userName) {
   try {
     // console.log('Sending Username: ' + name + ' Password: ' + password);
     // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/EventModels/GetEvents',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    const response = await fetch(`${URL}/EventModels/GetEvents`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user.token}`,
       },
-    );
+    });
 
-    // console.log('await response');
+    console.log(JSON.stringify(response, undefined, 2));
     const result = await response.json();
     console.log('(CAPIHandling) calendarGetEvents result:');
     console.log(JSON.stringify(result, undefined, 2));
@@ -49,18 +47,15 @@ export async function calendarCreateNewEvent(newEvent, userName) {
   let user = await getUsernameValue(userName);
   try {
     console.log('New Event:' + JSON.stringify(newEvent, undefined, 2));
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/EventModels/Create',
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: newEvent,
+    const response = await fetch(`${URL}/EventModels/Create`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
       },
-    );
+      body: newEvent,
+    });
 
     // console.log('await response');
     const result = await response.json();
@@ -84,15 +79,12 @@ export async function calendarDeleteEvent(event, userName) {
   let user = await getUsernameValue(userName);
   try {
     console.log('Event:' + JSON.stringify(event, undefined, 2));
-    const response = await fetch(
-      `http://ec2-3-84-219-120.compute-1.amazonaws.com/EventModels/Delete/${event.id}`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    const response = await fetch(`${URL}/EventModels/Delete/${event.id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${user.token}`,
       },
-    );
+    });
 
     // console.log('await response');
     // const result = await response.json();
@@ -118,15 +110,12 @@ export async function calendarGetCalendars(userName) {
   try {
     // console.log('Sending Username: ' + name + ' Password: ' + password);
     // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
-    const response = await fetch(
-      'http://ec2-3-84-219-120.compute-1.amazonaws.com/CalendarModels/GetCalendars',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+    const response = await fetch(`${URL}/CalendarModels/GetCalendars`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user.token}`,
       },
-    );
+    });
 
     // console.log('await response');
     const result = await response.json();
