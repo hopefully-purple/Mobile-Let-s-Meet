@@ -9,22 +9,54 @@ import {BoxButton} from '../../assets/components/CustomButtons';
 import {
   groupsGetGroupMembers,
   getRiverInformation,
+  groupsGetGroups,
 } from '../../API/GroupsAPIHandling';
 import UserContext from '../../contexts/User';
 import PropTypes from 'prop-types';
 
-// https://bobbyhadz.com/blog/react-sort-array-of-objects
-function organizeGroups(groups) {
-  let newG = {};
-  // newG = [...groups].sort((a, b) => a.groupID - b.groupID);
-  newG = [...groups].sort((a, b) => (a.groupName > b.groupName ? 1 : -1));
-  return newG;
-}
-
-export default function GroupListScreen({navigation, name}) {
-  const {groups, setGroups} = useContext(GroupsContext);
+export default function GroupListScreen({navigation}) {
+  // const {groups, setGroups} = useContext(GroupsContext);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const {currentGroup, setcurrentGroup} = useContext(CurrentGroupObjectContext);
   const user = useContext(UserContext);
+
+  const [groupsList, setGroupsList] = useState([]);
+  useEffect(() => {
+    let mounted = true;
+    console.log('~~~~~~~~~~~~~~~GroupListScreen.useEffect call getGroups');
+    groupsGetGroups(user.token).then(data => {
+      if (mounted) {
+        console.log('mounted! setGroupsList');
+        // let d = organizeGroups(data);
+        setGroupsList(data);
+      }
+    });
+    return () => {
+      console.log('mounted = false');
+      mounted = false;
+    };
+  }, [user.token]);
+
+  const onRefresh = () => {
+    //set isRefreshing to true
+    setIsRefreshing(true);
+    console.log('REFRESHING FLAT LIST!!!!!!');
+    groupsGetGroups(user.token).then(data => {
+      console.log('setGroupsList to data');
+      //setGroupsList to new data
+      setGroupsList(data);
+    });
+
+    console.log('set refreshing to false');
+    // and set isRefreshing to false
+    setIsRefreshing(false);
+  };
+
+  const renderItem = ({item}) => {
+    // console.log(items.length);
+    // console.log('rendering ' + item.id);
+    return <GroupBox group={item} />;
+  };
 
   const GroupBox = ({group}) => {
     const handleGroupPress = async () => {
@@ -59,26 +91,31 @@ export default function GroupListScreen({navigation, name}) {
     );
   };
 
-  const renderItem = ({item}) => {
-    // console.log(items.length);
-    // console.log('rendering ' + item.id);
-    return <GroupBox group={item} />;
-  };
+  // const [flatList, setFlatList] = useState([]);
+  // useEffect(
+  //   function createFlatList() {
+  //     const newFlatL = organizeGroups(groups);
+  //     setFlatList(newFlatL);
+  //   },
+  //   [groups],
+  // );
 
-  const [flatList, setFlatList] = useState([]);
-  useEffect(
-    function createFlatList() {
-      const newFlatL = organizeGroups(groups);
-      setFlatList(newFlatL);
-    },
-    [groups],
-  );
+  // const [riverInformation, setRiverInformation] = useState();
 
-  const [riverInformation, setRiverInformation] = useState({});
-
-  useEffect(() => {
-    getRiverInformation(name).then(data => setRiverInformation(data));
-  }, [name]);
+  // useEffect(() => {
+  //   let mounted = true;
+  //   console.log(
+  //     'GroupListScreen.useEffect call getRiverInformation on ' + name,
+  //   );
+  //   getRiverInformation(name).then(data => {
+  //     if (mounted) {
+  //       setRiverInformation(data);
+  //     }
+  //   });
+  //   return () => {
+  //     mounted = false;
+  //   };
+  // }, [name]);
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -93,21 +130,20 @@ export default function GroupListScreen({navigation, name}) {
         />
       </View>
       <FlatList
-        data={flatList}
+        data={groupsList}
         renderItem={renderItem}
         keyExtractor={item => item.groupID}
         style={{marginTop: 40}}
+        onRefresh={onRefresh}
+        refreshing={isRefreshing}
       />
-      <Text>{riverInformation.continent}</Text>
-      <Text>{riverInformation.length}</Text>
-      <Text>{riverInformation.outflow}</Text>
     </SafeAreaView>
   );
 }
 
-GroupListScreen.propTypes = {
-  name: PropTypes.string.isRequired,
-};
+// GroupListScreen.propTypes = {
+//   name: PropTypes.string.isRequired,
+// };
 
 const styles = StyleSheet.create({
   screenContainer: {

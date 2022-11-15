@@ -25,7 +25,6 @@ import {
 } from '../../miscHelpers/DateParsing';
 import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import {BoxButton, MiniBoxButton} from '../../assets/components/CustomButtons';
-import GroupsContext from '../../contexts/Groups';
 import UserContext from '../../contexts/User';
 
 const CalendarTitle = props => {

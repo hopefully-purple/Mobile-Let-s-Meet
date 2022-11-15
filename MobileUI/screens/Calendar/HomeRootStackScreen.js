@@ -54,14 +54,7 @@ function GroupScreen({navigation}) {
   //     setGroups(data);
   //   });
   // }, [navigation, setGroups, user.name]);
-  const [river, setRiver] = useState('nile');
-  return (
-    <>
-      <Button title={'Amazon'} onClick={() => setRiver('amazon')} />
-      <Button title={'yangtze'} onClick={() => setRiver('yangtze')} />
-      <GroupListScreen navigation={navigation} name={river} />
-    </>
-  );
+  return <GroupListScreen navigation={navigation} />;
 }
 
 function GroupCalendar({navigation}) {

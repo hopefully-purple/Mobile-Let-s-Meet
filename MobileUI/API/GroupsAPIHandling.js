@@ -31,7 +31,7 @@ const rivers = {
 };
 
 export function getRiverInformation(name) {
-  console.log('\n\n\n\nGET RIVER INFORMATION\n\n\n\n');
+  console.log('\n\n\n\nGET RIVER INFORMATION: ' + name + '\n\n\n\n');
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(rivers[name]);
@@ -42,28 +42,78 @@ export function getRiverInformation(name) {
 /**
  * API call to get all groups user is in
  * If something goes wrong, catches error and goes to hardcoded functionality
- * @param {string} userName The name of current user for extraction of token
+ * @param {string} userToken The token of current user for authorization
  * @returns list of groups
  */
-export async function groupsGetGroups(userName) {
+// export function getList() {
+//   return fetch('http://localhost:3333/list').then(data => data.json());
+// }
+
+// export function setItem(item) {
+//   return fetch('http://localhost:3333/list', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({item}),
+//   }).then(data => data.json());
+// }
+
+// https://bobbyhadz.com/blog/react-sort-array-of-objects
+function organizeGroups(groups) {
+  let newG = [];
+  // newG = [...groups].sort((a, b) => a.groupID - b.groupID);
+  newG = [...groups].sort((a, b) => (a.groupName > b.groupName ? 1 : -1));
+  return newG;
+}
+
+export function groupsGetGroups(userToken) {
   console.log('(GAPIHandling) Beginning of GroupsGetGroups');
-  let user = await getUsernameValue(userName);
+  return fetch(`${URL}/GroupModels/GetGroups`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${userToken}`,
+    },
+  })
+    .then(data => {
+      console.log('GAPIHANDLING - data:');
+      console.log(JSON.stringify(data, undefined, 2));
+      if (data.ok) {
+        return data.json();
+      } else {
+        throw Error(data.statusText);
+      }
+    })
+    .then(jsonData => {
+      console.log('GAPIHANDLING - data.json():');
+      console.log(JSON.stringify(jsonData, undefined, 2));
+      return organizeGroups(jsonData);
+    })
+    .catch(e => {
+      console.log('something went wrong with groupsGetGroups: ' + e);
+      return [];
+    });
+}
+
+export async function groupsGetGroup(userToken) {
+  console.log('(GAPIHandling) Beginning of GroupsGetGroups');
+  // let user = await getUsernameValue(userName);
   try {
     const response = await fetch(`${URL}/GroupModels/GetGroups`, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${user.token}`,
+        Authorization: `Bearer ${userToken}`,
       },
     });
     const result = await response.json();
 
+    console.log('GAPIHANDLING - result:');
     console.log(JSON.stringify(result, undefined, 2));
     return result;
   } catch (err) {
     console.log('something went wrong with groupsGetGroups: ' + err);
-    // throw err;
-    // TODO::: Need to adjust display code for the accurate list
-    return bareBonesGroupListAccurate;
+    return [];
   }
 }
 
