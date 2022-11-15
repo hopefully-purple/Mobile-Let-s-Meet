@@ -43,18 +43,25 @@ function HomeScreen({navigation}) {
 }
 
 function GroupScreen({navigation}) {
-  const {groups, setGroups} = useContext(GroupsContext);
-  const user = useContext(UserContext);
-  useEffect(() => {
-    navigation.addListener('focus', async () => {
-      console.log('-------HomerootStackscreen (For Group)-------------');
-      const data = await readGroupData(user.name);
-      // console.log(JSON.stringify(data, undefined, 2));
-      console.log('set groups to data');
-      setGroups(data);
-    });
-  }, [navigation, setGroups, user.name]);
-  return <GroupListScreen navigation={navigation} />;
+  // const {groups, setGroups} = useContext(GroupsContext);
+  // const user = useContext(UserContext);
+  // useEffect(() => {
+  //   navigation.addListener('focus', async () => {
+  //     console.log('-------HomerootStackscreen (For Group)-------------');
+  //     const data = await readGroupData(user.name);
+  //     // console.log(JSON.stringify(data, undefined, 2));
+  //     console.log('set groups to data');
+  //     setGroups(data);
+  //   });
+  // }, [navigation, setGroups, user.name]);
+  const [river, setRiver] = useState('nile');
+  return (
+    <>
+      <Button title={'Amazon'} onClick={() => setRiver('amazon')} />
+      <Button title={'yangtze'} onClick={() => setRiver('yangtze')} />
+      <GroupListScreen navigation={navigation} name={river} />
+    </>
+  );
 }
 
 function GroupCalendar({navigation}) {

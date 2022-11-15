@@ -6,8 +6,12 @@ import {Card} from 'react-native-paper';
 import GroupsContext from '../../contexts/Groups';
 import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import {BoxButton} from '../../assets/components/CustomButtons';
-import {groupsGetGroupMembers} from '../../API/GroupsAPIHandling';
+import {
+  groupsGetGroupMembers,
+  getRiverInformation,
+} from '../../API/GroupsAPIHandling';
 import UserContext from '../../contexts/User';
+import PropTypes from 'prop-types';
 
 // https://bobbyhadz.com/blog/react-sort-array-of-objects
 function organizeGroups(groups) {
@@ -17,7 +21,7 @@ function organizeGroups(groups) {
   return newG;
 }
 
-export default function GroupListScreen({navigation}) {
+export default function GroupListScreen({navigation, name}) {
   const {groups, setGroups} = useContext(GroupsContext);
   const {currentGroup, setcurrentGroup} = useContext(CurrentGroupObjectContext);
   const user = useContext(UserContext);
@@ -70,6 +74,12 @@ export default function GroupListScreen({navigation}) {
     [groups],
   );
 
+  const [riverInformation, setRiverInformation] = useState({});
+
+  useEffect(() => {
+    getRiverInformation(name).then(data => setRiverInformation(data));
+  }, [name]);
+
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.buttons}>
@@ -88,9 +98,16 @@ export default function GroupListScreen({navigation}) {
         keyExtractor={item => item.groupID}
         style={{marginTop: 40}}
       />
+      <Text>{riverInformation.continent}</Text>
+      <Text>{riverInformation.length}</Text>
+      <Text>{riverInformation.outflow}</Text>
     </SafeAreaView>
   );
 }
+
+GroupListScreen.propTypes = {
+  name: PropTypes.string.isRequired,
+};
 
 const styles = StyleSheet.create({
   screenContainer: {
