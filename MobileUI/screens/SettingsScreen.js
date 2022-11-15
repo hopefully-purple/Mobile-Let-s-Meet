@@ -46,7 +46,7 @@ export default function SettingsScreen({navigation}) {
       throw e;
     }
 
-    setOutput(keys[0] + ', ' + keys[1]);
+    setOutput(JSON.stringify(keys, undefined, 2));
     // return keys;
     console.log(JSON.stringify(keys));
     // return [];

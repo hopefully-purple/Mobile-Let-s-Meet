@@ -18,7 +18,7 @@ export default function GroupListScreen({navigation}) {
   // const {groups, setGroups} = useContext(GroupsContext);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const {currentGroup, setcurrentGroup} = useContext(CurrentGroupObjectContext);
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
 
   const [groupsList, setGroupsList] = useState([]);
   useEffect(() => {

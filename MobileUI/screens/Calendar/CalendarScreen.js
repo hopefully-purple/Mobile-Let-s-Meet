@@ -27,6 +27,7 @@ import {BoxButton} from '../../assets/components/CustomButtons';
 import GroupsContext from '../../contexts/Groups';
 import UserContext from '../../contexts/User';
 import moment from 'moment';
+import {calendarGetEvents} from '../../API/CalendarAPIHandling';
 
 const CalendarTitle = props => {
   return (
@@ -104,20 +105,43 @@ const CalendarScreen = ({navigation}) => {
   const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
   const [items, setItems] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const {events, setEvents} = useContext(CalendarEventsContext);
-  const user = useContext(UserContext);
+  // const {events, setEvents} = useContext(CalendarEventsContext);
+  // const user = useContext(UserContext);
 
-  // navigation.addListener('drawerItemPress', () => {
-  //   // console.log('FOCUSSSSSS');
-  //   // do something
-  //   console.log('-------Calendar Focus Listener-------------');
+  const [events, setEvents] = useState([]);
+  useEffect(() => {
+    console.log('~~~~~~~~~~~~~~~CalendarScreen.useEffect call getEvents');
+    let mounted = true;
+    calendarGetEvents().then(data => {
+      if (mounted) {
+        console.log('mounted! setEvents');
+        setEvents(data);
+      }
+    });
+    return () => {
+      console.log('mounted = false');
+      mounted = false;
+    };
+  }, []);
+  const onRefresh = async () => {
+    //set isRefreshing to true
+    setIsRefreshing(true);
+    console.log('REFRESHING FLAT LIST!!!!!!');
+    await calendarGetEvents().then(data => {
+      console.log('setEvents to data');
+      //setEvents to new data
+      setEvents(data);
+    });
 
-  //   readEventData('My', user.name).then(data => {
-  //     // console.log(JSON.stringify(data, undefined, 2));
-  //     console.log('set events to data');
-  //     setEvents(data);
-  //   });
-  // });
+    //Try updating calendar strip
+    console.log('On refresh, getSelectedDate()');
+    const selected = this.calendarStrip.current.getSelectedDate();
+    // this.calendarStrip.current.updateWeekView('2022-11-07T19:00:00.000Z');
+    // this.calendarStrip.current.updateWeekView(selected);
+    this.calendarStrip.current.setSelectedDate(selected);
+    // and set isRefreshing to false
+    setIsRefreshing(false);
+  };
 
   const renderItem = ({item}) => {
     // console.log(items.length);
@@ -166,36 +190,6 @@ const CalendarScreen = ({navigation}) => {
       return {dots: [{color: Colors.DD_RED_1}]};
     }
     return {};
-  };
-
-  // const [flatList, setFlatList] = useState([]);
-  // useEffect(
-  //   function createFlatList() {
-  //     const newFlatL = organizeIntoDates(events);
-  //     setFlatList(newFlatL);
-  //     // console.log(moment());
-  //     // console.log('creaateFlatListEffect: call createItemsList');
-  //     // createItemsList(moment(), newFlatL);
-  //   },
-  //   [events],
-  // );
-
-  const onRefresh = async () => {
-    //set isRefreshing to true
-    setIsRefreshing(true);
-    console.log('REFRESHING FLAT LIST!!!!!!');
-    const data = await readEventData('My'); // API call
-    // console.log('(CalendarScreen.onRefresh) new event data:');
-    // console.log(JSON.stringify(data, undefined, 2));
-    setEvents(data);
-    //Try updating calendar strip
-    console.log('On refresh, getSelectedDate()');
-    const selected = this.calendarStrip.current.getSelectedDate();
-    // this.calendarStrip.current.updateWeekView('2022-11-07T19:00:00.000Z');
-    // this.calendarStrip.current.updateWeekView(selected);
-    this.calendarStrip.current.setSelectedDate(selected);
-    // and set isRefreshing to false
-    setIsRefreshing(false);
   };
 
   return (
