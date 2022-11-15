@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // import {bareBonesGroupList} from '../assets/data/HardCodedGroups';
 
 //Don't forget to update Info.plist
-export const URL = 'http://ec2-52-201-245-93.compute-1.amazonaws.com/';
+export const URL = 'http://ec2-52-201-245-93.compute-1.amazonaws.com';
 
 /**
  * Calls the calendarGetEvents method and returns the result
