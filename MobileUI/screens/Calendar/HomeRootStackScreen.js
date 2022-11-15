@@ -67,10 +67,10 @@ function GroupCalendar({navigation}) {
 
 function AddEventModalScreen({navigation}) {
   const [calendars, setCalendars] = useState([]);
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
   navigation.addListener('focus', async () => {
     console.log('-------Navigation (For AddEventModal)-------------');
-    const data = await calendarGetCalendars(user.name);
+    const data = await calendarGetCalendars();
     // console.log(JSON.stringify(data, undefined, 2));
     console.log('set calendars to data');
     setCalendars(data);
@@ -116,18 +116,18 @@ function FriendScreen({navigation}) {
 function RequestsModalOverlay({navigation}) {
   const [sent, setSent] = useState([]);
   const [received, setReceived] = useState([]);
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
   // useEffect(() => {
   navigation.addListener('focus', async () => {
     console.log('-------Navigation (For RequestsOVerlay)-------------');
-    const dataSent = await friendsGetSentRequests(user.token);
-    const dataRec = await friendsGetReceivedRequests(user.token);
+    const dataSent = await friendsGetSentRequests();
+    const dataRec = await friendsGetReceivedRequests();
     // console.log(JSON.stringify(data, undefined, 2));
     console.log('set sent to dataSent and received to dataRec');
     setSent(dataSent);
     setReceived(dataRec);
   });
-  // }, [navigation, user.name]);
+  // }, [navigation]);
   console.log('sent:');
   console.log(JSON.stringify(sent, undefined, 2));
   console.log('recieved:');

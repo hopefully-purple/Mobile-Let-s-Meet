@@ -58,11 +58,11 @@ const Empty = ({item}) => {
 const Item = props => {
   const {i, itemColor, time} = props;
   const {events, setEvents} = useContext(CalendarEventsContext);
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
 
   async function deleteItemInEvents() {
-    console.log('(calendarScreen.deleteItem) user = ' + user.name);
-    if (await deleteEvent(i, events, setEvents, user.name)) {
+    // console.log('(calendarScreen.deleteItem) user = ' + user.name);
+    if (await deleteEvent(i, events, setEvents)) {
       console.log('(calendarScreen.deleteItemInEvents) delete succeeded');
       const selected = this.calendarStrip.current.getSelectedDate();
       this.calendarStrip.current.setSelectedDate(selected);
@@ -184,7 +184,7 @@ const CalendarScreen = ({navigation}) => {
     //set isRefreshing to true
     setIsRefreshing(true);
     console.log('REFRESHING FLAT LIST!!!!!!');
-    const data = await readEventData('My', user.name); // API call
+    const data = await readEventData('My'); // API call
     // console.log('(CalendarScreen.onRefresh) new event data:');
     // console.log(JSON.stringify(data, undefined, 2));
     setEvents(data);

@@ -31,7 +31,7 @@ export default function FriendsScreen({navigation}) {
   useEffect(() => {
     let mounted = true;
     console.log('~~~~~~~~~~~~~~~FriendsScreen.useEffect call getFriends');
-    friendsGetFriends(user.token).then(data => {
+    friendsGetFriends().then(data => {
       if (mounted) {
         console.log('mounted! setFriendsList');
         // let d = organizeGroups(data);
@@ -42,13 +42,13 @@ export default function FriendsScreen({navigation}) {
       console.log('mounted = false');
       mounted = false;
     };
-  }, [user.token]);
+  }, []);
 
   const onRefresh = async () => {
     //set isRefreshing to true
     setIsRefreshing(true);
     console.log('REFRESHING FLAT LIST!!!!!!');
-    await friendsGetFriends(user.token).then(data => {
+    await friendsGetFriends().then(data => {
       console.log('setFriendsList to data');
       //setGroupsList to new data
       setFriendsList(data);
@@ -96,14 +96,11 @@ export default function FriendsScreen({navigation}) {
   const addFriendHandler = async () => {
     if (newFriendEmail !== '') {
       console.log('Create friend request to ' + newFriendEmail);
-      let result = await friendsCreateFriendRequestByEmail(
-        newFriendEmail,
-        user.token,
-      );
+      let result = await friendsCreateFriendRequestByEmail(newFriendEmail);
       if (result) {
         Alert.alert('Request sent!');
       } else {
-        Alert.alert('Friend request failed?');
+        Alert.alert('Friend request failed');
       }
 
       this.friendEmailInput.current.clear();

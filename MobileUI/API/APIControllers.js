@@ -16,11 +16,11 @@ export const URL = 'http://ec2-52-201-245-93.compute-1.amazonaws.com';
  * @param {string} userName The name of current user for extraction of token
  * @returns {array} Array of event objects
  */
-export const readEventData = async (currentCalendarName, userName) => {
+export const readEventData = async currentCalendarName => {
   //TODO: change call based on calendarName?
   try {
     // const value = await AsyncStorage.getItem('Events'); // Hardcoded
-    const value = await calendarGetEvents(userName); // API call
+    const value = await calendarGetEvents(); // API call
     // console.log('(App.readData) value:' + value);
     if (value !== null && value !== undefined) {
       // return JSON.parse(value); // initialize events context for Hardcoded
@@ -99,7 +99,7 @@ export const readGroupData = async userName => {
   //TODO: change call based on calendarName?
   try {
     // const value = await AsyncStorage.getItem('Groups');
-    const value = await groupsGetGroups(userName); // API call
+    const value = await groupsGetGroups(); // API call
     // const value = null;
     // console.log('(App.readData) value:' + value);
     if (value !== null && value !== undefined) {
@@ -129,10 +129,9 @@ export const readGroupData = async userName => {
  * @param {eventObject} i Event to delete
  * @param {array} events Events array context for ASYNC way
  * @param {context} setEvents to set the Events context to the updated data
- * @param {string} userName The name of current user for extraction of token
  * @returns true or false based on success
  */
-export const deleteEvent = async (i, events, setEvents, userName) => {
+export const deleteEvent = async (i, events, setEvents) => {
   //   console.log(JSON.stringify(i, undefined, 2));
   //ASYNC WAY
   // Filter condition
@@ -158,10 +157,10 @@ export const deleteEvent = async (i, events, setEvents, userName) => {
 
   //API WAY
   try {
-    const result = await calendarDeleteEvent(i, userName);
+    const result = await calendarDeleteEvent(i);
     if (result) {
       console.log('(deleteEvent) call calendarGetEvents');
-      const value = await calendarGetEvents(userName); // API call
+      const value = await calendarGetEvents(); // API call
       if (value !== null && value !== undefined) {
         console.log('deleteEvent) setEvents to the new value! ret true');
         setEvents(value);

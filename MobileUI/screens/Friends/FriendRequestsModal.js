@@ -54,10 +54,7 @@ export default function FriendRequestModal({
               title={'Accept'}
               onPress={async () => {
                 console.log(item.friendsID);
-                const r = await friendsAcceptRequest(
-                  item.friendsID,
-                  user.token,
-                );
+                const r = await friendsAcceptRequest(item.friendsID);
                 if (r) {
                   Alert.alert(`Accepted ${name} request`);
                   setShowAccRej(false);
@@ -75,10 +72,7 @@ export default function FriendRequestModal({
               title={'Reject'}
               onPress={async () => {
                 console.log(item.friendsID);
-                const r = await friendsRejectRequest(
-                  item.friendsID,
-                  user.token,
-                );
+                const r = await friendsRejectRequest(item.friendsID);
                 if (r) {
                   Alert.alert(`Rejected ${name} request`);
                   setShowAccRej(false);

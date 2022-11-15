@@ -118,7 +118,7 @@ export default function AddEventModal({navigation, calendars}) {
       'EventModels/Create does not currently work due to AWS out of date',
     );
     // API call to post new event
-    // await calendarCreateNewEvent(newEvent, user.name);
+    // await calendarCreateNewEvent(newEvent);
     // console.log(JSON.stringify(result, undefined, 2));
     //To trigger reload of Events and new GET API call, update the events context
     // const newE = events;

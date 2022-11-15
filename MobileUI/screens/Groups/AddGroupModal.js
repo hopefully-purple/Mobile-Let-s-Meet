@@ -51,7 +51,7 @@ export default function AddGroupModal({navigation}) {
       // console.log('NEW EVENT MADE, events context:');
 
       console.log('NEW GROUP MADE > Post API call > result');
-      let apiResult = await groupCreateNewGroup(newGroup, user.token);
+      let apiResult = await groupCreateNewGroup(newGroup);
 
       if (apiResult) {
         //Clear inputs
@@ -108,7 +108,7 @@ export default function AddGroupModal({navigation}) {
       // console.log(JSON.stringify(friends, undefined, 2));
 
       const makeGetFriendsAPIRequest = async () => {
-        const data = await friendsGetFriends(user.token);
+        const data = await friendsGetFriends();
         // console.log(JSON.stringify(data, undefined, 2));
         console.log('set friends to data');
         setFriends(data);
@@ -121,7 +121,7 @@ export default function AddGroupModal({navigation}) {
       const newFlatL = organizeFriends(friends);
       setFlatList(newFlatL);
     },
-    [friends, setFriends, user.token],
+    [friends, setFriends],
   );
 
   return (

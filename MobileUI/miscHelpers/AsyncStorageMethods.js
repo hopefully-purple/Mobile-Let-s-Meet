@@ -16,20 +16,58 @@ export const clearAll = async () => {
 };
 
 export const storeUserLoginInfo = async (name, password, postResult) => {
-  let loginInfo;
-  if (postResult.status !== '') {
-    loginInfo = {
-      password: password,
-    };
-  } else {
-    loginInfo = {
-      token: postResult.token,
-      expiration: postResult.expiration,
-      password: password,
-    };
+  // let loginInfo;
+  // if (postResult.status !== '') {
+  //   loginInfo = {
+  //     name: name,
+  //     password: password,
+  //   };
+  //   console.log('loginInfo is just name, pass');
+  // } else {
+  const loginInfo = {
+    name: name,
+    token: postResult.token,
+    expiration: postResult.expiration,
+    password: password,
+  };
+  const s = JSON.stringify(loginInfo);
+  console.log('login info is name, token, expiration, password: ' + s);
+  // }
+
+  await setStringUsername(s);
+};
+
+const setStringUsername = async value => {
+  try {
+    console.log('setStringUsername value param = ' + value);
+    await AsyncStorage.setItem('User', value);
+  } catch (e) {
+    // save error
+    console.log('setStringUSername error : ' + e);
+    throw e;
   }
 
-  await setStringUsername(name, JSON.stringify(loginInfo));
+  // console.log('Set username in async storage is done.');
+};
+
+/*
+ * Gets the value stored with User object
+ */
+export const getUserInfo = async () => {
+  try {
+    const value = await AsyncStorage.getItem('User');
+    if (value !== null) {
+      // console.log('getUserInfo: value=' + value);
+      console.log('returning user info');
+      return JSON.parse(value);
+    }
+  } catch (e) {
+    // read error
+    console.log('getUserInfo error: ' + e);
+    throw e;
+  }
+  // console.log('Done getting usesrname');
+  return null;
 };
 
 // export const CheckIsTokenExpired = async () => {
@@ -43,7 +81,7 @@ export async function checkIsTokenExpired(name) {
     //   'checkIsTExp - step 2.3: There are many!! Parse expiration and current date',
     // );
 
-    let user = await getUsernameValue(name);
+    let user = await getUserInfo();
     // console.log('checkIsTExp - step 2.4: user result=' + user);
     var exp = Date.parse(user.expiration);
     var d1 = new Date();
@@ -97,35 +135,4 @@ export const getAllKeys = async () => {
   return keys;
   // example console.log result:
   // ['@MyApp_user', '@MyApp_key']
-};
-
-/*
- * Gets the value stored with given username
- */
-export const getUsernameValue = async username => {
-  try {
-    const value = await AsyncStorage.getItem(username);
-    if (value !== null) {
-      // console.log('getUsername: value=' + value);
-      return JSON.parse(value);
-    }
-  } catch (e) {
-    // read error
-    console.log('getUsername error: ' + e);
-    throw e;
-  }
-  // console.log('Done getting usesrname');
-  return null;
-};
-
-const setStringUsername = async (username, value) => {
-  try {
-    await AsyncStorage.setItem(`${username}`, value);
-  } catch (e) {
-    // save error
-    console.log('error : ' + e);
-    throw e;
-  }
-
-  // console.log('Set username in async storage is done.');
 };

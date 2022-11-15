@@ -4,47 +4,18 @@ import {
   accurateGetGroupResult,
   accurateGetGroupResult0,
 } from '../assets/data/HardCodedGroups';
-import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
+import {getUserInfo} from '../miscHelpers/AsyncStorageMethods';
 import {URL} from './APIControllers';
 
-const rivers = {
-  nile: {
-    continent: 'Africa',
-    length: '6,650 km',
-    outflow: 'Mediterranean',
-  },
-  amazon: {
-    continent: 'South America',
-    length: '6,575 km',
-    outflow: 'Atlantic Ocean',
-  },
-  yangtze: {
-    continent: 'Asia',
-    length: '6,300 km',
-    outflow: 'East China Sea',
-  },
-  mississippi: {
-    continent: 'North America',
-    length: '6,275 km',
-    outflow: 'Gulf of Mexico',
-  },
-};
+// export function getRiverInformation(name) {
+//   console.log('\n\n\n\nGET RIVER INFORMATION: ' + name + '\n\n\n\n');
+//   return new Promise(resolve => {
+//     setTimeout(() => {
+//       resolve(rivers[name]);
+//     }, 1500);
+//   });
+// }
 
-export function getRiverInformation(name) {
-  console.log('\n\n\n\nGET RIVER INFORMATION: ' + name + '\n\n\n\n');
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(rivers[name]);
-    }, 1500);
-  });
-}
-
-/**
- * API call to get all groups user is in
- * If something goes wrong, catches error and goes to hardcoded functionality
- * @param {string} userToken The token of current user for authorization
- * @returns list of groups
- */
 // export function getList() {
 //   return fetch('http://localhost:3333/list').then(data => data.json());
 // }
@@ -67,13 +38,20 @@ function organizeGroups(groups) {
   return newG;
 }
 
-export function groupsGetGroups(userToken) {
+/**
+ * API call to get all groups user is in
+ * If something goes wrong, catches error and goes to hardcoded functionality
+ * @returns list of groups (organized)
+ */
+export async function groupsGetGroups() {
   console.log('(GAPIHandling) Beginning of GroupsGetGroups');
+  let user = await getUserInfo();
+  // console.log('user = ' + JSON.stringify(user, undefined, 2));
   return fetch(`${URL}/GroupModels/GetGroups`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${userToken}`,
+      Authorization: `Bearer ${user.token}`,
     },
   })
     .then(data => {
@@ -96,43 +74,42 @@ export function groupsGetGroups(userToken) {
     });
 }
 
-export async function groupsGetGroup(userToken) {
-  console.log('(GAPIHandling) Beginning of GroupsGetGroups');
-  // let user = await getUsernameValue(userName);
-  try {
-    const response = await fetch(`${URL}/GroupModels/GetGroups`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
-    });
-    const result = await response.json();
+// export async function groupsGetGroup() {
+//   console.log('(GAPIHandling) Beginning of GroupsGetGroups');
+//   let user = await getUserInfo();
+//   try {
+//     const response = await fetch(`${URL}/GroupModels/GetGroups`, {
+//       method: 'GET',
+//       headers: {
+//         Authorization: `Bearer ${user.token}`,
+//       },
+//     });
+//     const result = await response.json();
 
-    console.log('GAPIHANDLING - result:');
-    console.log(JSON.stringify(result, undefined, 2));
-    return result;
-  } catch (err) {
-    console.log('something went wrong with groupsGetGroups: ' + err);
-    return [];
-  }
-}
+//     console.log('GAPIHANDLING - result:');
+//     console.log(JSON.stringify(result, undefined, 2));
+//     return result;
+//   } catch (err) {
+//     console.log('something went wrong with groupsGetGroups: ' + err);
+//     return [];
+//   }
+// }
 
 /**
  * API call to get members of given group
  * If something goes wrong, catches error and goes to hardcoded functionality
  *
  * @param {int} groupID Identifier for group
- * @param {string} userName The name of current user for extraction of token
  * @returns list of group members
  */
-export async function groupsGetGroupMembers(groupID, userToken) {
+export async function groupsGetGroupMembers(groupID) {
   console.log('(GAPIHandling) Beginning of GroupsGetGroupMembers');
-  // let user = await getUsernameValue(userName);
+  let user = await getUserInfo();
   try {
     const response = await fetch(`${URL}/GroupModels/GetGroup?id=${groupID}`, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${userToken}`,
+        Authorization: `Bearer ${user.token}`,
       },
     });
     const result = await response.json();
@@ -148,7 +125,8 @@ export async function groupsGetGroupMembers(groupID, userToken) {
     //   '&&&&&&&&&&&&&&&&&&' +
     //     JSON.stringify(accurateGetGroupResult[0], undefined, 2),
     // );
-    return accurateGetGroupResult[groupID];
+    // return accurateGetGroupResult[groupID];
+    return [];
   }
 }
 
@@ -156,12 +134,11 @@ export async function groupsGetGroupMembers(groupID, userToken) {
  * API call to create a new group
  * If something goes wrong, catches error and goes to hardcoded functionality
  * @param {groupObject} newGroup - group object to be added
- * @param {string} userName The name of current user for extraction of token
  * @returns OK = true
  */
-export async function groupCreateNewGroup(newGroup, userToken) {
+export async function groupCreateNewGroup(newGroup) {
   console.log('(GAPIHandling) Beginning of GroupCreateNewGroup');
-  // let user = await getUsernameValue(userName);
+  let user = await getUserInfo();
   try {
     console.log('New Group:' + JSON.stringify(newGroup, undefined, 2));
     const response = await fetch(`${URL}/GroupModels/CreateGroup`, {
@@ -169,7 +146,7 @@ export async function groupCreateNewGroup(newGroup, userToken) {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${userToken}`,
+        Authorization: `Bearer ${user.token}`,
       },
       body: {newGroup},
     });
@@ -187,10 +164,9 @@ export async function groupCreateNewGroup(newGroup, userToken) {
  * TO BE CALLED FROM HANDLE LINK SUBMIT
  * If something goes wrong, catches error and goes to hardcoded functionality
  * @param {string} joinCode - Code to join associated group
- * @param {string} userName The name of current user for extraction of token
  * @returns OK = true
  */
-export async function groupJoinGroup(joinLink, userToken) {
+export async function groupJoinGroup(joinLink) {
   console.log('(GAPIHandling) Beginning of GroupJoinGroup');
   //Pull out joincode from:
   //`http://ec2-34-204-67-135.compute-1.amazonaws.com/GroupModels/JoinGroupRedirect?joinCode=1589`
@@ -203,14 +179,14 @@ export async function groupJoinGroup(joinLink, userToken) {
   }
   console.log(params.joinCode);
   // return false;
-  // let user = await getUsernameValue(user);
+  let user = await getUserInfo();
   try {
     const response = await fetch(`${URL}/GroupModels/JoinGroup`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${userToken}`,
+        Authorization: `Bearer ${user.token}`,
       },
       body: {joinCode: params.joinCode},
     });
@@ -265,12 +241,11 @@ export function groupsGenerateQRCode(joinCode) {
  * If something goes wrong, catches error and goes to hardcoded functionality
  *
  * @param {int} groupID Identifier for group
- * @param {string} userName The name of current user for extraction of token
  * @returns List of suggested times?
  */
-export async function groupsLetsMeet(groupID, userName) {
+export async function groupsLetsMeet(groupID) {
   console.log('(GAPIHandling) Beginning of groupsLetsMeet');
-  let user = await getUsernameValue(userName);
+  let user = await getUserInfo();
   try {
     const response = await fetch(`${URL}`, {
       method: 'GET',

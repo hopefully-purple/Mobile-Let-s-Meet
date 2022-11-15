@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {bareBonesFriendsList} from '../assets/data/HardCodedFriends';
-import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
 import {URL} from './APIControllers';
+import {getUserInfo} from '../miscHelpers/AsyncStorageMethods';
 
 // https://bobbyhadz.com/blog/react-sort-array-of-objects
 function organizeFriends(friends) {
@@ -13,16 +13,16 @@ function organizeFriends(friends) {
 /**
  * API call to get friends of user
  * If something goes wrong, catches error and goes to hardcoded functionality
- * @param {string} userToken The token of current user for authorization
  * @returns json array of friend objects
  */
-export function friendsGetFriends(userToken) {
+export async function friendsGetFriends() {
   console.log('(FAPIHandling) Beginning of GetFriends');
+  let user = await getUserInfo();
   return fetch(`${URL}/FriendsModels/GetFriends`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${userToken}`,
+      Authorization: `Bearer ${user.token}`,
     },
   })
     .then(data => {
@@ -44,41 +44,40 @@ export function friendsGetFriends(userToken) {
       return [];
     });
 }
-export async function friendsGetFriend(userToken) {
-  console.log('(FAPIHandling) Beginning of GetFriends');
-  // let user = await getUsernameValue(userName);
-  try {
-    const response = await fetch(`${URL}/FriendsModels/GetFriends`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
-    });
-    const result = await response.json();
+// export async function friendsGetFriend() {
+//   console.log('(FAPIHandling) Beginning of GetFriends');
+//   let user = await getUserInfo();
+//   try {
+//     const response = await fetch(`${URL}/FriendsModels/GetFriends`, {
+//       method: 'GET',
+//       headers: {
+//         Authorization: `Bearer ${user.token}`,
+//       },
+//     });
+//     const result = await response.json();
 
-    console.log(JSON.stringify(result, undefined, 2));
-    return result;
-  } catch (err) {
-    console.log('something went wrong with friendsGetFriends: ' + err);
-    // throw err;
-    return [];
-  }
-}
+//     console.log(JSON.stringify(result, undefined, 2));
+//     return result;
+//   } catch (err) {
+//     console.log('something went wrong with friendsGetFriends: ' + err);
+//     // throw err;
+//     return [];
+//   }
+// }
 
 /**
  * API call to get sent friend requests of user
  * If something goes wrong, catches error and goes to hardcoded functionality
- * @param {string} userName The name of current user for extraction of token
  * @returns json array of sent friend requests
  */
-export async function friendsGetSentRequests(userToken) {
+export async function friendsGetSentRequests() {
   console.log('(FAPIHandling) Beginning of GetSentRequests');
-  // let user = await getUsernameValue(userName);
+  let user = await getUserInfo();
   try {
     const response = await fetch(`${URL}/FriendsModels/GetSentRequests`, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${userToken}`,
+        Authorization: `Bearer ${user.token}`,
       },
     });
     const result = await response.json();
@@ -95,17 +94,16 @@ export async function friendsGetSentRequests(userToken) {
 /**
  * API call to get recieved requests of user
  * If something goes wrong, catches error and goes to hardcoded functionality
- * @param {string} userName The name of current user for extraction of token
  * @returns json array of recieved friend requests
  */
-export async function friendsGetReceivedRequests(userToken) {
+export async function friendsGetReceivedRequests() {
   console.log('(FAPIHandling) Beginning of GetReceivedRequests');
-  // let user = await getUsernameValue(userName);
+  let user = await getUserInfo();
   try {
     const response = await fetch(`${URL}/FriendsModels/GetReceivedRequests`, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${userToken}`,
+        Authorization: `Bearer ${user.token}`,
       },
     });
     const result = await response.json();
@@ -122,12 +120,12 @@ export async function friendsGetReceivedRequests(userToken) {
 /**
  * API call to create a friend request using email
  * If something goes wrong, catches error and goes to hardcoded functionality
- * @param {string} userName The name of current user for extraction of token
+ * @param {string} email1 The email of the friend you want to request
  * @returns response.ok
  */
-export async function friendsCreateFriendRequestByEmail(email1, userToken) {
+export async function friendsCreateFriendRequestByEmail(email1) {
   console.log('(FAPIHandling) Beginning of CreateFriendRequestByEmail');
-  // let user = await getUsernameValue(userName);
+  let user = await getUserInfo();
   try {
     const response = await fetch(
       `${URL}/FriendsModels/CreateFriendRequestByEmail`,
@@ -136,7 +134,7 @@ export async function friendsCreateFriendRequestByEmail(email1, userToken) {
         headers: {
           // Accept: 'application/json',
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${userToken}`,
+          Authorization: `Bearer ${user.token}`,
         },
         // body: {email},
         body: JSON.stringify({
@@ -164,17 +162,17 @@ export async function friendsCreateFriendRequestByEmail(email1, userToken) {
 /**
  * API call to accept a friend request
  * If something goes wrong, catches error and goes to hardcoded functionality
- * @param {string} userName The name of current user for extraction of token
+ * @param {string} friendID The id of the friend you accept the request from
  * @returns response.ok
  */
-export async function friendsAcceptRequest(friendID, userToken) {
+export async function friendsAcceptRequest(friendID) {
   console.log('(FAPIHandling) Beginning of AcceptRequest');
-  // let user = await getUsernameValue(userName);
+  let user = await getUserInfo();
   try {
     const response = await fetch(`${URL}/FriendsModels/AcceptRequest`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${userToken}`,
+        Authorization: `Bearer ${user.token}`,
       },
       body: JSON.stringify({id: friendID}),
     });
@@ -194,17 +192,17 @@ export async function friendsAcceptRequest(friendID, userToken) {
 /**
  * API call to reject a friend request
  * If something goes wrong, catches error and goes to hardcoded functionality
- * @param {string} userName The name of current user for extraction of token
+ * @param {string} friendID The id of the friend you want to reject
  * @returns response.ok
  */
-export async function friendsRejectRequest(friendID, userToken) {
+export async function friendsRejectRequest(friendID) {
   console.log('(FAPIHandling) Beginning of RejectRequest');
-  // let user = await getUsernameValue(userName);
+  let user = await getUserInfo();
   try {
     const response = await fetch(`${URL}/FriendsModels/RejectRequest`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${userToken}`,
+        Authorization: `Bearer ${user.token}`,
       },
       body: {id: friendID},
     });

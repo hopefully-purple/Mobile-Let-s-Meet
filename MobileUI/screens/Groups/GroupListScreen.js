@@ -22,9 +22,9 @@ export default function GroupListScreen({navigation}) {
 
   const [groupsList, setGroupsList] = useState([]);
   useEffect(() => {
-    let mounted = true;
     console.log('~~~~~~~~~~~~~~~GroupListScreen.useEffect call getGroups');
-    groupsGetGroups(user.token).then(data => {
+    let mounted = true;
+    groupsGetGroups().then(data => {
       if (mounted) {
         console.log('mounted! setGroupsList');
         // let d = organizeGroups(data);
@@ -35,13 +35,13 @@ export default function GroupListScreen({navigation}) {
       console.log('mounted = false');
       mounted = false;
     };
-  }, [user.token]);
+  }, []);
 
   const onRefresh = async () => {
     //set isRefreshing to true
     setIsRefreshing(true);
     console.log('REFRESHING FLAT LIST!!!!!!');
-    await groupsGetGroups(user.token).then(data => {
+    await groupsGetGroups().then(data => {
       console.log('setGroupsList to data');
       //setGroupsList to new data
       setGroupsList(data);
@@ -66,10 +66,7 @@ export default function GroupListScreen({navigation}) {
         'pulling up ' + group.groupName + ' calendar (eventually . . .)',
       );
       // Call getGroup API to get full group object
-      const detailedGroup = await groupsGetGroupMembers(
-        group.groupID,
-        user.token,
-      );
+      const detailedGroup = await groupsGetGroupMembers(group.groupID);
       console.log(JSON.stringify(detailedGroup, undefined, 2));
       setcurrentGroup(detailedGroup);
       //Set things up to trigger a correct event grab and calendar name change
@@ -82,7 +79,7 @@ export default function GroupListScreen({navigation}) {
           <Card.Content>
             <View>
               <Text key={group.groupID} style={styles.defaultScreentext}>
-                {group.groupName}
+                {group?.groupName}
               </Text>
             </View>
           </Card.Content>

@@ -1,19 +1,18 @@
 import React, {useContext} from 'react';
 import {bareBonesUsersCalendars} from '../assets/data/HardCodedCalendars';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
+import {getUserInfo} from '../miscHelpers/AsyncStorageMethods';
 import {URL} from './APIControllers';
 
 /**
  * API call to get calendar events
  * FYI: under postmanTest1, capstone project calendar id = 7
- * @param {string} userName The name of current user for extraction of token
  * @returns result of GetEvents API request as a JSON object
  */
-export async function calendarGetEvents(userName) {
+export async function calendarGetEvents() {
   // const user = useContext(UserContext);
   console.log('(CAPIHandling) Beginning of CalendarGetEvents');
-  let user = await getUsernameValue(userName);
+  let user = await getUserInfo();
   try {
     // console.log('Sending Username: ' + name + ' Password: ' + password);
     // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.
@@ -39,12 +38,11 @@ export async function calendarGetEvents(userName) {
  * API call to create a new event
  * TODO: Truly need to test once AWS is updated
  * @param {eventObject} newEvent - event object to be added
- * @param {string} userName The name of current user for extraction of token
  * @returns OK response??
  */
-export async function calendarCreateNewEvent(newEvent, userName) {
+export async function calendarCreateNewEvent(newEvent) {
   console.log('(CAPIHandling) Beginning of CalendarCreateNewEvent');
-  let user = await getUsernameValue(userName);
+  let user = await getUserInfo();
   try {
     console.log('New Event:' + JSON.stringify(newEvent, undefined, 2));
     const response = await fetch(`${URL}/EventModels/Create`, {
@@ -71,12 +69,11 @@ export async function calendarCreateNewEvent(newEvent, userName) {
 /**
  * API call to delete an event
  * @param {eventObject} event - event object to be deleted
- * @param {string} userName The name of current user for extraction of token
  * @returns OK response??
  */
-export async function calendarDeleteEvent(event, userName) {
+export async function calendarDeleteEvent(event) {
   console.log('(CAPIHandling) Beginning of CalendarDeleteEvent');
-  let user = await getUsernameValue(userName);
+  let user = await getUserInfo();
   try {
     console.log('Event:' + JSON.stringify(event, undefined, 2));
     const response = await fetch(`${URL}/EventModels/Delete/${event.id}`, {
@@ -100,13 +97,12 @@ export async function calendarDeleteEvent(event, userName) {
 /**
  * API call to get calendars belonging to user
  * FYI: under postmanTest1, capstone project calendar id = 7
- * @param {string} userName The name of current user for extraction of token
  * @returns result of GetCalendars API request as a JSON object
  */
-export async function calendarGetCalendars(userName) {
+export async function calendarGetCalendars() {
   // const user = useContext(UserContext);
   console.log('(CAPIHandling) Beginning of CalendarGetCalendars');
-  let user = await getUsernameValue(userName);
+  let user = await getUserInfo();
   try {
     // console.log('Sending Username: ' + name + ' Password: ' + password);
     // So what needs to change is we need to send name and pass, and get the 'token' and 'expiration'.

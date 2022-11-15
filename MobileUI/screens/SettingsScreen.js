@@ -24,6 +24,18 @@ export default function SettingsScreen({navigation}) {
   //     }
   //   };
 
+  const getCurrentUser = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('User');
+      console.log(jsonValue);
+      // return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // read error
+    }
+
+    console.log('Done.');
+  };
+
   const getAllKeys = async () => {
     let keys = [];
     try {
@@ -80,9 +92,8 @@ export default function SettingsScreen({navigation}) {
         <Button
           style={styles.clearButton}
           textColor={Colors.TEST_CREAM}
-          //   onPress={() => getCurrentLData()}
-        >
-          LIST CURRENT EVENT STORAGE
+          onPress={() => getCurrentUser()}>
+          LIST CURRENT USER OBJECT
         </Button>
         <Button
           style={styles.clearButton}
@@ -116,7 +127,7 @@ const styles = StyleSheet.create({
   clearButton: {
     backgroundColor: Colors.DD_LIGHT_GRAY,
     borderRadius: 12,
-    width: 200,
+    width: 230,
     alignSelf: 'center',
     margin: 10,
   },
