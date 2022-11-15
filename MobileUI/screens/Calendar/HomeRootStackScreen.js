@@ -99,17 +99,17 @@ function MeetModalOverlay({navigation}) {
 }
 
 function FriendScreen({navigation}) {
-  const {friends, setFriends} = useContext(FriendsContext);
-  const user = useContext(UserContext);
-  useEffect(() => {
-    navigation.addListener('focus', async () => {
-      console.log('-------Navigation (For Friends)-------------');
-      const data = await friendsGetFriends(user.token);
-      // console.log(JSON.stringify(data, undefined, 2));
-      console.log('set friends to data');
-      setFriends(data);
-    });
-  }, [navigation, setFriends, user.token]);
+  // const {friends, setFriends} = useContext(FriendsContext);
+  // const user = useContext(UserContext);
+  // useEffect(() => {
+  //   navigation.addListener('focus', async () => {
+  //     console.log('-------Navigation (For Friends)-------------');
+  //     const data = await friendsGetFriends(user.token);
+  //     // console.log(JSON.stringify(data, undefined, 2));
+  //     console.log('set friends to data');
+  //     setFriends(data);
+  //   });
+  // }, [navigation, setFriends, user.token]);
   return <FriendsScreen navigation={navigation} />;
 }
 

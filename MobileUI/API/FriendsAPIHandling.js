@@ -3,13 +3,48 @@ import {bareBonesFriendsList} from '../assets/data/HardCodedFriends';
 import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
 import {URL} from './APIControllers';
 
+// https://bobbyhadz.com/blog/react-sort-array-of-objects
+function organizeFriends(friends) {
+  let newF = {};
+  newF = [...friends].sort((a, b) => (a.firstName > b.firstName ? 1 : -1));
+  return newF;
+}
+
 /**
  * API call to get friends of user
  * If something goes wrong, catches error and goes to hardcoded functionality
- * @param {string} userName The name of current user for extraction of token
+ * @param {string} userToken The token of current user for authorization
  * @returns json array of friend objects
  */
-export async function friendsGetFriends(userToken) {
+export function friendsGetFriends(userToken) {
+  console.log('(FAPIHandling) Beginning of GetFriends');
+  return fetch(`${URL}/FriendsModels/GetFriends`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${userToken}`,
+    },
+  })
+    .then(data => {
+      console.log('FAPIHANDLING - data:');
+      console.log(JSON.stringify(data, undefined, 2));
+      if (data.ok) {
+        return data.json();
+      } else {
+        throw Error(data.statusText);
+      }
+    })
+    .then(jsonData => {
+      console.log('FAPIHANDLING - data.json():');
+      console.log(JSON.stringify(jsonData, undefined, 2));
+      return organizeFriends(jsonData);
+    })
+    .catch(e => {
+      console.log('something went wrong with friendsGetFriends: ' + e);
+      return [];
+    });
+}
+export async function friendsGetFriend(userToken) {
   console.log('(FAPIHandling) Beginning of GetFriends');
   // let user = await getUsernameValue(userName);
   try {

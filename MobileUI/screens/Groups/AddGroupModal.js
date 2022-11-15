@@ -35,7 +35,7 @@ export default function AddGroupModal({navigation}) {
   const [newGroupName, setNewGroupName] = useState('');
   const [addedFriends, setAddedFriends] = useState([]);
   const [groupMembersDisplayList, setGroupMembersDisplayList] = useState('');
-  const {friends, setFriends} = useContext(FriendsContext);
+  const {friends, setFriends} = useContext(FriendsContext); // TODO: REMOVE!!!!
   const {groups, setGroups} = useContext(GroupsContext);
   const user = useContext(UserContext);
 

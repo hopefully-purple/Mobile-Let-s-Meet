@@ -37,11 +37,11 @@ export default function GroupListScreen({navigation}) {
     };
   }, [user.token]);
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     //set isRefreshing to true
     setIsRefreshing(true);
     console.log('REFRESHING FLAT LIST!!!!!!');
-    groupsGetGroups(user.token).then(data => {
+    await groupsGetGroups(user.token).then(data => {
       console.log('setGroupsList to data');
       //setGroupsList to new data
       setGroupsList(data);
