@@ -5,7 +5,7 @@ import {getUserInfo} from '../miscHelpers/AsyncStorageMethods';
 
 // https://bobbyhadz.com/blog/react-sort-array-of-objects
 function organizeFriends(friends) {
-  let newF = {};
+  let newF = [];
   newF = [...friends].sort((a, b) => (a.firstName > b.firstName ? 1 : -1));
   return newF;
 }
@@ -192,15 +192,15 @@ export async function friendsCreateFriendRequestByEmail(email1) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${user.token}`,
     },
-    // body: {email},
     body: JSON.stringify({
       email: email1,
     }),
   })
+    .then(data => data.json())
     .then(data => {
       console.log('FAPIHANDLING - data:');
       console.log(JSON.stringify(data, undefined, 2));
-      if (data.ok) {
+      if (data.status === 'ok' && data.message === 'Friend request sent.') {
         return true;
       } else {
         throw Error(data.statusText);
@@ -270,7 +270,7 @@ export async function friendsAcceptRequest(friendID) {
     .then(data => {
       console.log('FAPIHANDLING - data:');
       console.log(JSON.stringify(data, undefined, 2));
-      if (data.ok) {
+      if (data.status === 'ok' && data.message === 'Request accepted') {
         return true;
       } else {
         throw Error(data.statusText);
@@ -326,7 +326,7 @@ export async function friendsRejectRequest(friendID) {
     .then(data => {
       console.log('FAPIHANDLING - data:');
       console.log(JSON.stringify(data, undefined, 2));
-      if (data.ok) {
+      if (data.status === 'ok' && data.message === 'Request rejected') {
         return true;
       } else {
         throw Error(data.statusText);
