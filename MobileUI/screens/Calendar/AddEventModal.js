@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import Colors from '../../assets/styles/colors';
 import {
   ScrollView,
@@ -15,7 +15,10 @@ import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {SliderPicker, HuePicker} from 'react-color';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
-import {calendarCreateNewEvent} from '../../API/CalendarAPIHandling';
+import {
+  calendarCreateNewEvent,
+  calendarGetCalendars,
+} from '../../API/CalendarAPIHandling';
 import UserContext from '../../contexts/User';
 
 // https://casesandberg.github.io/react-color/
@@ -57,14 +60,14 @@ import UserContext from '../../contexts/User';
 //   return;
 // };
 
-export default function AddEventModal({navigation, calendars}) {
+export default function AddEventModal({navigation}) {
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [calColor, setCalColor] = useState(Colors.DD_EXTRA_LIGHT_GRAY);
-  const {events, setEvents} = useContext(CalendarEventsContext);
-  const user = useContext(UserContext);
+  const [selectedCal, setSelectedCal] = useState(null);
+  // const {events, setEvents} = useContext(CalendarEventsContext);
+  // const user = useContext(UserContext);
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -76,54 +79,50 @@ export default function AddEventModal({navigation, calendars}) {
   this.titleInput = React.createRef();
   this.locationInput = React.createRef();
 
-  const saveData = async newEvent => {
-    try {
-      const newE = events;
-      newE.push(newEvent);
-      await AsyncStorage.setItem('Events', JSON.stringify(newE));
-      console.log('(saveData) Data successfully saved');
-      return true;
-    } catch (e) {
-      console.log('(saveData) Failed to save the data to the storage');
-      throw e;
-    }
-  };
+  const [calendars, setCalendars] = useState([]);
+  useEffect(() => {
+    console.log('~~~~~~~~~~~~~~~AddEventModal.useEffect call getEvents');
+    let mounted = true;
+    calendarGetCalendars().then(data => {
+      if (mounted) {
+        console.log('AddEventModal mounted! setEvents');
+        setCalendars(data);
+      }
+    });
+    return () => {
+      console.log('AddEventModal mounted = false');
+      mounted = false;
+    };
+  }, []);
 
   const doneHandler = async () => {
     // console.log(calendars)
-    if (title === '' && location === '') {
-      Alert.alert(
-        'EventModels/Create does not currently work due to AWS out of date',
-      );
-      console.log(
-        'go back, no saving to async since title and location were empty',
-      );
-      navigation.goBack();
+    if (title === '' && location === '' && selectedCal === null) {
+      Alert.alert('Title, Location, and Calendar must be set');
+      // console.log(
+      //   'go back, no saving to async since title and location were empty',
+      // );
+      // navigation.goBack();
       return;
     }
-    // id: `${events.length + 1} ${title}`, //ASYNC WAY
+
     const newEvent = {
       title,
       startTime: startDate.toISOString(), //yyyy-MM-dd'T'HH:mm:ss.fff'Z' <whatever this is
       endTime: endDate.toISOString(),
       location,
-      // calendarID: NEED TO PUT IN
+      calendarID: selectedCal.id,
     };
     // console.log('NEW EVENT MADE, events context:');
 
     console.log(
       'NEW EVENT MADE > Post API call > result: <not rn, dev server broken>',
     );
-    Alert.alert(
-      'EventModels/Create does not currently work due to AWS out of date',
-    );
+    // Alert.alert(
+    //   'EventModels/Create does not currently work due to AWS out of date',
+    // );
     // API call to post new event
-    // await calendarCreateNewEvent(newEvent);
-    // console.log(JSON.stringify(result, undefined, 2));
-    //To trigger reload of Events and new GET API call, update the events context
-    // const newE = events;
-    // newE.push(newEvent);
-    // setEvents(newE);
+    let result = await calendarCreateNewEvent(newEvent);
 
     //Clear inputs
     this.titleInput.current.clear();
@@ -131,8 +130,6 @@ export default function AddEventModal({navigation, calendars}) {
     setTitle('');
     setLocation('');
 
-    //Save to async storage (for now until dev server is fixed)
-    const result = await saveData(newEvent);
     if (result) {
       //Go back to schedule
       console.log('go back');
@@ -176,13 +173,15 @@ export default function AddEventModal({navigation, calendars}) {
         setValue={setValue}
         onSelectItem={item => {
           console.log(item);
-          setCalColor(item.color);
+          setSelectedCal(item);
         }}
         // setItems={setItems}
         dropDownDirection="BOTTOM"
         listMode="SCROLLVIEW"
         style={{
-          backgroundColor: `${calColor}`,
+          backgroundColor: selectedCal
+            ? selectedCal.color
+            : Colors.DD_EXTRA_LIGHT_GRAY,
         }}
         containerStyle={{
           width: '95%',

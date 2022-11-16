@@ -62,16 +62,16 @@ function GroupCalendar({navigation}) {
 }
 
 function AddEventModalScreen({navigation}) {
-  const [calendars, setCalendars] = useState([]);
+  // const [calendars, setCalendars] = useState([]);
   // const user = useContext(UserContext);
-  navigation.addListener('focus', async () => {
-    console.log('-------Navigation (For AddEventModal)-------------');
-    const data = await calendarGetCalendars();
-    // console.log(JSON.stringify(data, undefined, 2));
-    console.log('set calendars to data');
-    setCalendars(data);
-  });
-  return <AddEventModal navigation={navigation} calendars={calendars} />;
+  // navigation.addListener('focus', async () => {
+  //   console.log('-------Navigation (For AddEventModal)-------------');
+  //   const data = await calendarGetCalendars();
+  //   // console.log(JSON.stringify(data, undefined, 2));
+  //   console.log('set calendars to data');
+  //   setCalendars(data);
+  // });
+  return <AddEventModal navigation={navigation} />;
 }
 
 function AddGroupModalScreen({navigation}) {

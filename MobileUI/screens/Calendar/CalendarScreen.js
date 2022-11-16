@@ -114,12 +114,12 @@ const CalendarScreen = ({navigation}) => {
     let mounted = true;
     calendarGetEvents().then(data => {
       if (mounted) {
-        console.log('mounted! setEvents');
+        console.log('CalendarScreen mounted! setEvents');
         setEvents(data);
       }
     });
     return () => {
-      console.log('mounted = false');
+      console.log('CalendarScreen mounted = false');
       mounted = false;
     };
   }, []);

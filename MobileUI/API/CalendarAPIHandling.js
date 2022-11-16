@@ -173,7 +173,7 @@ export async function calendarCreateNewEvent(newEvent) {
     body: JSON.stringify({newEvent}),
   })
     .then(data => {
-      console.log('CAPIHANDLING - data:');
+      console.log('CAPIHANDLING - CalendarCreateNewEvent data:');
       console.log(JSON.stringify(data, undefined, 2));
       if (data.ok) {
         return data.json();
@@ -182,7 +182,7 @@ export async function calendarCreateNewEvent(newEvent) {
       }
     })
     .then(jsonData => {
-      console.log('CAPIHANDLING - data.json():');
+      console.log('CAPIHANDLING - CalendarCreateNewEvent data.json():');
       console.log(JSON.stringify(jsonData, undefined, 2));
       return jsonData;
     })
@@ -288,7 +288,7 @@ export async function calendarGetCalendars() {
     },
   })
     .then(data => {
-      console.log('CAPIHANDLING - data:');
+      console.log('CAPIHANDLING - CalendarGetCalendars data:');
       console.log(JSON.stringify(data, undefined, 2));
       if (data.ok) {
         return data.json();
@@ -297,7 +297,7 @@ export async function calendarGetCalendars() {
       }
     })
     .then(jsonData => {
-      console.log('CAPIHANDLING - data.json():');
+      console.log('CAPIHANDLING - CalendarGetCalendars data.json():');
       console.log(JSON.stringify(jsonData, undefined, 2));
       return jsonData;
     })
