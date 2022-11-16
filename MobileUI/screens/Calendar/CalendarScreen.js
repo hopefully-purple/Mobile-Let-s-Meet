@@ -225,6 +225,12 @@ const CalendarScreen = ({navigation}) => {
           refreshing={isRefreshing}
         />
       </View>
+      <View style={styles.groupScheduleButtons}>
+        <BoxButton
+          title={'Calendar Filter'}
+          onPress={() => navigation.navigate('FilterModal')}
+        />
+      </View>
     </SafeAreaView>
   );
 };

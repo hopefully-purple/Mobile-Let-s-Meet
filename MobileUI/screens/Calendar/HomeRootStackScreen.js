@@ -24,6 +24,7 @@ import {
 } from '../../API/FriendsAPIHandling';
 import FriendRequestModal from '../Friends/FriendRequestsModal';
 import IsCameraOpenContext from '../../contexts/IsCameraOpen';
+import FilterCalendarModal from './FilterCalendarModal';
 
 function HomeScreen({navigation}) {
   // const {events, setEvents} = useContext(CalendarEventsContext);
@@ -72,6 +73,10 @@ function AddEventModalScreen({navigation}) {
   //   setCalendars(data);
   // });
   return <AddEventModal navigation={navigation} />;
+}
+
+function FilterModalOverlay({navigation}) {
+  return <FilterCalendarModal navigation={navigation} />;
 }
 
 function AddGroupModalScreen({navigation}) {
@@ -321,6 +326,22 @@ export default function HomeRootStackScreen(props) {
                       title="Cancel"
                     />
                   ),
+                }}
+              />
+              <RootStack.Screen
+                name="FilterModal"
+                component={FilterModalOverlay}
+                options={{
+                  presentation: 'modal',
+                  headerShown: false,
+                  cardOverlayEnabled: true,
+                  gestureEnabled: true,
+                  gestureDirection: 'vertical',
+                  gestureResponseDistance: 500,
+                  cardStyle: {
+                    backgroundColor: 'transparent',
+                    opacity: 0.99,
+                  },
                 }}
               />
               <RootStack.Screen

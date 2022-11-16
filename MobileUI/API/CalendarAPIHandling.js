@@ -55,7 +55,6 @@ function organizeIntoDates(events) {
 
 /**
  * API call to get calendar events
- * FYI: under postmanTest1, capstone project calendar id = 7
  * @returns result of GetEvents API request as a JSON object
  */
 export async function calendarGetEvents() {
@@ -90,7 +89,6 @@ export async function calendarGetEvents() {
 
 /**
  * API call to get calendar events
- * FYI: under postmanTest1, capstone project calendar id = 7
  * @param {int array} calendarIDs - int[] of calendarIDs to grab events from
  * @returns result of GetEvents API request as a JSON object
  */
@@ -274,7 +272,6 @@ export async function calendarDeleteEvent(event) {
 
 /**
  * API call to get calendars belonging to user
- * FYI: under postmanTest1, capstone project calendar id = 7
  * @returns result of GetCalendars API request as a JSON object
  */
 export async function calendarGetCalendars() {
@@ -303,7 +300,7 @@ export async function calendarGetCalendars() {
     })
     .catch(e => {
       console.log('something went wrong with calendarGetCalendars: ' + e);
-      return [];
+      return bareBonesUsersCalendars;
     });
 }
 
