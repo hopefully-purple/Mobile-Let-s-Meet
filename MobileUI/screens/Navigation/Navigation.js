@@ -73,7 +73,8 @@ export default function Navigation() {
   // console.log('~~~~~~~~~~~' + currentGroup + '~~~~~~~~~~');
 
   let logScreenLabel = isLoggedIn ? 'Log Out' : 'Log In';
-  let landing = isLoggedIn ? 'Profile' : 'Login';
+  let landing = isLoggedIn ? 'My Schedule' : 'Login';
+  console.log('landing ' + landing);
   return (
     <LogStateContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
       <FriendsContext.Provider value={{friends, setFriends}}>
