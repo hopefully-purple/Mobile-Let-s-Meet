@@ -1,4 +1,5 @@
 import React, {useContext} from 'react';
+import {Alert} from 'react-native';
 import {
   bareBonesGroupListAccurate,
   accurateGetGroupResult,
@@ -186,7 +187,7 @@ export async function groupCreateNewGroup(newGroup) {
       if (data.status === 'ok' && data.message === 'Group created') {
         return true;
       } else {
-        throw Error(data.statusText);
+        throw Error(data.message);
       }
     })
     .catch(e => {
@@ -221,7 +222,7 @@ export async function groupCreateNewGroup(newGroup) {
  * API call to join a group
  * TO BE CALLED FROM HANDLE LINK SUBMIT
  * If something goes wrong, catches error and goes to hardcoded functionality
- * @param {string} joinCode - Code to join associated group
+ * @param {string} joinLink - Link to join associated group
  * @returns OK = true
  */
 export async function groupJoinGroup(joinLink) {
@@ -236,7 +237,10 @@ export async function groupJoinGroup(joinLink) {
     params[match[1]] = match[2];
   }
   console.log(params.joinCode);
-  // return false;
+  if (params.joinCode === undefined) {
+    Alert.alert('Link not a valid join link for the Lets Meet app');
+    return false;
+  }
   let user = await getUserInfo();
   return (
     fetch(`${URL}/GroupModels/JoinGroup`, {
@@ -249,15 +253,12 @@ export async function groupJoinGroup(joinLink) {
     })
       // .then(data => data.json())
       .then(data => {
-        console.log('GAPIHANDLING - data:');
+        console.log('GAPIHANDLING - GroupJoinGroup data:');
         console.log(JSON.stringify(data, undefined, 2));
-        if (
-          data.status === 'ok' &&
-          data.message === '** FIGURE OUT WHAT THIS IS'
-        ) {
+        if (data.status === 'ok' && data.message === 'User joined group') {
           return true;
         } else {
-          throw Error(data.statusText);
+          throw Error(data.message);
         }
       })
       .catch(e => {
