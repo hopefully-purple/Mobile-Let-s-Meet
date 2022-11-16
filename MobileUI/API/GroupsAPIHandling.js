@@ -125,7 +125,7 @@ export async function groupsGetGroupMembers(groupID) {
     .then(jsonData => {
       console.log('GAPIHANDLING - data.json():');
       console.log(JSON.stringify(jsonData, undefined, 2));
-      return organizeGroups(jsonData);
+      return jsonData;
     })
     .catch(e => {
       console.log('something went wrong with groupsGetGroupMembers: ' + e);
