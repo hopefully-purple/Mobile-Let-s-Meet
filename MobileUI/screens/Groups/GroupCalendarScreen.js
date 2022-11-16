@@ -26,6 +26,7 @@ import {
 import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import {BoxButton, MiniBoxButton} from '../../assets/components/CustomButtons';
 import UserContext from '../../contexts/User';
+import {calendarGetCalendarEvents} from '../../API/CalendarAPIHandling';
 
 const CalendarTitle = props => {
   return (
@@ -56,53 +57,9 @@ const CalendarTitle = props => {
   );
 };
 
-function organizeIntoDates(events) {
-  let newFL = [];
-  // console.log(JSON.stringify(events, undefined, 2));
-  console.log('(calendarScreen.organizeIntoDates) events=' + events.length);
-  if (events.length === 0) {
-    console.log('events currently empty, return []');
-    return newFL;
-  }
-
-  for (let i of events) {
-    // console.log('i.start=' + i.start);
-    // let iMonth = constructMonth(i.start);
-    // let iDay = constructDay(i.start);
-    let iDateString = constructDateString(i.start);
-    // console.log('iDateString=' + iDateString);
-    // if (month.month === iMonth) {
-    // console.log('iMonth= ' + iMonth + ' iDay= ' + iDay);
-    if (!newFL[iDateString]) {
-      // console.log('add iDateString to array');
-      newFL[iDateString] = [];
-      // console.log('newFL size=' + newFL.length);
-    }
-    // console.log('month.day =' + month.day + '');
-    if (!newFL[iDateString].includes(i)) {
-      // console.log('push: ' + i.title + ' ' + i.start);
-      var localStartDate = new Date(i.start); //.toLocaleTimeString('en-US', {
-      //   timeZone: 'UTC',
-      //   hour12: true,
-      //   hour: 'numeric',
-      //   minute: 'numeric',
-      // });
-      var localEndDate = new Date(i.end);
-      console.log('##################' + localStartDate + '  ' + localEndDate);
-      const convertedI = {
-        ...i,
-        start: localStartDate,
-        end: localEndDate,
-      };
-      newFL[iDateString].push(convertedI);
-    }
-  }
-
-  // console.log('newFL:');
-  // console.log(JSON.stringify(newFL, undefined, 2));
-
-  return newFL;
-}
+const Empty = ({item}) => {
+  return <Text style={styles.emptyText}>No events on this day</Text>;
+};
 
 const Item = ({i, itemColor, time}) => {
   const {events, setEvents} = useContext(CalendarEventsContext);
@@ -111,7 +68,9 @@ const Item = ({i, itemColor, time}) => {
   async function deleteItemInEvents() {
     // console.log('(calendarScreen.deleteItem) user = ' + user.name);
     if (await deleteEvent(i, events, setEvents)) {
-      console.log('(calendarScreen.deleteItemInEvents) delete succeeded');
+      console.log('(groupCalendarScreen.deleteItemInEvents) delete succeeded');
+      const selected = this.calendarStrip.current.getSelectedDate();
+      this.calendarStrip.current.setSelectedDate(selected);
     } else {
       Alert.alert('Delete did not succeed');
     }
@@ -144,15 +103,53 @@ const Item = ({i, itemColor, time}) => {
 // https://openbase.com/js/react-native-calendar-strip
 // There's stuff in there that talks about localization for datetimes!
 const GroupCalendarScreen = ({navigation, calendarName}) => {
+  this.calendarStrip = React.createRef();
+
   const nowDate = new Date();
   const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
   const [items, setItems] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const {events, setEvents} = useContext(CalendarEventsContext);
+  // const {events, setEvents} = useContext(CalendarEventsContext);
   const {currentGroup, setcurrentGroup} = useContext(CurrentGroupObjectContext);
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
 
-  this.calendarStrip = React.createRef();
+  const [events, setEvents] = useState([]);
+  useEffect(() => {
+    console.log('~~~~~~~~~~~~~~~GroupCalendarScreen.useEffect call getEvents');
+    let mounted = true;
+    let list = [currentGroup.calendarID];
+    calendarGetCalendarEvents(list).then(data => {
+      if (mounted) {
+        console.log('GroupCalendarScreen mounted! setEvents');
+        setEvents(data);
+      }
+    });
+    return () => {
+      console.log('GroupCalendarScreen mounted = false');
+      mounted = false;
+    };
+  }, [currentGroup.calendarID]);
+
+  const onRefresh = async () => {
+    //set isRefreshing to true
+    setIsRefreshing(true);
+    console.log('REFRESHING FLAT LIST!!!!!!');
+    let list = [currentGroup.calendarID];
+    await calendarGetCalendarEvents(list).then(data => {
+      console.log('setEvents to data');
+      //setEvents to new data
+      setEvents(data);
+    });
+
+    //Try updating calendar strip
+    console.log('On refresh, getSelectedDate()');
+    const selected = this.calendarStrip.current.getSelectedDate();
+    // this.calendarStrip.current.updateWeekView('2022-11-07T19:00:00.000Z');
+    // this.calendarStrip.current.updateWeekView(selected);
+    this.calendarStrip.current.setSelectedDate(selected);
+    // and set isRefreshing to false
+    setIsRefreshing(false);
+  };
 
   const renderItem = ({item}) => {
     // console.log(items.length);
@@ -168,7 +165,7 @@ const GroupCalendarScreen = ({navigation, calendarName}) => {
     // Set items to the array in Flatlist corresponding to date
     const dateKey = date.format('YYYY-MM-DD');
     // console.log(flatList[dateKey]);
-    const dayEvents = flatList[dateKey];
+    const dayEvents = events[dateKey];
     if (dayEvents !== undefined) {
       setItems(dayEvents);
     } else {
@@ -191,42 +188,12 @@ const GroupCalendarScreen = ({navigation, calendarName}) => {
   };
 
   const markedDatesFunc = date => {
-    if (flatList[date.format('YYYY-MM-DD')]) {
+    if (events[date.format('YYYY-MM-DD')]) {
       return {dots: [{color: Colors.DD_RED_1}]};
     }
     return {};
   };
 
-  const [flatList, setFlatList] = useState([]);
-  useEffect(
-    function createFlatList() {
-      const newFlatL = organizeIntoDates(events);
-      setFlatList(newFlatL);
-    },
-    [events],
-  );
-
-  const onRefresh = async () => {
-    //set isRefreshing to true
-    setIsRefreshing(true);
-    console.log('REFRESHING FLAT LIST!!!!!!');
-    const data = await readEventData(currentGroup.groupName); // API call
-    // console.log('(CalendarScreen.onRefresh) new event data:');
-    // console.log(JSON.stringify(data, undefined, 2));
-    setEvents(data);
-    // and set isRefreshing to false
-    setIsRefreshing(false);
-  };
-
-  const Empty = ({item}) => {
-    return <Text style={styles.emptyText}>No events on this day</Text>;
-  };
-
-  // useEffect(() => {
-  //   if (selectedDay !== undefined) {
-  //     this.calendarStrip.current.updateWeekView(selectedDay);
-  //   }
-  // }, [selectedDay]);
   return (
     <SafeAreaView style={styles.container}>
       <CalendarTitle name={currentGroup.groupName} navigation={navigation} />

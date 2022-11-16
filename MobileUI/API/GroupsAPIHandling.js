@@ -115,7 +115,7 @@ export async function groupsGetGroupMembers(groupID) {
     },
   })
     .then(data => {
-      console.log('GAPIHANDLING - data:');
+      console.log('GAPIHANDLING - GroupsGetGroupMembers data:');
       console.log(JSON.stringify(data, undefined, 2));
       if (data.ok) {
         return data.json();
@@ -124,7 +124,7 @@ export async function groupsGetGroupMembers(groupID) {
       }
     })
     .then(jsonData => {
-      console.log('GAPIHANDLING - data.json():');
+      console.log('GAPIHANDLING - GroupsGetGroupMembers data.json():');
       console.log(JSON.stringify(jsonData, undefined, 2));
       return jsonData;
     })

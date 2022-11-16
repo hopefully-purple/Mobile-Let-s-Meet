@@ -66,7 +66,7 @@ export default function GroupListScreen({navigation}) {
       );
       // Call getGroup API to get full group object
       const detailedGroup = await groupsGetGroupMembers(group.groupID);
-      console.log(JSON.stringify(detailedGroup, undefined, 2));
+      // console.log(JSON.stringify(detailedGroup, undefined, 2));
       setcurrentGroup(detailedGroup);
       //Set things up to trigger a correct event grab and calendar name change
       //navigate to calendar

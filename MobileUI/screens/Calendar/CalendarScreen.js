@@ -123,6 +123,7 @@ const CalendarScreen = ({navigation}) => {
       mounted = false;
     };
   }, []);
+
   const onRefresh = async () => {
     //set isRefreshing to true
     setIsRefreshing(true);

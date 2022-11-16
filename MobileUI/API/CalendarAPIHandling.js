@@ -88,6 +88,45 @@ export async function calendarGetEvents() {
     });
 }
 
+/**
+ * API call to get calendar events
+ * FYI: under postmanTest1, capstone project calendar id = 7
+ * @param {int array} calendarIDs - int[] of calendarIDs to grab events from
+ * @returns result of GetEvents API request as a JSON object
+ */
+export async function calendarGetCalendarEvents(calendarIDs) {
+  console.log('(CAPIHandling) Beginning of CalendarGetCalendarEvents');
+  let user = await getUserInfo();
+  return fetch(
+    `${URL}/EventModels/GetCalendarEvents?calendarIDs=${calendarIDs}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
+      },
+    },
+  )
+    .then(data => {
+      console.log('CAPIHANDLING - CalendarGetCalendarEvents data:');
+      console.log(JSON.stringify(data, undefined, 2));
+      if (data.ok) {
+        return data.json();
+      } else {
+        throw Error(data.statusText); //or data.message?
+      }
+    })
+    .then(jsonData => {
+      console.log('CAPIHANDLING - CalendarGetCalendarEvents data.json():');
+      console.log(JSON.stringify(jsonData, undefined, 2));
+      return organizeIntoDates(jsonData);
+    })
+    .catch(e => {
+      console.log('something went wrong with CalendarGetCalendarEvents: ' + e);
+      return [];
+    });
+}
+
 // export async function calendarGetEvent() {
 //   // const user = useContext(UserContext);
 //   console.log('(CAPIHandling) Beginning of CalendarGetEvents');

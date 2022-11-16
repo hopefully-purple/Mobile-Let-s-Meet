@@ -58,10 +58,6 @@ function GroupScreen({navigation}) {
 }
 
 function GroupCalendar({navigation}) {
-  console.log(
-    '@@@@@@@@@@@@grabbing events for groups needs to be implemented @@@@@@@@@@@@',
-  );
-  // setEvents([]);
   return <GroupCalendarScreen navigation={navigation} />;
 }
 
