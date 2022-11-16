@@ -33,13 +33,13 @@ export default function FriendsScreen({navigation}) {
     console.log('~~~~~~~~~~~~~~~FriendsScreen.useEffect call getFriends');
     friendsGetFriends().then(data => {
       if (mounted) {
-        console.log('mounted! setFriendsList');
+        console.log('FriendsScreen mounted! setFriendsList');
         // let d = organizeGroups(data);
         setFriendsList(data);
       }
     });
     return () => {
-      console.log('mounted = false');
+      console.log('FriendsScreen mounted = false');
       mounted = false;
     };
   }, []);

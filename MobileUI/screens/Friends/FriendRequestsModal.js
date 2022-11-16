@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   item: {
     // backgroundColor: '#f9c2ff',
     paddingVertical: 5,
-    marginVertical: 5,
+    marginVertical: 3,
   },
   listText: {
     fontSize: 20,

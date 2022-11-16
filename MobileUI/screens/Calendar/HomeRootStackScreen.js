@@ -133,13 +133,13 @@ function RequestsModalOverlay({navigation}) {
     console.log('~~~~~~~~~~~~~~RequestsModalOverlay.useEffect call getSent');
     friendsGetSentRequests().then(data => {
       if (mounted) {
-        console.log('mounted! setSent');
+        console.log('RequestsModalOverlay (sent) mounted! setSent');
         // let d = organizeGroups(data);
         setSent(data);
       }
     });
     return () => {
-      console.log('mounted = false');
+      console.log('RequestsModalOverlay (sent) mounted = false');
       mounted = false;
     };
   }, []);
@@ -149,13 +149,13 @@ function RequestsModalOverlay({navigation}) {
     console.log('~~~~~~~~~~~~~RequestsModalOverlay.useEffect call getRecieved');
     friendsGetReceivedRequests().then(data => {
       if (mounted) {
-        console.log('mounted! setRecieved');
+        console.log('RequestsModalOverlay (rec) mounted! setRecieved');
         // let d = organizeGroups(data);
         setReceived(data);
       }
     });
     return () => {
-      console.log('mounted = false');
+      console.log('RequestsModalOverlay (rec) mounted = false');
       mounted = false;
     };
   }, []);
