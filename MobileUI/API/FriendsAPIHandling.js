@@ -26,7 +26,7 @@ export async function friendsGetFriends() {
     },
   })
     .then(data => {
-      console.log('FAPIHANDLING - data:');
+      console.log('FAPIHANDLING - GetFriends data:');
       console.log(JSON.stringify(data, undefined, 2));
       if (data.ok) {
         return data.json();
@@ -35,7 +35,7 @@ export async function friendsGetFriends() {
       }
     })
     .then(jsonData => {
-      console.log('FAPIHANDLING - data.json():');
+      console.log('FAPIHANDLING - GetFriends data.json():');
       console.log(JSON.stringify(jsonData, undefined, 2));
       return organizeFriends(jsonData);
     })

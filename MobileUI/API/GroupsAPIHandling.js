@@ -55,7 +55,7 @@ export async function groupsGetGroups() {
     },
   })
     .then(data => {
-      console.log('GAPIHANDLING - data:');
+      console.log('GAPIHANDLING - groupsGetGroups data:');
       console.log(JSON.stringify(data, undefined, 2));
       if (data.ok) {
         return data.json();
@@ -64,7 +64,7 @@ export async function groupsGetGroups() {
       }
     })
     .then(jsonData => {
-      console.log('GAPIHANDLING - data.json():');
+      console.log('GAPIHANDLING - groupsGetGroups data.json():');
       console.log(JSON.stringify(jsonData, undefined, 2));
       return organizeGroups(jsonData);
     })
@@ -181,7 +181,7 @@ export async function groupCreateNewGroup(newGroup) {
   })
     .then(data => data.json())
     .then(data => {
-      console.log('GAPIHANDLING - data:');
+      console.log('GAPIHANDLING - GroupCreateNewGroup data:');
       console.log(JSON.stringify(data, undefined, 2));
       if (data.status === 'ok' && data.message === 'Group created') {
         return true;
@@ -191,7 +191,7 @@ export async function groupCreateNewGroup(newGroup) {
     })
     .catch(e => {
       console.log('something went wrong with groupCreateNewGroup: ' + e);
-      return [];
+      return false;
     });
 }
 

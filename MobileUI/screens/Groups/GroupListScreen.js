@@ -26,13 +26,12 @@ export default function GroupListScreen({navigation}) {
     let mounted = true;
     groupsGetGroups().then(data => {
       if (mounted) {
-        console.log('mounted! setGroupsList');
-        // let d = organizeGroups(data);
+        console.log('GroupListScreen mounted! setGroupsList');
         setGroupsList(data);
       }
     });
     return () => {
-      console.log('mounted = false');
+      console.log('GroupListScreen mounted = false');
       mounted = false;
     };
   }, []);
@@ -40,7 +39,7 @@ export default function GroupListScreen({navigation}) {
   const onRefresh = async () => {
     //set isRefreshing to true
     setIsRefreshing(true);
-    console.log('REFRESHING FLAT LIST!!!!!!');
+    console.log('GroupListScreen REFRESHING FLAT LIST!!!!!!');
     await groupsGetGroups().then(data => {
       console.log('setGroupsList to data');
       //setGroupsList to new data
