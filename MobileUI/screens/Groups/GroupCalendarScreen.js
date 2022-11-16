@@ -216,7 +216,7 @@ const GroupCalendarScreen = ({navigation, calendarName}) => {
         ref={this.calendarStrip}
       />
       <View
-        style={{backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY, height: '70%'}}>
+        style={{backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY, height: '65%'}}>
         <FlatList
           data={items}
           renderItem={renderItem}
@@ -245,6 +245,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.DD_RED_2,
     // justifyContent: 'space-evenly',
+    // marginBottom: 100,
   },
   itemText: {
     color: Colors.DD_DARK_GRAY,

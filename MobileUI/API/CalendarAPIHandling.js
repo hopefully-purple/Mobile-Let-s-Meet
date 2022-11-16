@@ -97,6 +97,7 @@ export async function calendarGetEvents() {
 export async function calendarGetCalendarEvents(calendarIDs) {
   console.log('(CAPIHandling) Beginning of CalendarGetCalendarEvents');
   let user = await getUserInfo();
+  console.log(JSON.stringify(calendarIDs, undefined, 2));
   return fetch(
     `${URL}/EventModels/GetCalendarEvents?calendarIDs=${calendarIDs}`,
     {

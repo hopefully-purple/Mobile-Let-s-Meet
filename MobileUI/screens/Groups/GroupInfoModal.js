@@ -32,7 +32,7 @@ const Item = ({name}) => {
 
 export default function GroupInfoModal({navigation}) {
   const group = useContext(CurrentGroupObjectContext).currentGroup;
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
 
   const copyToClipboard = () => {
     const link = groupsGenerateLink(group.joinCode);
