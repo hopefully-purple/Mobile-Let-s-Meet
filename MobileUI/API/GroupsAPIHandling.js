@@ -105,30 +105,61 @@ export async function groupsGetGroups() {
 export async function groupsGetGroupMembers(groupID) {
   console.log('(GAPIHandling) Beginning of GroupsGetGroupMembers');
   let user = await getUserInfo();
-  try {
-    const response = await fetch(`${URL}/GroupModels/GetGroup?id=${groupID}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
+  // console.log('user = ' + JSON.stringify(user, undefined, 2));
+  return fetch(`${URL}/GroupModels/GetGroup?id=${groupID}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`,
+    },
+  })
+    .then(data => {
+      console.log('GAPIHANDLING - data:');
+      console.log(JSON.stringify(data, undefined, 2));
+      if (data.ok) {
+        return data.json();
+      } else {
+        throw Error(data.statusText);
+      }
+    })
+    .then(jsonData => {
+      console.log('GAPIHANDLING - data.json():');
+      console.log(JSON.stringify(jsonData, undefined, 2));
+      return organizeGroups(jsonData);
+    })
+    .catch(e => {
+      console.log('something went wrong with groupsGetGroupMembers: ' + e);
+      return [];
     });
-    const result = await response.json();
-
-    console.log(JSON.stringify(result, undefined, 2));
-    return result;
-  } catch (err) {
-    console.log('something went wrong with groupsGetGroupMembers: ' + err);
-    // throw err;
-    // TODO::: Confirm response JSON structure
-    // return accurateGetGroupResult[groupID];
-    // console.log(
-    //   '&&&&&&&&&&&&&&&&&&' +
-    //     JSON.stringify(accurateGetGroupResult[0], undefined, 2),
-    // );
-    // return accurateGetGroupResult[groupID];
-    return [];
-  }
 }
+
+// export async function groupsGetGroupMember(groupID) {
+//   console.log('(GAPIHandling) Beginning of GroupsGetGroupMembers');
+//   let user = await getUserInfo();
+//   try {
+//     const response = await fetch(`${URL}/GroupModels/GetGroup?id=${groupID}`, {
+//       method: 'GET',
+//       headers: {
+//         Authorization: `Bearer ${user.token}`,
+//       },
+//     });
+//     const result = await response.json();
+
+//     console.log(JSON.stringify(result, undefined, 2));
+//     return result;
+//   } catch (err) {
+//     console.log('something went wrong with groupsGetGroupMembers: ' + err);
+//     // throw err;
+//     // TODO::: Confirm response JSON structure
+//     // return accurateGetGroupResult[groupID];
+//     // console.log(
+//     //   '&&&&&&&&&&&&&&&&&&' +
+//     //     JSON.stringify(accurateGetGroupResult[0], undefined, 2),
+//     // );
+//     // return accurateGetGroupResult[groupID];
+//     return [];
+//   }
+// }
 
 /**
  * API call to create a new group
@@ -139,25 +170,52 @@ export async function groupsGetGroupMembers(groupID) {
 export async function groupCreateNewGroup(newGroup) {
   console.log('(GAPIHandling) Beginning of GroupCreateNewGroup');
   let user = await getUserInfo();
-  try {
-    console.log('New Group:' + JSON.stringify(newGroup, undefined, 2));
-    const response = await fetch(`${URL}/GroupModels/CreateGroup`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.token}`,
-      },
-      body: {newGroup},
+  console.log('New Group:' + JSON.stringify(newGroup, undefined, 2));
+  return fetch(`${URL}/GroupModels/CreateGroup`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`,
+    },
+    body: JSON.stringify(newGroup),
+  })
+    .then(data => data.json())
+    .then(data => {
+      console.log('GAPIHANDLING - data:');
+      console.log(JSON.stringify(data, undefined, 2));
+      if (data.status === 'ok' && data.message === 'Group created') {
+        return true;
+      } else {
+        throw Error(data.statusText);
+      }
+    })
+    .catch(e => {
+      console.log('something went wrong with groupCreateNewGroup: ' + e);
+      return [];
     });
-
-    return response.ok;
-  } catch (err) {
-    console.log('something went wrong with groupCreateNewGroup: ' + err);
-    // throw err;
-    return false;
-  }
 }
+
+// export async function groupCreateNewGrou(newGroup) {
+//   console.log('(GAPIHandling) Beginning of GroupCreateNewGroup');
+//   let user = await getUserInfo();
+//   try {
+//     console.log('New Group:' + JSON.stringify(newGroup, undefined, 2));
+//     const response = await fetch(`${URL}/GroupModels/CreateGroup`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         Authorization: `Bearer ${user.token}`,
+//       },
+//       body: {newGroup},
+//     });
+
+//     return response.ok;
+//   } catch (err) {
+//     console.log('something went wrong with groupCreateNewGroup: ' + err);
+//     // throw err;
+//     return false;
+//   }
+// }
 
 /**
  * API call to join a group
@@ -180,28 +238,55 @@ export async function groupJoinGroup(joinLink) {
   console.log(params.joinCode);
   // return false;
   let user = await getUserInfo();
-  try {
-    const response = await fetch(`${URL}/GroupModels/JoinGroup`, {
+  return (
+    fetch(`${URL}/GroupModels/JoinGroup`, {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization: `Bearer ${user.token}`,
       },
-      body: {joinCode: params.joinCode},
-    });
-
-    console.log('GAPIHandling: joingroup response status: ' + response.status);
-    if (response.status !== 200) {
-      console.log(JSON.stringify(response, undefined, 2));
-    }
-    return response.ok;
-  } catch (err) {
-    console.log('something went wrong with groupJoinGroup: ' + err);
-    // throw err;
-    return false;
-  }
+      body: JSON.stringify({joinCode: params.joinCode}),
+    })
+      // .then(data => data.json())
+      .then(data => {
+        console.log('GAPIHANDLING - data:');
+        console.log(JSON.stringify(data, undefined, 2));
+        if (
+          data.status === 'ok' &&
+          data.message === '** FIGURE OUT WHAT THIS IS'
+        ) {
+          return true;
+        } else {
+          throw Error(data.statusText);
+        }
+      })
+      .catch(e => {
+        console.log('something went wrong with groupJoinGroup: ' + e);
+        return false;
+      })
+  );
 }
+// try {
+//   const response = await fetch(`${URL}/GroupModels/JoinGroup`, {
+//     method: 'POST',
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${user.token}`,
+//     },
+//     body: {joinCode: params.joinCode},
+//   });
+
+//   console.log('GAPIHandling: joingroup response status: ' + response.status);
+//   if (response.status !== 200) {
+//     console.log(JSON.stringify(response, undefined, 2));
+//   }
+//   return response.ok;
+// } catch (err) {
+//   console.log('something went wrong with groupJoinGroup: ' + err);
+//   // throw err;
+//   return false;
+// }
 
 /**
  * API call to generate join group link
@@ -246,20 +331,31 @@ export function groupsGenerateQRCode(joinCode) {
 export async function groupsLetsMeet(groupID) {
   console.log('(GAPIHandling) Beginning of groupsLetsMeet');
   let user = await getUserInfo();
-  try {
-    const response = await fetch(`${URL}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
+  console.log('New Group:' + JSON.stringify(groupID, undefined, 2));
+  return fetch(`${URL}/GroupModels/SuggestEvent`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`,
+    },
+    body: JSON.stringify(groupID),
+  })
+    .then(data => {
+      console.log('GAPIHANDLING - data:');
+      console.log(JSON.stringify(data, undefined, 2));
+      if (data.ok) {
+        return data.json();
+      } else {
+        throw Error(data.statusText);
+      }
+    })
+    .then(jsonData => {
+      console.log('GAPIHANDLING - data.json():');
+      console.log(JSON.stringify(jsonData, undefined, 2));
+      return organizeGroups(jsonData);
+    })
+    .catch(e => {
+      console.log('something went wrong with groupsLetsMeet: ' + e);
+      return [];
     });
-    const result = await response.json();
-
-    console.log(JSON.stringify(result, undefined, 2));
-    return result;
-  } catch (err) {
-    console.log('something went wrong with groupsLetsMeet: ' + err);
-    throw err;
-    // return accurateGetGroupResult[groupID];
-  }
 }
