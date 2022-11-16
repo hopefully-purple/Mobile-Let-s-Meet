@@ -118,20 +118,51 @@ function RequestsModalOverlay({navigation}) {
   const [received, setReceived] = useState([]);
   // const user = useContext(UserContext);
   // useEffect(() => {
-  navigation.addListener('focus', async () => {
-    console.log('-------Navigation (For RequestsOVerlay)-------------');
-    const dataSent = await friendsGetSentRequests();
-    const dataRec = await friendsGetReceivedRequests();
-    // console.log(JSON.stringify(data, undefined, 2));
-    console.log('set sent to dataSent and received to dataRec');
-    setSent(dataSent);
-    setReceived(dataRec);
-  });
-  // }, [navigation]);
-  console.log('sent:');
-  console.log(JSON.stringify(sent, undefined, 2));
-  console.log('recieved:');
-  console.log(JSON.stringify(received, undefined, 2));
+  // navigation.addListener('focus', async () => {
+  //   console.log('-------Navigation (For RequestsOVerlay)-------------');
+  //   const dataSent = await friendsGetSentRequests();
+  //   const dataRec = await friendsGetReceivedRequests();
+  //   // console.log(JSON.stringify(data, undefined, 2));
+  //   console.log('set sent to dataSent and received to dataRec');
+  //   setSent(dataSent);
+  //   setReceived(dataRec);
+  // });
+  // // }, [navigation]);
+  // console.log('sent:');
+  // console.log(JSON.stringify(sent, undefined, 2));
+  // console.log('recieved:');
+  // console.log(JSON.stringify(received, undefined, 2));
+  useEffect(() => {
+    let mounted = true;
+    console.log('~~~~~~~~~~~~~~RequestsModalOverlay.useEffect call getSent');
+    friendsGetSentRequests().then(data => {
+      if (mounted) {
+        console.log('mounted! setSent');
+        // let d = organizeGroups(data);
+        setSent(data);
+      }
+    });
+    return () => {
+      console.log('mounted = false');
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    console.log('~~~~~~~~~~~~~RequestsModalOverlay.useEffect call getRecieved');
+    friendsGetReceivedRequests().then(data => {
+      if (mounted) {
+        console.log('mounted! setRecieved');
+        // let d = organizeGroups(data);
+        setReceived(data);
+      }
+    });
+    return () => {
+      console.log('mounted = false');
+      mounted = false;
+    };
+  }, []);
   return (
     <FriendRequestModal
       navigation={navigation}

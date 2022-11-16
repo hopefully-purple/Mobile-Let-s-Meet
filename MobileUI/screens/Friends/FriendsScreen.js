@@ -23,7 +23,7 @@ export default function FriendsScreen({navigation}) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [newFriendEmail, setNewFriendEmail] = useState('');
   // const {friends, setFriends} = useContext(FriendsContext);
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
 
   this.friendEmailInput = React.createRef();
 
