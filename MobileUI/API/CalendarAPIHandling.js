@@ -304,7 +304,7 @@ export async function calendarGetCalendars() {
     });
 }
 
-// export async function calendarGetCalendar() {
+// export async function calendarGetCalen() {
 //   console.log('(CAPIHandling) Beginning of CalendarGetCalendars');
 //   let user = await getUserInfo();
 //   try {
