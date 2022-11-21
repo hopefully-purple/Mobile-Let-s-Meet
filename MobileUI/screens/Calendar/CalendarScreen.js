@@ -11,23 +11,18 @@ import {
   Alert,
 } from 'react-native';
 import Colors from '../../assets/styles/colors';
-import {calendarTheme} from '../../assets/styles/calendarTheme';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card} from 'react-native-paper';
-import {getAllKeys} from '../LoginScreen';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
-import {readEventData, deleteEvent} from '../../API/APIControllers';
-import {classScheduleList} from '../../assets/data/HardCodedEvents';
+import {deleteEvent} from '../../API/APIControllers';
 import CalendarStrip from 'react-native-calendar-strip';
-import {
-  constructDateString,
-  formatEventTime,
-} from '../../miscHelpers/DateParsing';
+import {formatEventTime} from '../../miscHelpers/DateParsing';
 import {BoxButton} from '../../assets/components/CustomButtons';
-import GroupsContext from '../../contexts/Groups';
-import UserContext from '../../contexts/User';
-import moment from 'moment';
-import {calendarGetEvents} from '../../API/CalendarAPIHandling';
+import {
+  calendarGetEvents,
+  calendarGetCalendars,
+  calendarGetCalendarEvents,
+} from '../../API/CalendarAPIHandling';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const CalendarTitle = props => {
   return (
@@ -105,6 +100,9 @@ const CalendarScreen = ({navigation}) => {
   const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
   const [items, setItems] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedCals, setSelectedCals] = useState([]);
+  const [colors, setColors] = useState([]);
   // const {events, setEvents} = useContext(CalendarEventsContext);
   // const user = useContext(UserContext);
 
@@ -120,6 +118,22 @@ const CalendarScreen = ({navigation}) => {
     });
     return () => {
       console.log('CalendarScreen mounted = false');
+      mounted = false;
+    };
+  }, []);
+
+  const [calendars, setCalendars] = useState([]);
+  useEffect(() => {
+    console.log('~~~~~~~~~~~~~FilterCalendarModal.useEffect call getCalendars');
+    let mounted = true;
+    calendarGetCalendars().then(data => {
+      if (mounted) {
+        console.log('FilterCalendarModal mounted! setCalendars');
+        setCalendars(data);
+      }
+    });
+    return () => {
+      console.log('FilterCalendarModal mounted = false');
       mounted = false;
     };
   }, []);
@@ -193,6 +207,14 @@ const CalendarScreen = ({navigation}) => {
     return {};
   };
 
+  function handleFilterPress() {
+    console.log('HANDLE FILTER PRESS');
+    calendarGetCalendarEvents(selectedCals).then(data => {
+      console.log('FilterCalendarModal mounted! setCalendars');
+      setEvents(data);
+    });
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <CalendarTitle name={'My'} navigation={navigation} />
@@ -225,11 +247,51 @@ const CalendarScreen = ({navigation}) => {
           refreshing={isRefreshing}
         />
       </View>
-      <View style={styles.groupScheduleButtons}>
-        <BoxButton
-          title={'Calendar Filter'}
-          onPress={() => navigation.navigate('FilterModal')}
+      <View style={styles.calendarFeaturesStyling}>
+        <DropDownPicker
+          placeholder="Select a calendar"
+          schema={{
+            label: 'name',
+            value: 'id',
+            color: 'color',
+          }}
+          mode="BADGE"
+          // extendableBadgeContainer={true}
+          badgeDotColors={colors}
+          // renderBadgeItem={(item, props) => <Badge item={item} props={...props} />}
+          multiple={true}
+          items={calendars}
+          value={selectedCals}
+          open={open}
+          min={0}
+          setOpen={setOpen}
+          setValue={setSelectedCals}
+          onSelectItem={item => {
+            // console.log(JSON.stringify(item, undefined, 2));
+            // // setColors([...colors, item.color]);
+            // item.map(i => {
+            //   !colors.includes(i.color)
+            //     ? colors.push(i)
+            //     : console.log('remove ' + i);
+            // });
+            // console.log('colors: ' + JSON.stringify(colors, undefined, 2));
+          }}
+          // setItems={setItems}
+          dropDownDirection="TOP"
+          listMode="SCROLLVIEW"
+          style={
+            {
+              // backgroundColor: selectedCal
+              //   ? selectedCal.color
+              //   : Colors.DD_EXTRA_LIGHT_GRAY,
+            }
+          }
+          containerStyle={{
+            width: '70%',
+            margin: 5,
+          }}
         />
+        <BoxButton title={'Filter'} onPress={handleFilterPress} />
       </View>
     </SafeAreaView>
   );
@@ -284,9 +346,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'baseline',
   },
-  groupScheduleButtons: {
+  calendarFeaturesStyling: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
     margin: 15,
   },
 });
