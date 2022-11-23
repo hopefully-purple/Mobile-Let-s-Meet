@@ -215,7 +215,7 @@ const CalendarScreen = ({navigation}) => {
   function handleFilterPress() {
     console.log('HANDLE FILTER PRESS');
     calendarGetCalendarEvents(selectedCals).then(data => {
-      console.log('FilterCalendarModal mounted! setCalendars');
+      console.log('!!!!!!!!!! setEvents to new event data');
       setEvents(data);
     });
   }
