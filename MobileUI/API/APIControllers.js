@@ -3,6 +3,7 @@ import {calendarGetEvents, calendarDeleteEvent} from './CalendarAPIHandling';
 import {groupsGetGroups} from './GroupsAPIHandling';
 import {classScheduleList} from '../assets/data/HardCodedEvents';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {constructDateString} from '../miscHelpers/DateParsing';
 // import {bareBonesGroupList} from '../assets/data/HardCodedGroups';
 
 //Don't forget to update Info.plist
@@ -15,34 +16,77 @@ export const URL = 'http://ec2-52-201-245-93.compute-1.amazonaws.com';
  * @param {string} userName The name of current user for extraction of token
  * @returns {array} Array of event objects
  */
-export const readEventData = async (currentCalendarName, userName) => {
+export const readEventData = async currentCalendarName => {
   //TODO: change call based on calendarName?
   try {
     // const value = await AsyncStorage.getItem('Events'); // Hardcoded
-    const value = await calendarGetEvents(userName); // API call
+    const value = await calendarGetEvents(); // API call
     // console.log('(App.readData) value:' + value);
     if (value !== null && value !== undefined) {
       // return JSON.parse(value); // initialize events context for Hardcoded
-      return value; //for API call result
+      // return value; //for API call result
+      return organizeIntoDates(value);
     } else {
-      //TODO: probably return empty array irl
-      if (currentCalendarName === 'My') {
-        console.log(
-          '(homerootstack.readEventData).getEvents value is null! Set to class schedule list for now',
-        );
-        return classScheduleList;
-      } else {
-        return [];
-      }
+      console.log(
+        '(apicon.readEventData).getEvents value is null! Set to [] for now',
+      );
+      return [];
     }
   } catch (e) {
     console.log(
-      '(Homerootstack.readEventData) Failed to fetch the events from server: ' +
-        e,
+      '(apicon.readEventData) Failed to fetch the events from server: ' + e,
     );
     throw e;
   }
 };
+
+function organizeIntoDates(events) {
+  let newFL = [];
+  // console.log(JSON.stringify(events, undefined, 2));
+  console.log('(apicon.organizeIntoDates) events=' + events.length);
+  if (events.length === 0) {
+    console.log('events currently empty, return []');
+    return newFL;
+  }
+
+  for (let i of events) {
+    // console.log('i.start=' + i.start);
+    // let iMonth = constructMonth(i.start);
+    // let iDay = constructDay(i.start);
+    let iDateString = constructDateString(i.start);
+    // console.log('iDateString=' + iDateString);
+    // if (month.month === iMonth) {
+    // console.log('iMonth= ' + iMonth + ' iDay= ' + iDay);
+    if (!newFL[iDateString]) {
+      // console.log('add iDateString to array');
+      newFL[iDateString] = [];
+      // console.log('newFL size=' + newFL.length);
+    }
+    // console.log('month.day =' + month.day + '');
+    if (!newFL[iDateString].includes(i)) {
+      // console.log('push: ' + i.title + ' ' + i.start);
+      var localStartDate = new Date(i.start); //.toLocaleTimeString('en-US', {
+      //   timeZone: 'UTC',
+      //   hour12: true,
+      //   hour: 'numeric',
+      //   minute: 'numeric',
+      // });
+      var localEndDate = new Date(i.end);
+      console.log('##################' + localStartDate + '  ' + localEndDate);
+      const convertedI = {
+        ...i,
+        start: localStartDate,
+        end: localEndDate,
+      };
+      newFL[iDateString].push(convertedI);
+    }
+  }
+
+  // console.log('newFL:');
+  // console.log(JSON.stringify(newFL, undefined, 2));
+
+  return newFL;
+}
 
 /**
  * Calls the groupsGetGroups method and returns the result
@@ -55,7 +99,7 @@ export const readGroupData = async userName => {
   //TODO: change call based on calendarName?
   try {
     // const value = await AsyncStorage.getItem('Groups');
-    const value = await groupsGetGroups(userName); // API call
+    const value = await groupsGetGroups(); // API call
     // const value = null;
     // console.log('(App.readData) value:' + value);
     if (value !== null && value !== undefined) {
@@ -85,10 +129,9 @@ export const readGroupData = async userName => {
  * @param {eventObject} i Event to delete
  * @param {array} events Events array context for ASYNC way
  * @param {context} setEvents to set the Events context to the updated data
- * @param {string} userName The name of current user for extraction of token
  * @returns true or false based on success
  */
-export const deleteEvent = async (i, events, setEvents, userName) => {
+export const deleteEvent = async (i, events, setEvents) => {
   //   console.log(JSON.stringify(i, undefined, 2));
   //ASYNC WAY
   // Filter condition
@@ -114,10 +157,10 @@ export const deleteEvent = async (i, events, setEvents, userName) => {
 
   //API WAY
   try {
-    const result = await calendarDeleteEvent(i, userName);
+    const result = await calendarDeleteEvent(i);
     if (result) {
       console.log('(deleteEvent) call calendarGetEvents');
-      const value = await calendarGetEvents(userName); // API call
+      const value = await calendarGetEvents(); // API call
       if (value !== null && value !== undefined) {
         console.log('deleteEvent) setEvents to the new value! ret true');
         setEvents(value);

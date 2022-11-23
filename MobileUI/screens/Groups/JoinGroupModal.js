@@ -94,7 +94,7 @@ export default function JoinGroupModal({navigation}) {
 
     console.log('Group Link! ' + link);
     setIsLoading(true);
-    const response = await groupJoinGroup(link, user.token);
+    const response = await groupJoinGroup(link);
     if (response) {
       setIsLoading(false);
       Alert.alert('Successfully joined group!');

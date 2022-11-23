@@ -14,6 +14,7 @@ import FriendsContext from '../../contexts/Friends';
 import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import ProfileScreen from '../ProfileScreen';
 import SettingsScreen from '../SettingsScreen';
+import {readEventData, readGroupData} from '../../API/APIControllers';
 import UserContext from '../../contexts/User';
 
 //Important links
@@ -41,6 +42,17 @@ function GroupsScreen({navigation}) {
 }
 
 function MyScheduleScreen({navigation}) {
+  // navigation.addListener('drawerItemPress', () => {
+  //   // console.log('FOCUSSSSSS');
+  //   // do something
+  //   console.log('-------Calendar Focus Listener-------------');
+
+  //   readEventData('My', user.name).then(data => {
+  //     // console.log(JSON.stringify(data, undefined, 2));
+  //     console.log('set events to data');
+  //     setEvents(data);
+  //   });
+  // });
   return <HomeRootStackScreen calendarName="My" navigation={navigation} />;
 }
 
@@ -62,6 +74,7 @@ export default function Navigation() {
 
   let logScreenLabel = isLoggedIn ? 'Log Out' : 'Log In';
   let landing = isLoggedIn ? 'My Schedule' : 'Login';
+  console.log('landing ' + landing);
   return (
     <LogStateContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
       <FriendsContext.Provider value={{friends, setFriends}}>

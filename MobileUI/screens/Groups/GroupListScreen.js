@@ -6,21 +6,56 @@ import {Card} from 'react-native-paper';
 import GroupsContext from '../../contexts/Groups';
 import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import {BoxButton} from '../../assets/components/CustomButtons';
-import {groupsGetGroupMembers} from '../../API/GroupsAPIHandling';
+import {
+  groupsGetGroupMembers,
+  getRiverInformation,
+  groupsGetGroups,
+} from '../../API/GroupsAPIHandling';
 import UserContext from '../../contexts/User';
-
-// https://bobbyhadz.com/blog/react-sort-array-of-objects
-function organizeGroups(groups) {
-  let newG = {};
-  // newG = [...groups].sort((a, b) => a.groupID - b.groupID);
-  newG = [...groups].sort((a, b) => (a.groupName > b.groupName ? 1 : -1));
-  return newG;
-}
+import PropTypes from 'prop-types';
 
 export default function GroupListScreen({navigation}) {
-  const {groups, setGroups} = useContext(GroupsContext);
+  // const {groups, setGroups} = useContext(GroupsContext);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const {currentGroup, setcurrentGroup} = useContext(CurrentGroupObjectContext);
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
+
+  const [groupsList, setGroupsList] = useState([]);
+  useEffect(() => {
+    console.log('~~~~~~~~~~~~~~~GroupListScreen.useEffect call getGroups');
+    let mounted = true;
+    groupsGetGroups().then(data => {
+      if (mounted) {
+        console.log('GroupListScreen mounted! setGroupsList');
+        setGroupsList(data);
+      }
+    });
+    return () => {
+      console.log('GroupListScreen mounted = false');
+      mounted = false;
+    };
+  }, []);
+
+  const onRefresh = async () => {
+    //set isRefreshing to true
+    setIsRefreshing(true);
+    console.log('GroupListScreen REFRESHING FLAT LIST!!!!!!');
+    await groupsGetGroups().then(data => {
+      console.log('setGroupsList to data');
+      //setGroupsList to new data
+      setGroupsList(data);
+    });
+
+    console.log('set refreshing to false');
+    // and set isRefreshing to false
+    setIsRefreshing(false);
+  };
+
+  const renderItem = ({item}) => {
+    // console.log(items.length);
+    // console.log('rendering ' + item.id);
+    return <GroupBox group={item} />;
+  };
 
   const GroupBox = ({group}) => {
     const handleGroupPress = async () => {
@@ -30,11 +65,8 @@ export default function GroupListScreen({navigation}) {
         'pulling up ' + group.groupName + ' calendar (eventually . . .)',
       );
       // Call getGroup API to get full group object
-      const detailedGroup = await groupsGetGroupMembers(
-        group.groupID,
-        user.token,
-      );
-      console.log(JSON.stringify(detailedGroup, undefined, 2));
+      const detailedGroup = await groupsGetGroupMembers(group.groupID);
+      // console.log(JSON.stringify(detailedGroup, undefined, 2));
       setcurrentGroup(detailedGroup);
       //Set things up to trigger a correct event grab and calendar name change
       //navigate to calendar
@@ -46,7 +78,7 @@ export default function GroupListScreen({navigation}) {
           <Card.Content>
             <View>
               <Text key={group.groupID} style={styles.defaultScreentext}>
-                {group.groupName}
+                {group?.groupName}
               </Text>
             </View>
           </Card.Content>
@@ -55,20 +87,31 @@ export default function GroupListScreen({navigation}) {
     );
   };
 
-  const renderItem = ({item}) => {
-    // console.log(items.length);
-    // console.log('rendering ' + item.id);
-    return <GroupBox group={item} />;
-  };
+  // const [flatList, setFlatList] = useState([]);
+  // useEffect(
+  //   function createFlatList() {
+  //     const newFlatL = organizeGroups(groups);
+  //     setFlatList(newFlatL);
+  //   },
+  //   [groups],
+  // );
 
-  const [flatList, setFlatList] = useState([]);
-  useEffect(
-    function createFlatList() {
-      const newFlatL = organizeGroups(groups);
-      setFlatList(newFlatL);
-    },
-    [groups],
-  );
+  // const [riverInformation, setRiverInformation] = useState();
+
+  // useEffect(() => {
+  //   let mounted = true;
+  //   console.log(
+  //     'GroupListScreen.useEffect call getRiverInformation on ' + name,
+  //   );
+  //   getRiverInformation(name).then(data => {
+  //     if (mounted) {
+  //       setRiverInformation(data);
+  //     }
+  //   });
+  //   return () => {
+  //     mounted = false;
+  //   };
+  // }, [name]);
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -83,14 +126,20 @@ export default function GroupListScreen({navigation}) {
         />
       </View>
       <FlatList
-        data={flatList}
+        data={groupsList}
         renderItem={renderItem}
         keyExtractor={item => item.groupID}
         style={{marginTop: 40}}
+        onRefresh={onRefresh}
+        refreshing={isRefreshing}
       />
     </SafeAreaView>
   );
 }
+
+// GroupListScreen.propTypes = {
+//   name: PropTypes.string.isRequired,
+// };
 
 const styles = StyleSheet.create({
   screenContainer: {

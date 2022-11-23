@@ -57,25 +57,32 @@ const LoginScreen = ({navigation}) => {
       Alert.alert('Username or password is not correct, try again');
       // throw err;
     }
-    console.log('(4)await response');
-    const result1 = await response.json();
-    // console.log(result1);
+    if (response.ok) {
+      console.log('(4)await response');
 
-    // Store info in async storage
-    await storeUserLoginInfo(name, password, result1);
+      const result1 = await response.json();
+      console.log('login resposne:::');
+      console.log(JSON.stringify(result1, undefined, 2));
 
-    // Store info in user context
-    user.name = name;
-    user.password = password;
-    user.token = result1.token;
-    user.expiration = result1.expiration;
+      // Store info in async storage
+      await storeUserLoginInfo(name, password, result1);
 
-    setIsLoading(false);
+      // Store info in user context
+      user.name = name;
+      user.password = password;
+      user.token = result1.token;
+      user.expiration = result1.expiration;
 
-    if (!isLoading) {
-      // console.log('no longer loading, set logged in true, pull up my schedule');
-      setIsLoggedIn(true);
-      navigation.navigate('My Schedule');
+      setIsLoading(false);
+
+      if (!isLoading) {
+        // console.log('no longer loading, set logged in true, pull up my schedule');
+        setIsLoggedIn(true);
+        navigation.navigate('My Schedule');
+      }
+    } else {
+      console.log(JSON.stringify(response, undefined, 2));
+      Alert.alert('response was falsyyyyyy');
     }
   };
 

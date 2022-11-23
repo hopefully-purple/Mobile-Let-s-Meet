@@ -15,6 +15,7 @@ import {
   friendsAcceptRequest,
   friendsRejectRequest,
 } from '../../API/FriendsAPIHandling';
+import PropTypes from 'prop-types';
 import UserContext from '../../contexts/User';
 // https://stackoverflow.com/questions/48992961/react-navigation-modal-height
 
@@ -34,7 +35,15 @@ export default function FriendRequestModal({
   // console.log('sentRequests = ' + JSON.stringify(sentRequests, undefined, 2));
   // const [sentReqs, setSentReqs] = useState(sentRequests);
   // const [receivedReqs, setReceivedReqs] = useState(receivedRequests);
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
+
+  const renderSentItem = ({item}) => {
+    return (
+      <SentItem
+        name={`${item?.requestedTo.firstName} ${item?.requestedTo.lastName}`}
+      />
+    );
+  };
 
   const ReceivedItem = ({item, name}) => {
     const [showAccRej, setShowAccRej] = useState(true);
@@ -54,10 +63,7 @@ export default function FriendRequestModal({
               title={'Accept'}
               onPress={async () => {
                 console.log(item.friendsID);
-                const r = await friendsAcceptRequest(
-                  item.friendsID,
-                  user.token,
-                );
+                const r = await friendsAcceptRequest(item.friendsID);
                 if (r) {
                   Alert.alert(`Accepted ${name} request`);
                   setShowAccRej(false);
@@ -75,10 +81,7 @@ export default function FriendRequestModal({
               title={'Reject'}
               onPress={async () => {
                 console.log(item.friendsID);
-                const r = await friendsRejectRequest(
-                  item.friendsID,
-                  user.token,
-                );
+                const r = await friendsRejectRequest(item.friendsID);
                 if (r) {
                   Alert.alert(`Rejected ${name} request`);
                   setShowAccRej(false);
@@ -99,19 +102,11 @@ export default function FriendRequestModal({
     );
   };
 
-  const renderSentItem = ({item}) => {
-    return (
-      <SentItem
-        name={`${item.requestedTo.firstName} ${item.requestedTo.lastName}`}
-      />
-    );
-  };
-
   const renderReceivedItem = ({item}) => {
     return (
       <ReceivedItem
         item={item}
-        name={`${item.requestedBy.firstName} ${item.requestedBy.lastName}`}
+        name={`${item?.requestedBy.firstName} ${item?.requestedBy.lastName}`}
       />
     );
   };
@@ -150,6 +145,11 @@ export default function FriendRequestModal({
     </View>
   );
 }
+
+FriendRequestModal.propTypes = {
+  sentRequests: PropTypes.array.isRequired,
+  receivedRequests: PropTypes.array.isRequired,
+};
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   item: {
     // backgroundColor: '#f9c2ff',
     paddingVertical: 5,
-    marginVertical: 5,
+    marginVertical: 3,
   },
   listText: {
     fontSize: 20,

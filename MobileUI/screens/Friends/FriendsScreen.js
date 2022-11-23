@@ -15,22 +15,57 @@ import {BoxButton} from '../../assets/components/CustomButtons';
 import {
   friendsGetSentRequests,
   friendsCreateFriendRequestByEmail,
+  friendsGetFriends,
 } from '../../API/FriendsAPIHandling';
 import UserContext from '../../contexts/User';
 
-// https://bobbyhadz.com/blog/react-sort-array-of-objects
-function organizeFriends(friends) {
-  let newF = {};
-  newF = [...friends].sort((a, b) => (a.firstName > b.firstName ? 1 : -1));
-  return newF;
-}
-
 export default function FriendsScreen({navigation}) {
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [newFriendEmail, setNewFriendEmail] = useState('');
-  const {friends, setFriends} = useContext(FriendsContext);
-  const user = useContext(UserContext);
+  // const {friends, setFriends} = useContext(FriendsContext);
+  // const user = useContext(UserContext);
 
   this.friendEmailInput = React.createRef();
+
+  const [friendsList, setFriendsList] = useState([]);
+  useEffect(() => {
+    let mounted = true;
+    console.log('~~~~~~~~~~~~~~~FriendsScreen.useEffect call getFriends');
+    friendsGetFriends().then(data => {
+      if (mounted) {
+        console.log('FriendsScreen mounted! setFriendsList');
+        // let d = organizeGroups(data);
+        setFriendsList(data);
+      }
+    });
+    return () => {
+      console.log('FriendsScreen mounted = false');
+      mounted = false;
+    };
+  }, []);
+
+  const onRefresh = async () => {
+    //set isRefreshing to true
+    setIsRefreshing(true);
+    console.log('REFRESHING FLAT LIST!!!!!!');
+    await friendsGetFriends().then(data => {
+      console.log('setFriendsList to data');
+      //setGroupsList to new data
+      setFriendsList(data);
+    });
+
+    console.log('set refreshing to false');
+    // and set isRefreshing to false
+    setIsRefreshing(false);
+  };
+
+  const renderItem = ({item}) => {
+    // console.log(items.length);
+    // console.log('rendering ' + item.id);
+    return (
+      <FriendBox friend={item} name={`${item.firstName} ${item.lastName}`} />
+    );
+  };
 
   const FriendBox = ({friend, name}) => {
     const handleFriendPress = () => {
@@ -49,34 +84,23 @@ export default function FriendsScreen({navigation}) {
     );
   };
 
-  const renderItem = ({item}) => {
-    // console.log(items.length);
-    // console.log('rendering ' + item.id);
-    return (
-      <FriendBox friend={item} name={`${item.firstName} ${item.lastName}`} />
-    );
-  };
-
-  const [existingFriendsList, setExistingFriendsList] = useState([]);
-  useEffect(
-    function createExistingFriendsList() {
-      const newFlatL = organizeFriends(friends);
-      setExistingFriendsList(newFlatL);
-    },
-    [friends],
-  );
+  // const [existingFriendsList, setExistingFriendsList] = useState([]);
+  // useEffect(
+  //   function createExistingFriendsList() {
+  //     const newFlatL = organizeFriends(friends);
+  //     setExistingFriendsList(newFlatL);
+  //   },
+  //   [friends],
+  // );
 
   const addFriendHandler = async () => {
     if (newFriendEmail !== '') {
       console.log('Create friend request to ' + newFriendEmail);
-      let result = await friendsCreateFriendRequestByEmail(
-        newFriendEmail,
-        user.token,
-      );
+      let result = await friendsCreateFriendRequestByEmail(newFriendEmail);
       if (result) {
         Alert.alert('Request sent!');
       } else {
-        Alert.alert('Friend request failed?');
+        Alert.alert('Friend request failed');
       }
 
       this.friendEmailInput.current.clear();
@@ -92,10 +116,12 @@ export default function FriendsScreen({navigation}) {
         My Friends:
       </Text>
       <FlatList
-        data={existingFriendsList}
+        data={friendsList}
         renderItem={renderItem}
         keyExtractor={item => item.userID}
         style={{marginTop: 10}}
+        onRefresh={onRefresh}
+        refreshing={isRefreshing}
       />
       <View style={styles.buttons}>
         <TextInput

@@ -1,114 +1,231 @@
 import React, {useContext} from 'react';
+import {Alert} from 'react-native';
 import {
   bareBonesGroupListAccurate,
   accurateGetGroupResult,
   accurateGetGroupResult0,
 } from '../assets/data/HardCodedGroups';
-import {getUsernameValue} from '../miscHelpers/AsyncStorageMethods';
+import {getUserInfo} from '../miscHelpers/AsyncStorageMethods';
 import {URL} from './APIControllers';
+
+// export function getRiverInformation(name) {
+//   console.log('\n\n\n\nGET RIVER INFORMATION: ' + name + '\n\n\n\n');
+//   return new Promise(resolve => {
+//     setTimeout(() => {
+//       resolve(rivers[name]);
+//     }, 1500);
+//   });
+// }
+
+// export function getList() {
+//   return fetch('http://localhost:3333/list').then(data => data.json());
+// }
+
+// export function setItem(item) {
+//   return fetch('http://localhost:3333/list', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({item}),
+//   }).then(data => data.json());
+// }
+
+// https://bobbyhadz.com/blog/react-sort-array-of-objects
+function organizeGroups(groups) {
+  let newG = [];
+  // newG = [...groups].sort((a, b) => a.groupID - b.groupID);
+  newG = [...groups].sort((a, b) => (a.groupName > b.groupName ? 1 : -1));
+  return newG;
+}
 
 /**
  * API call to get all groups user is in
  * If something goes wrong, catches error and goes to hardcoded functionality
- * @param {string} userName The name of current user for extraction of token
- * @returns list of groups
+ * @returns list of groups (organized)
  */
-export async function groupsGetGroups(userName) {
+export async function groupsGetGroups() {
   console.log('(GAPIHandling) Beginning of GroupsGetGroups');
-  let user = await getUsernameValue(userName);
-  try {
-    const response = await fetch(`${URL}/GroupModels/GetGroups`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
+  let user = await getUserInfo();
+  // console.log('user = ' + JSON.stringify(user, undefined, 2));
+  return fetch(`${URL}/GroupModels/GetGroups`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`,
+    },
+  })
+    .then(data => {
+      console.log('GAPIHANDLING - groupsGetGroups data:');
+      console.log(JSON.stringify(data, undefined, 2));
+      if (data.ok) {
+        return data.json();
+      } else {
+        throw Error(data.statusText);
+      }
+    })
+    .then(jsonData => {
+      console.log('GAPIHANDLING - groupsGetGroups data.json():');
+      console.log(JSON.stringify(jsonData, undefined, 2));
+      return organizeGroups(jsonData);
+    })
+    .catch(e => {
+      console.log('something went wrong with groupsGetGroups: ' + e);
+      return [];
     });
-    const result = await response.json();
-
-    console.log(JSON.stringify(result, undefined, 2));
-    return result;
-  } catch (err) {
-    console.log('something went wrong with groupsGetGroups: ' + err);
-    // throw err;
-    // TODO::: Need to adjust display code for the accurate list
-    return bareBonesGroupListAccurate;
-  }
 }
+
+// export async function groupsGetGroup() {
+//   console.log('(GAPIHandling) Beginning of GroupsGetGroups');
+//   let user = await getUserInfo();
+//   try {
+//     const response = await fetch(`${URL}/GroupModels/GetGroups`, {
+//       method: 'GET',
+//       headers: {
+//         Authorization: `Bearer ${user.token}`,
+//       },
+//     });
+//     const result = await response.json();
+
+//     console.log('GAPIHANDLING - result:');
+//     console.log(JSON.stringify(result, undefined, 2));
+//     return result;
+//   } catch (err) {
+//     console.log('something went wrong with groupsGetGroups: ' + err);
+//     return [];
+//   }
+// }
 
 /**
  * API call to get members of given group
  * If something goes wrong, catches error and goes to hardcoded functionality
  *
  * @param {int} groupID Identifier for group
- * @param {string} userName The name of current user for extraction of token
  * @returns list of group members
  */
-export async function groupsGetGroupMembers(groupID, userToken) {
+export async function groupsGetGroupMembers(groupID) {
   console.log('(GAPIHandling) Beginning of GroupsGetGroupMembers');
-  // let user = await getUsernameValue(userName);
-  try {
-    const response = await fetch(`${URL}/GroupModels/GetGroup?id=${groupID}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
+  let user = await getUserInfo();
+  // console.log('user = ' + JSON.stringify(user, undefined, 2));
+  return fetch(`${URL}/GroupModels/GetGroup?id=${groupID}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`,
+    },
+  })
+    .then(data => {
+      console.log('GAPIHANDLING - GroupsGetGroupMembers data:');
+      console.log(JSON.stringify(data, undefined, 2));
+      if (data.ok) {
+        return data.json();
+      } else {
+        throw Error(data.statusText);
+      }
+    })
+    .then(jsonData => {
+      console.log('GAPIHANDLING - GroupsGetGroupMembers data.json():');
+      console.log(JSON.stringify(jsonData, undefined, 2));
+      return jsonData;
+    })
+    .catch(e => {
+      console.log('something went wrong with groupsGetGroupMembers: ' + e);
+      return [];
     });
-    const result = await response.json();
-
-    console.log(JSON.stringify(result, undefined, 2));
-    return result;
-  } catch (err) {
-    console.log('something went wrong with groupsGetGroupMembers: ' + err);
-    // throw err;
-    // TODO::: Confirm response JSON structure
-    // return accurateGetGroupResult[groupID];
-    // console.log(
-    //   '&&&&&&&&&&&&&&&&&&' +
-    //     JSON.stringify(accurateGetGroupResult[0], undefined, 2),
-    // );
-    return accurateGetGroupResult[groupID];
-  }
 }
+
+// export async function groupsGetGroupMember(groupID) {
+//   console.log('(GAPIHandling) Beginning of GroupsGetGroupMembers');
+//   let user = await getUserInfo();
+//   try {
+//     const response = await fetch(`${URL}/GroupModels/GetGroup?id=${groupID}`, {
+//       method: 'GET',
+//       headers: {
+//         Authorization: `Bearer ${user.token}`,
+//       },
+//     });
+//     const result = await response.json();
+
+//     console.log(JSON.stringify(result, undefined, 2));
+//     return result;
+//   } catch (err) {
+//     console.log('something went wrong with groupsGetGroupMembers: ' + err);
+//     // throw err;
+//     // TODO::: Confirm response JSON structure
+//     // return accurateGetGroupResult[groupID];
+//     // console.log(
+//     //   '&&&&&&&&&&&&&&&&&&' +
+//     //     JSON.stringify(accurateGetGroupResult[0], undefined, 2),
+//     // );
+//     // return accurateGetGroupResult[groupID];
+//     return [];
+//   }
+// }
 
 /**
  * API call to create a new group
  * If something goes wrong, catches error and goes to hardcoded functionality
  * @param {groupObject} newGroup - group object to be added
- * @param {string} userName The name of current user for extraction of token
  * @returns OK = true
  */
-export async function groupCreateNewGroup(newGroup, userToken) {
+export async function groupCreateNewGroup(newGroup) {
   console.log('(GAPIHandling) Beginning of GroupCreateNewGroup');
-  // let user = await getUsernameValue(userName);
-  try {
-    console.log('New Group:' + JSON.stringify(newGroup, undefined, 2));
-    const response = await fetch(`${URL}/GroupModels/CreateGroup`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${userToken}`,
-      },
-      body: {newGroup},
+  let user = await getUserInfo();
+  console.log('New Group:' + JSON.stringify(newGroup, undefined, 2));
+  return fetch(`${URL}/GroupModels/CreateGroup`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`,
+    },
+    body: JSON.stringify(newGroup),
+  })
+    .then(data => data.json())
+    .then(data => {
+      console.log('GAPIHANDLING - GroupCreateNewGroup data:');
+      console.log(JSON.stringify(data, undefined, 2));
+      if (data.status === 'ok' && data.message === 'Group created') {
+        return true;
+      } else {
+        throw Error(data.message);
+      }
+    })
+    .catch(e => {
+      console.log('something went wrong with groupCreateNewGroup: ' + e);
+      return false;
     });
-
-    return response.ok;
-  } catch (err) {
-    console.log('something went wrong with groupCreateNewGroup: ' + err);
-    // throw err;
-    return false;
-  }
 }
+
+// export async function groupCreateNewGrou(newGroup) {
+//   console.log('(GAPIHandling) Beginning of GroupCreateNewGroup');
+//   let user = await getUserInfo();
+//   try {
+//     console.log('New Group:' + JSON.stringify(newGroup, undefined, 2));
+//     const response = await fetch(`${URL}/GroupModels/CreateGroup`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         Authorization: `Bearer ${user.token}`,
+//       },
+//       body: {newGroup},
+//     });
+
+//     return response.ok;
+//   } catch (err) {
+//     console.log('something went wrong with groupCreateNewGroup: ' + err);
+//     // throw err;
+//     return false;
+//   }
+// }
 
 /**
  * API call to join a group
  * TO BE CALLED FROM HANDLE LINK SUBMIT
  * If something goes wrong, catches error and goes to hardcoded functionality
- * @param {string} joinCode - Code to join associated group
- * @param {string} userName The name of current user for extraction of token
+ * @param {string} joinLink - Link to join associated group
  * @returns OK = true
  */
-export async function groupJoinGroup(joinLink, userToken) {
+export async function groupJoinGroup(joinLink) {
   console.log('(GAPIHandling) Beginning of GroupJoinGroup');
   //Pull out joincode from:
   //`http://ec2-34-204-67-135.compute-1.amazonaws.com/GroupModels/JoinGroupRedirect?joinCode=1589`
@@ -120,30 +237,57 @@ export async function groupJoinGroup(joinLink, userToken) {
     params[match[1]] = match[2];
   }
   console.log(params.joinCode);
-  // return false;
-  // let user = await getUsernameValue(user);
-  try {
-    const response = await fetch(`${URL}/GroupModels/JoinGroup`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${userToken}`,
-      },
-      body: {joinCode: params.joinCode},
-    });
-
-    console.log('GAPIHandling: joingroup response status: ' + response.status);
-    if (response.status !== 200) {
-      console.log(JSON.stringify(response, undefined, 2));
-    }
-    return response.ok;
-  } catch (err) {
-    console.log('something went wrong with groupJoinGroup: ' + err);
-    // throw err;
+  if (params.joinCode === undefined) {
+    Alert.alert('Link not a valid join link for the Lets Meet app');
     return false;
   }
+  let user = await getUserInfo();
+  return (
+    fetch(`${URL}/GroupModels/JoinGroup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify({joinCode: params.joinCode}),
+    })
+      // .then(data => data.json())
+      .then(data => {
+        console.log('GAPIHANDLING - GroupJoinGroup data:');
+        console.log(JSON.stringify(data, undefined, 2));
+        if (data.status === 'ok' && data.message === 'User joined group') {
+          return true;
+        } else {
+          throw Error(data.message);
+        }
+      })
+      .catch(e => {
+        console.log('something went wrong with groupJoinGroup: ' + e);
+        return false;
+      })
+  );
 }
+// try {
+//   const response = await fetch(`${URL}/GroupModels/JoinGroup`, {
+//     method: 'POST',
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${user.token}`,
+//     },
+//     body: {joinCode: params.joinCode},
+//   });
+
+//   console.log('GAPIHandling: joingroup response status: ' + response.status);
+//   if (response.status !== 200) {
+//     console.log(JSON.stringify(response, undefined, 2));
+//   }
+//   return response.ok;
+// } catch (err) {
+//   console.log('something went wrong with groupJoinGroup: ' + err);
+//   // throw err;
+//   return false;
+// }
 
 /**
  * API call to generate join group link
@@ -183,26 +327,36 @@ export function groupsGenerateQRCode(joinCode) {
  * If something goes wrong, catches error and goes to hardcoded functionality
  *
  * @param {int} groupID Identifier for group
- * @param {string} userName The name of current user for extraction of token
  * @returns List of suggested times?
  */
-export async function groupsLetsMeet(groupID, userName) {
+export async function groupsLetsMeet(groupID) {
   console.log('(GAPIHandling) Beginning of groupsLetsMeet');
-  let user = await getUsernameValue(userName);
-  try {
-    const response = await fetch(`${URL}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
+  let user = await getUserInfo();
+  console.log('New Group:' + JSON.stringify(groupID, undefined, 2));
+  return fetch(`${URL}/GroupModels/SuggestEvent`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`,
+    },
+    body: JSON.stringify(groupID),
+  })
+    .then(data => {
+      console.log('GAPIHANDLING - data:');
+      console.log(JSON.stringify(data, undefined, 2));
+      if (data.ok) {
+        return data.json();
+      } else {
+        throw Error(data.statusText);
+      }
+    })
+    .then(jsonData => {
+      console.log('GAPIHANDLING - data.json():');
+      console.log(JSON.stringify(jsonData, undefined, 2));
+      return organizeGroups(jsonData);
+    })
+    .catch(e => {
+      console.log('something went wrong with groupsLetsMeet: ' + e);
+      return [];
     });
-    const result = await response.json();
-
-    console.log(JSON.stringify(result, undefined, 2));
-    return result;
-  } catch (err) {
-    console.log('something went wrong with groupsLetsMeet: ' + err);
-    throw err;
-    // return accurateGetGroupResult[groupID];
-  }
 }

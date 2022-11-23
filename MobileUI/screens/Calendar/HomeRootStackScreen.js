@@ -24,58 +24,59 @@ import {
 } from '../../API/FriendsAPIHandling';
 import FriendRequestModal from '../Friends/FriendRequestsModal';
 import IsCameraOpenContext from '../../contexts/IsCameraOpen';
+import FilterCalendarModal from './FilterCalendarModal';
 
 function HomeScreen({navigation}) {
-  const {events, setEvents} = useContext(CalendarEventsContext);
-  const user = useContext(UserContext);
-  useEffect(() => {
-    navigation.addListener('focus', async () => {
-      // do something
-      console.log('-------HomerootStackscreen (For calendar)-------------');
+  // const {events, setEvents} = useContext(CalendarEventsContext);
+  // const user = useContext(UserContext);
+  // useEffect(() => {
+  //   navigation.addListener('focus', async () => {
+  //     // do something
+  //     console.log('-------HomerootStackscreen (For calendar)-------------');
 
-      const data = await readEventData('My', user.name);
-      // console.log(JSON.stringify(data, undefined, 2));
-      console.log('set events to data');
-      setEvents(data);
-    });
-  }, [navigation, setEvents, user.name]);
+  //     const data = await readEventData('My', user.name);
+  //     // console.log(JSON.stringify(data, undefined, 2));
+  //     console.log('set events to data');
+  //     setEvents(data);
+  //   });
+  // }, [navigation, setEvents, user.name]);
   return <CalendarScreen navigation={navigation} />;
 }
 
 function GroupScreen({navigation}) {
-  const {groups, setGroups} = useContext(GroupsContext);
-  const user = useContext(UserContext);
-  useEffect(() => {
-    navigation.addListener('focus', async () => {
-      console.log('-------HomerootStackscreen (For Group)-------------');
-      const data = await readGroupData(user.name);
-      // console.log(JSON.stringify(data, undefined, 2));
-      console.log('set groups to data');
-      setGroups(data);
-    });
-  }, [navigation, setGroups, user.name]);
+  // const {groups, setGroups} = useContext(GroupsContext);
+  // const user = useContext(UserContext);
+  // useEffect(() => {
+  //   navigation.addListener('focus', async () => {
+  //     console.log('-------HomerootStackscreen (For Group)-------------');
+  //     const data = await readGroupData(user.name);
+  //     // console.log(JSON.stringify(data, undefined, 2));
+  //     console.log('set groups to data');
+  //     setGroups(data);
+  //   });
+  // }, [navigation, setGroups, user.name]);
   return <GroupListScreen navigation={navigation} />;
 }
 
 function GroupCalendar({navigation}) {
-  console.log(
-    '@@@@@@@@@@@@grabbing events for groups needs to be implemented @@@@@@@@@@@@',
-  );
-  // setEvents([]);
   return <GroupCalendarScreen navigation={navigation} />;
 }
 
 function AddEventModalScreen({navigation}) {
-  const [calendars, setCalendars] = useState([]);
-  const user = useContext(UserContext);
-  navigation.addListener('focus', async () => {
-    console.log('-------Navigation (For AddEventModal)-------------');
-    const data = await calendarGetCalendars(user.name);
-    // console.log(JSON.stringify(data, undefined, 2));
-    console.log('set calendars to data');
-    setCalendars(data);
-  });
-  return <AddEventModal navigation={navigation} calendars={calendars} />;
+  // const [calendars, setCalendars] = useState([]);
+  // const user = useContext(UserContext);
+  // navigation.addListener('focus', async () => {
+  //   console.log('-------Navigation (For AddEventModal)-------------');
+  //   const data = await calendarGetCalendars();
+  //   // console.log(JSON.stringify(data, undefined, 2));
+  //   console.log('set calendars to data');
+  //   setCalendars(data);
+  // });
+  return <AddEventModal navigation={navigation} />;
+}
+
+function FilterModalOverlay({navigation}) {
+  return <FilterCalendarModal navigation={navigation} />;
 }
 
 function AddGroupModalScreen({navigation}) {
@@ -99,39 +100,70 @@ function MeetModalOverlay({navigation}) {
 }
 
 function FriendScreen({navigation}) {
-  const {friends, setFriends} = useContext(FriendsContext);
-  const user = useContext(UserContext);
-  useEffect(() => {
-    navigation.addListener('focus', async () => {
-      console.log('-------Navigation (For Friends)-------------');
-      const data = await friendsGetFriends(user.token);
-      // console.log(JSON.stringify(data, undefined, 2));
-      console.log('set friends to data');
-      setFriends(data);
-    });
-  }, [navigation, setFriends, user.token]);
+  // const {friends, setFriends} = useContext(FriendsContext);
+  // const user = useContext(UserContext);
+  // useEffect(() => {
+  //   navigation.addListener('focus', async () => {
+  //     console.log('-------Navigation (For Friends)-------------');
+  //     const data = await friendsGetFriends(user.token);
+  //     // console.log(JSON.stringify(data, undefined, 2));
+  //     console.log('set friends to data');
+  //     setFriends(data);
+  //   });
+  // }, [navigation, setFriends, user.token]);
   return <FriendsScreen navigation={navigation} />;
 }
 
 function RequestsModalOverlay({navigation}) {
   const [sent, setSent] = useState([]);
   const [received, setReceived] = useState([]);
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
   // useEffect(() => {
-  navigation.addListener('focus', async () => {
-    console.log('-------Navigation (For RequestsOVerlay)-------------');
-    const dataSent = await friendsGetSentRequests(user.token);
-    const dataRec = await friendsGetReceivedRequests(user.token);
-    // console.log(JSON.stringify(data, undefined, 2));
-    console.log('set sent to dataSent and received to dataRec');
-    setSent(dataSent);
-    setReceived(dataRec);
-  });
-  // }, [navigation, user.name]);
-  console.log('sent:');
-  console.log(JSON.stringify(sent, undefined, 2));
-  console.log('recieved:');
-  console.log(JSON.stringify(received, undefined, 2));
+  // navigation.addListener('focus', async () => {
+  //   console.log('-------Navigation (For RequestsOVerlay)-------------');
+  //   const dataSent = await friendsGetSentRequests();
+  //   const dataRec = await friendsGetReceivedRequests();
+  //   // console.log(JSON.stringify(data, undefined, 2));
+  //   console.log('set sent to dataSent and received to dataRec');
+  //   setSent(dataSent);
+  //   setReceived(dataRec);
+  // });
+  // // }, [navigation]);
+  // console.log('sent:');
+  // console.log(JSON.stringify(sent, undefined, 2));
+  // console.log('recieved:');
+  // console.log(JSON.stringify(received, undefined, 2));
+  useEffect(() => {
+    let mounted = true;
+    console.log('~~~~~~~~~~~~~~RequestsModalOverlay.useEffect call getSent');
+    friendsGetSentRequests().then(data => {
+      if (mounted) {
+        console.log('RequestsModalOverlay (sent) mounted! setSent');
+        // let d = organizeGroups(data);
+        setSent(data);
+      }
+    });
+    return () => {
+      console.log('RequestsModalOverlay (sent) mounted = false');
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    console.log('~~~~~~~~~~~~~RequestsModalOverlay.useEffect call getRecieved');
+    friendsGetReceivedRequests().then(data => {
+      if (mounted) {
+        console.log('RequestsModalOverlay (rec) mounted! setRecieved');
+        // let d = organizeGroups(data);
+        setReceived(data);
+      }
+    });
+    return () => {
+      console.log('RequestsModalOverlay (rec) mounted = false');
+      mounted = false;
+    };
+  }, []);
   return (
     <FriendRequestModal
       navigation={navigation}
@@ -294,6 +326,22 @@ export default function HomeRootStackScreen(props) {
                       title="Cancel"
                     />
                   ),
+                }}
+              />
+              <RootStack.Screen
+                name="FilterModal"
+                component={FilterModalOverlay}
+                options={{
+                  presentation: 'modal',
+                  headerShown: false,
+                  cardOverlayEnabled: true,
+                  gestureEnabled: true,
+                  gestureDirection: 'vertical',
+                  gestureResponseDistance: 500,
+                  cardStyle: {
+                    backgroundColor: 'transparent',
+                    opacity: 0.99,
+                  },
                 }}
               />
               <RootStack.Screen
