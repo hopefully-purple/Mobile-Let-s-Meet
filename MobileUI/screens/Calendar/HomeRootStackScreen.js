@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react';
-import {View, Text, Button} from 'react-native';
+import {View, Text, Button, StyleSheet} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import CalendarScreen from './CalendarScreen';
 import AddEventModal from './AddEventModal';
@@ -26,6 +26,7 @@ import FriendRequestModal from '../Friends/FriendRequestsModal';
 import IsCameraOpenContext from '../../contexts/IsCameraOpen';
 import FilterCalendarModal from './FilterCalendarModal';
 import { StackActions } from '@react-navigation/native';
+import { MiniBoxButton } from '../../assets/components/CustomButtons';
 
 const popAction = StackActions.pop(1);
 
@@ -273,12 +274,18 @@ export default function HomeRootStackScreen(props) {
                     backgroundColor: Colors.DD_RED_2,
                   },
                   headerLeft: () => (
-                    <Button
-                      onPress={() => {
-                        props.navigation.dispatch(popAction);
-                      }}
-                      title="Cancel"
-                    />
+                    // <Button
+                    //   onPress={() => {
+                    //     props.navigation.dispatch(popAction);
+                    //   }}
+                    //   title="Cancel"
+                    // />
+                    <View style={styles.backButtonWrapper}>
+                      <MiniBoxButton
+                        title={'< Back'}
+                        onPress={() => props.navigation.dispatch(popAction)}
+                      />
+                    </View>
                   ),
                 }}
               />
@@ -402,6 +409,14 @@ export default function HomeRootStackScreen(props) {
     </GroupsContext.Provider>
   );
 }
+
+
+const styles = StyleSheet.create({
+  backButtonWrapper: {
+    marginLeft: 20,
+    marginRight: 10,
+  },
+});
 
 // HomeRootStackScreen.defaultProps = {
 //   groupName: 'My',

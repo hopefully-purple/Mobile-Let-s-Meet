@@ -20,6 +20,7 @@ import {
   calendarGetCalendars,
 } from '../../API/CalendarAPIHandling';
 import UserContext from '../../contexts/User';
+import { BoxButton } from '../../assets/components/CustomButtons';
 
 // https://casesandberg.github.io/react-color/
 // Doesn't work! Throws Text errors :`(
@@ -201,13 +202,19 @@ export default function AddEventModal({navigation}) {
       </Text>
       <DatePicker date={endDate} onDateChange={setEndDate} minuteInterval={5} />
       {/* <CalendarThing calColor={calColor} setCalColor={setCalColor} /> */}
-      <Button onPress={doneHandler} title="Done" style={{margin: 100}} />
+      <View style={styles.doneStyle}>
+        <BoxButton onPress={doneHandler} title="Done"/>
+      </View>
       <Text> </Text>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  doneStyle: {
+    margin: 15,
+    alignSelf: 'center'
+  },
   container: {
     flex: 1,
     backgroundColor: Colors.DD_CREAM,
