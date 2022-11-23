@@ -129,7 +129,7 @@ export default function GroupListScreen({navigation}) {
         data={groupsList}
         renderItem={renderItem}
         keyExtractor={item => item.groupID}
-        style={{marginTop: 40}}
+        style={{marginTop: 15}}
         onRefresh={onRefresh}
         refreshing={isRefreshing}
       />
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: 'row',
-    position: 'absolute',
+    //position: 'absolute',
     margin: 10,
     // alignContent: 'center',
   },

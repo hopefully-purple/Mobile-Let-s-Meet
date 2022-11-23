@@ -25,6 +25,9 @@ import {
 import FriendRequestModal from '../Friends/FriendRequestsModal';
 import IsCameraOpenContext from '../../contexts/IsCameraOpen';
 import FilterCalendarModal from './FilterCalendarModal';
+import { StackActions } from '@react-navigation/native';
+
+const popAction = StackActions.pop(1);
 
 function HomeScreen({navigation}) {
   // const {events, setEvents} = useContext(CalendarEventsContext);
@@ -272,7 +275,7 @@ export default function HomeRootStackScreen(props) {
                   headerLeft: () => (
                     <Button
                       onPress={() => {
-                        props.navigation.navigate('Home');
+                        props.navigation.dispatch(popAction);
                       }}
                       title="Cancel"
                     />

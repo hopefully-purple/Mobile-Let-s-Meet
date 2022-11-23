@@ -164,7 +164,7 @@ export default function AddEventModal({navigation}) {
         placeholder="Select a calendar"
         schema={{
           label: 'name',
-          value: 'id',
+          value: 'calendarID',
         }}
         open={open}
         value={value}
