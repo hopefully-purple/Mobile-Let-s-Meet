@@ -267,6 +267,7 @@ export async function friendsAcceptRequest(friendID) {
     },
     body: JSON.stringify({id: friendID}),
   })
+    .then(data => data.json())
     .then(data => {
       console.log('FAPIHANDLING - data:');
       console.log(JSON.stringify(data, undefined, 2));
@@ -323,6 +324,7 @@ export async function friendsRejectRequest(friendID) {
     },
     body: JSON.stringify({id: friendID}),
   })
+    .then(data => data.json())
     .then(data => {
       console.log('FAPIHANDLING - data:');
       console.log(JSON.stringify(data, undefined, 2));
