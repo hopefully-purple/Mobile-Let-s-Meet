@@ -138,16 +138,22 @@ const CalendarScreen = ({navigation}) => {
     };
   }, []);
 
-  const onRefresh = async () => {
+  const onRefresh = async flag => {
     //set isRefreshing to true
     setIsRefreshing(true);
     console.log('REFRESHING FLAT LIST!!!!!!');
-    await calendarGetEvents().then(data => {
-      console.log('setEvents to data');
-      //setEvents to new data
-      setEvents(data);
-    });
-
+    if (flag === 'all') {
+      await calendarGetEvents().then(data => {
+        console.log('setEvents to data');
+        //setEvents to new data
+        setEvents(data);
+      });
+    } else if (flag === 'filtered') {
+      await calendarGetCalendarEvents(selectedCals).then(data => {
+        console.log('!!!!!handleFilterPress!!!!! setEvents to new event data');
+        setEvents(data);
+      });
+    }
     await calendarGetCalendars().then(data => {
       console.log('setCalendars to data');
       setCalendars(data);
@@ -212,12 +218,14 @@ const CalendarScreen = ({navigation}) => {
     return {};
   };
 
-  function handleFilterPress() {
-    console.log('HANDLE FILTER PRESS');
-    calendarGetCalendarEvents(selectedCals).then(data => {
-      console.log('!!!!!!!!!! setEvents to new event data');
-      setEvents(data);
-    });
+  async function handleFilterPress() {
+    console.log('HANDLE FILTER PRESS > ' + selectedCals);
+    // await calendarGetCalendarEvents(selectedCals).then(data => {
+    //   console.log('!!!!!handleFilterPress!!!!! setEvents to new event data');
+    //   setEvents(data);
+    // });
+    onRefresh('filtered');
+    console.log('!!!!! done handleFilterPress');
   }
 
   return (
@@ -247,7 +255,7 @@ const CalendarScreen = ({navigation}) => {
           data={items}
           renderItem={renderItem}
           keyExtractor={item => item.id}
-          onRefresh={onRefresh}
+          onRefresh={() => onRefresh('all')}
           ListEmptyComponent={Empty}
           refreshing={isRefreshing}
         />
