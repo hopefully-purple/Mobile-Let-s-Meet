@@ -86,7 +86,7 @@ export default function AddEventModal({navigation}) {
     calendarGetCalendars().then(data => {
       if (mounted) {
         console.log('AddEventModal mounted! setEvents');
-        setCalendars(data);
+        setCalendars(data.filter(c => c.group === null));
       }
     });
     return () => {

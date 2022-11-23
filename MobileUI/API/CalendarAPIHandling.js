@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {bareBonesUsersCalendars} from '../assets/data/HardCodedCalendars';
+// import {bareBonesUsersCalendars} from '../assets/data/HardCodedCalendars';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getUserInfo} from '../miscHelpers/AsyncStorageMethods';
 import {constructDateString} from '../miscHelpers/DateParsing';
@@ -294,13 +294,17 @@ export async function calendarGetCalendars() {
       }
     })
     .then(jsonData => {
-      console.log('CAPIHANDLING - CalendarGetCalendars data.json():');
+      console.log(
+        'CAPIHANDLING - CalendarGetCalendars data.json() after filter:',
+      );
+      // let j = jsonData.filter(c => c.group === null); // filters out group calendars
       console.log(JSON.stringify(jsonData, undefined, 2));
+
       return jsonData;
     })
     .catch(e => {
       console.log('something went wrong with calendarGetCalendars: ' + e);
-      return bareBonesUsersCalendars;
+      return [];
     });
 }
 

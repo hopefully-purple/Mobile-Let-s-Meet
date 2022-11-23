@@ -148,6 +148,11 @@ const CalendarScreen = ({navigation}) => {
       setEvents(data);
     });
 
+    await calendarGetCalendars().then(data => {
+      console.log('setCalendars to data');
+      setCalendars(data);
+    });
+
     //Try updating calendar strip
     console.log('On refresh, getSelectedDate()');
     const selected = this.calendarStrip.current.getSelectedDate();
