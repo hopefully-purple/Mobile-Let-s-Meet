@@ -305,13 +305,12 @@ export default function HomeRootStackScreen(props) {
                   // headerBackTitleVisible: false,
                   // headerBackTitle: 'Lbhadlskfj',
                   headerLeft: () => (
-                    <Button
-                      onPress={() => {
-                        props.navigation.navigate('Group');
-                      }}
-                      title={'Cancel'}
-                      // title={'Close'}
-                    />
+                    <View style={styles.backButtonWrapper}>
+                      <MiniBoxButton
+                        title={'Cancel'}
+                        onPress={() => props.navigation.navigate('Group')}
+                      />
+                    </View>
                   ),
                 }}
               />
@@ -329,12 +328,12 @@ export default function HomeRootStackScreen(props) {
                     backgroundColor: Colors.DD_RED_2,
                   },
                   headerLeft: () => (
-                    <Button
-                      onPress={() => {
-                        props.navigation.navigate('Group');
-                      }}
-                      title="Cancel"
-                    />
+                    <View style={styles.backButtonWrapper}>
+                      <MiniBoxButton
+                        title={'Cancel'}
+                        onPress={() => props.navigation.navigate('Group')}
+                      />
+                    </View>
                   ),
                 }}
               />

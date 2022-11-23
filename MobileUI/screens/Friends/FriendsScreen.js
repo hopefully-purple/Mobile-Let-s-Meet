@@ -112,7 +112,7 @@ export default function FriendsScreen({navigation}) {
 
   return (
     <SafeAreaView style={styles.screenContainer}>
-      <Text style={{...styles.defaultScreentext, marginTop: -30}}>
+      <Text style={{...styles.defaultScreentext, marginTop: 10}}>
         My Friends:
       </Text>
       <FlatList

@@ -13,6 +13,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {Card, TextInput} from 'react-native-paper';
 import {friendsGetFriends} from '../../API/FriendsAPIHandling';
 import {groupCreateNewGroup} from '../../API/GroupsAPIHandling';
+import { BoxButton } from '../../assets/components/CustomButtons';
 
 // https://github.com/renrizzolo/react-native-sectioned-multi-select
 // ^ a more interesting UI for multi-select. Experiment if time
@@ -113,14 +114,13 @@ export default function AddGroupModal({navigation}) {
           onSubmitEditing={handleGroupNameSubmit}
         />
       </View>
-      <View style={{marginTop: 60, display: 'flex'}}>
+      <View style={{marginTop: 10, flexDirection:'column', alignItems: 'center'}}>
         <Text style={{...styles.defaultScreentext, marginHorizontal: 10}}>
           Group members: {groupMembersDisplayList}
         </Text>
-        <Button
+        <BoxButton
           onPress={doneHandler}
           title="Done"
-          style={{fontWeight: 'bold', margin: 100}}
         />
       </View>
       <Text
@@ -159,7 +159,6 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: 'row',
-    position: 'absolute',
     margin: 10,
   },
   cardStyle: {
