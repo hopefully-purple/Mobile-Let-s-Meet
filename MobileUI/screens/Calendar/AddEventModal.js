@@ -107,12 +107,14 @@ export default function AddEventModal({navigation}) {
       return;
     }
 
+    console.log(selectedCal)
+
     const newEvent = {
       title,
       startTime: startDate.toISOString(), //yyyy-MM-dd'T'HH:mm:ss.fff'Z' <whatever this is
       endTime: endDate.toISOString(),
       location,
-      calendarID: selectedCal.id,
+      calendarID: selectedCal.calendarID,
     };
     // console.log('NEW EVENT MADE, events context:');
 
@@ -123,6 +125,7 @@ export default function AddEventModal({navigation}) {
     //   'EventModels/Create does not currently work due to AWS out of date',
     // );
     // API call to post new event
+    console.log('New Event:' + JSON.stringify(newEvent, undefined, 2));
     let result = await calendarCreateNewEvent(newEvent);
 
     //Clear inputs
