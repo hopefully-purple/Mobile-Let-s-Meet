@@ -21,6 +21,7 @@ import {
   calendarGetEvents,
   calendarGetCalendars,
   calendarGetCalendarEvents,
+  calendarDeleteEvent,
 } from '../../API/CalendarAPIHandling';
 import DropDownPicker from 'react-native-dropdown-picker';
 
@@ -58,7 +59,7 @@ const Item = props => {
 
   async function deleteItemInEvents() {
     // console.log('(calendarScreen.deleteItem) user = ' + user.name);
-    if (await deleteEvent(i, events, setEvents)) {
+    if (await calendarDeleteEvent(i)) {
       console.log('(calendarScreen.deleteItemInEvents) delete succeeded');
       const selected = this.calendarStrip.current.getSelectedDate();
       this.calendarStrip.current.setSelectedDate(selected);

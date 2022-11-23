@@ -20,7 +20,7 @@ import {
   calendarGetCalendars,
 } from '../../API/CalendarAPIHandling';
 import UserContext from '../../contexts/User';
-import { BoxButton } from '../../assets/components/CustomButtons';
+import {BoxButton} from '../../assets/components/CustomButtons';
 
 // https://casesandberg.github.io/react-color/
 // Doesn't work! Throws Text errors :`(
@@ -107,7 +107,7 @@ export default function AddEventModal({navigation}) {
       return;
     }
 
-    console.log(selectedCal)
+    // console.log(selectedCal);
 
     const newEvent = {
       title,
@@ -121,11 +121,8 @@ export default function AddEventModal({navigation}) {
     console.log(
       'NEW EVENT MADE > Post API call > result: <not rn, dev server broken>',
     );
-    // Alert.alert(
-    //   'EventModels/Create does not currently work due to AWS out of date',
-    // );
     // API call to post new event
-    console.log('New Event:' + JSON.stringify(newEvent, undefined, 2));
+    // console.log('New Event:' + JSON.stringify(newEvent, undefined, 2));
     let result = await calendarCreateNewEvent(newEvent);
 
     //Clear inputs
@@ -206,7 +203,7 @@ export default function AddEventModal({navigation}) {
       <DatePicker date={endDate} onDateChange={setEndDate} minuteInterval={5} />
       {/* <CalendarThing calColor={calColor} setCalColor={setCalColor} /> */}
       <View style={styles.doneStyle}>
-        <BoxButton onPress={doneHandler} title="Done"/>
+        <BoxButton onPress={doneHandler} title="Done" />
       </View>
       <Text> </Text>
     </ScrollView>
@@ -216,7 +213,7 @@ export default function AddEventModal({navigation}) {
 const styles = StyleSheet.create({
   doneStyle: {
     margin: 15,
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   container: {
     flex: 1,

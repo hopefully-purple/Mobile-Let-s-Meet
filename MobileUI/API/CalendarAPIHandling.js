@@ -168,7 +168,13 @@ export async function calendarCreateNewEvent(newEvent) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${user.token}`,
     },
-    body: JSON.stringify({newEvent}),
+    body: JSON.stringify({
+      title: newEvent.title,
+      startTime: newEvent.startTime,
+      endTime: newEvent.endTime,
+      calendarID: newEvent.calendarID,
+      location: newEvent.location,
+    }),
   })
     .then(data => {
       console.log('CAPIHANDLING - CalendarCreateNewEvent data:');
@@ -225,12 +231,13 @@ export async function calendarDeleteEvent(event) {
   console.log('(CAPIHandling) Beginning of CalendarDeleteEvent');
   let user = await getUserInfo();
   console.log('Event:' + JSON.stringify(event, undefined, 2));
-  return fetch(`${URL}/EventModels/Delete/${event.id}`, {
+  return fetch(`${URL}/EventModels/Delete`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${user.token}`,
     },
+    body: JSON.stringify({id: event.id}),
   })
     .then(data => {
       console.log('CAPIHANDLING - data:');
