@@ -103,6 +103,7 @@ const CalendarScreen = ({navigation}) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedCals, setSelectedCals] = useState([]);
+  const [areAllCalsSelected, setAreAllCalsSelected] = useState(false);
   // const [colors, setColors] = useState([]);
   // const {events, setEvents} = useContext(CalendarEventsContext);
   // const user = useContext(UserContext);
@@ -146,10 +147,16 @@ const CalendarScreen = ({navigation}) => {
     setIsRefreshing(true);
     console.log('REFRESHING FLAT LIST!!!!!!');
     if (flag === 'all') {
+      setAreAllCalsSelected(false);
+      setSelectedCals([]);
       await calendarGetEvents().then(data => {
         console.log('setEvents to data');
         //setEvents to new data
         setEvents(data);
+      });
+      await calendarGetCalendars().then(data => {
+        console.log('setCalendars to data');
+        setCalendars(data);
       });
     } else if (flag === 'filtered') {
       await calendarGetCalendarEvents(selectedCals).then(data => {
@@ -157,11 +164,6 @@ const CalendarScreen = ({navigation}) => {
         setEvents(data);
       });
     }
-    await calendarGetCalendars().then(data => {
-      console.log('setCalendars to data');
-      setCalendars(data);
-    });
-
     //Try updating calendar strip
     console.log('On refresh, getSelectedDate()');
     const selected = this.calendarStrip.current.getSelectedDate();
@@ -235,8 +237,21 @@ const CalendarScreen = ({navigation}) => {
 
   function handleSelectAll() {
     console.log('Select all press');
+    // console.log(JSON.stringify(selectedCals, undefined, 2));
+    if (areAllCalsSelected) {
+      setSelectedCals([]);
+      setAreAllCalsSelected(false);
+    } else {
+      let c = [];
+      calendars.map(i => c.push(i.calendarID));
+      console.log(JSON.stringify(c, undefined, 2));
+      setSelectedCals(c);
+      setAreAllCalsSelected(true);
+    }
   }
 
+  const selectAll = 'Select All';
+  const deselectAll = 'Deselect All';
   return (
     <SafeAreaView style={styles.container}>
       <CalendarTitle name={'My'} navigation={navigation} />
@@ -290,7 +305,7 @@ const CalendarScreen = ({navigation}) => {
           setOpen={setOpen}
           setValue={setSelectedCals}
           onSelectItem={item => {
-            // console.log(JSON.stringify(item, undefined, 2));
+            console.log(JSON.stringify(item, undefined, 2));
             // if (item.name === 'Select All') {
             // }
             // // setColors([...colors, item.color]);
@@ -319,7 +334,9 @@ const CalendarScreen = ({navigation}) => {
       </View>
       <View style={styles.calendarButtons}>
         <TouchableOpacity onPress={handleSelectAll}>
-          <Text style={styles.calendarTextButton}>See All</Text>
+          <Text style={styles.calendarTextButton}>
+            {areAllCalsSelected ? deselectAll : selectAll}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('NewCalModal')}>
           <Text style={styles.calendarTextButton}>+ New Calendar</Text>
