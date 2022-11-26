@@ -13,6 +13,8 @@ import {
 // import {SmallBoxButton} from '../../assets/components/CustomButtons';
 import {TextInput} from 'react-native-paper';
 import Colors from '../../assets/styles/colors';
+import {ColorPicker} from 'react-native-color-picker';
+import MyColorPicker from '../../assets/components/ColorPicker';
 // import SelectMultiple from 'react-native-select-multiple';
 // https://stackoverflow.com/questions/48992961/react-navigation-modal-height
 
@@ -24,7 +26,7 @@ import Colors from '../../assets/styles/colors';
 export default function NewCalendarModal({navigation}) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [colors, setColors] = useState([]);
+  const [color, setColor] = useState('');
 
   this.nameInput = React.createRef();
   this.descriptionInput = React.createRef();
@@ -58,6 +60,13 @@ export default function NewCalendarModal({navigation}) {
               autoCorrect={false}
               ref={this.descriptionInput}
             />
+            {/* <MyColorPicker /> */}
+            <Text style={styles.mainHeaderText}>Selected color: {color.h}</Text>
+            <ColorPicker
+              onColorChange={color => setColor(color)}
+              onColorSelected={color => Alert.alert(`Selected: ${color}`)}
+              style={styles.colorContainer}
+            />
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -66,6 +75,10 @@ export default function NewCalendarModal({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  colorContainer: {
+    // width: '50%',
+    height: 200,
+  },
   screenContainer: {
     flex: 1,
     justifyContent: 'flex-end',
