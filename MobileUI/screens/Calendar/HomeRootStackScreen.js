@@ -24,9 +24,9 @@ import {
 } from '../../API/FriendsAPIHandling';
 import FriendRequestModal from '../Friends/FriendRequestsModal';
 import IsCameraOpenContext from '../../contexts/IsCameraOpen';
-import FilterCalendarModal from './FilterCalendarModal';
-import { StackActions } from '@react-navigation/native';
-import { MiniBoxButton } from '../../assets/components/CustomButtons';
+import NewCalendarModal from './NewCalendarModal';
+import {StackActions} from '@react-navigation/native';
+import {MiniBoxButton} from '../../assets/components/CustomButtons';
 
 const popAction = StackActions.pop(1);
 
@@ -79,8 +79,8 @@ function AddEventModalScreen({navigation}) {
   return <AddEventModal navigation={navigation} />;
 }
 
-function FilterModalOverlay({navigation}) {
-  return <FilterCalendarModal navigation={navigation} />;
+function NewCalOverlay({navigation}) {
+  return <NewCalendarModal navigation={navigation} />;
 }
 
 function AddGroupModalScreen({navigation}) {
@@ -338,8 +338,8 @@ export default function HomeRootStackScreen(props) {
                 }}
               />
               <RootStack.Screen
-                name="FilterModal"
-                component={FilterModalOverlay}
+                name="NewCalModal"
+                component={NewCalOverlay}
                 options={{
                   presentation: 'modal',
                   headerShown: false,
@@ -408,7 +408,6 @@ export default function HomeRootStackScreen(props) {
     </GroupsContext.Provider>
   );
 }
-
 
 const styles = StyleSheet.create({
   backButtonWrapper: {

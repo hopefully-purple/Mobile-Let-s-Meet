@@ -54,7 +54,7 @@ const Empty = ({item}) => {
 
 const Item = props => {
   const {i, itemColor, time} = props;
-  const {events, setEvents} = useContext(CalendarEventsContext);
+  // const {events, setEvents} = useContext(CalendarEventsContext);
   // const user = useContext(UserContext);
 
   async function deleteItemInEvents() {
@@ -103,7 +103,7 @@ const CalendarScreen = ({navigation}) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedCals, setSelectedCals] = useState([]);
-  const [colors, setColors] = useState([]);
+  // const [colors, setColors] = useState([]);
   // const {events, setEvents} = useContext(CalendarEventsContext);
   // const user = useContext(UserContext);
 
@@ -111,12 +111,12 @@ const CalendarScreen = ({navigation}) => {
   useEffect(() => {
     console.log('~~~~~~~~~~~~~~~CalendarScreen.useEffect call getEvents');
     let mounted = true;
-    calendarGetEvents().then(data => {
-      if (mounted) {
-        console.log('CalendarScreen mounted! setEvents');
-        setEvents(data);
-      }
-    });
+    // calendarGetEvents().then(data => {
+    //   if (mounted) {
+    //     console.log('CalendarScreen mounted! setEvents');
+    //     setEvents(data);
+    //   }
+    // });
     return () => {
       console.log('CalendarScreen mounted = false');
       mounted = false;
@@ -127,12 +127,14 @@ const CalendarScreen = ({navigation}) => {
   useEffect(() => {
     console.log('~~~~~~~~~~~~~FilterCalendarModal.useEffect call getCalendars');
     let mounted = true;
-    calendarGetCalendars().then(data => {
-      if (mounted) {
-        console.log('FilterCalendarModal mounted! setCalendars');
-        setCalendars(data);
-      }
-    });
+    // calendarGetCalendars().then(data => {
+    //   if (mounted) {
+    //     console.log('FilterCalendarModal mounted! setCalendars');
+    //     // data.push({calendarID: -1, name: 'Select All'});
+    //     // data.push({calendarID: -2, name: '+ New Calendar'});
+    //     setCalendars(data);
+    //   }
+    // });
     return () => {
       console.log('FilterCalendarModal mounted = false');
       mounted = false;
@@ -183,7 +185,7 @@ const CalendarScreen = ({navigation}) => {
   const handleDateSelected = date => {
     setSelectedDay(date);
     // Set items to the array in Flatlist corresponding to date
-    console.log('handleDateSelected: createItemsList');
+    console.log('handleDateSelected: ' + date);
     // createItemsList(date, flatList);
     //date is a moment object
     const dateKey = date.format('YYYY-MM-DD');
@@ -192,7 +194,9 @@ const CalendarScreen = ({navigation}) => {
     if (dayEvents !== undefined) {
       setItems(dayEvents);
     } else {
-      console.log('createItemsList: events[dateKey] undefined, setItems([])');
+      console.log(
+        'createItemsList: events[' + dateKey + '] undefined, setItems([])',
+      );
       setItems([]);
     }
   };
@@ -229,6 +233,10 @@ const CalendarScreen = ({navigation}) => {
     console.log('!!!!! done handleFilterPress');
   }
 
+  function handleSelectAll() {
+    console.log('Select all press');
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <CalendarTitle name={'My'} navigation={navigation} />
@@ -251,7 +259,7 @@ const CalendarScreen = ({navigation}) => {
         ref={this.calendarStrip}
       />
       <View
-        style={{backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY, height: '70%'}}>
+        style={{backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY, height: '65%'}}>
         <FlatList
           data={items}
           renderItem={renderItem}
@@ -271,7 +279,8 @@ const CalendarScreen = ({navigation}) => {
           }}
           mode="BADGE"
           // extendableBadgeContainer={true}
-          badgeDotColors={colors}
+          // badgeDotColors={colors}
+          showBadgeDot={false}
           // renderBadgeItem={(item, props) => <Badge item={item} props={...props} />}
           multiple={true}
           items={calendars}
@@ -282,6 +291,8 @@ const CalendarScreen = ({navigation}) => {
           setValue={setSelectedCals}
           onSelectItem={item => {
             // console.log(JSON.stringify(item, undefined, 2));
+            // if (item.name === 'Select All') {
+            // }
             // // setColors([...colors, item.color]);
             // item.map(i => {
             //   !colors.includes(i.color)
@@ -293,19 +304,26 @@ const CalendarScreen = ({navigation}) => {
           // setItems={setItems}
           dropDownDirection="TOP"
           listMode="SCROLLVIEW"
-          style={
-            {
-              // backgroundColor: selectedCal
-              //   ? selectedCal.color
-              //   : Colors.DD_EXTRA_LIGHT_GRAY,
-            }
-          }
+          style={{
+            backgroundColor: Colors.DD_CREAM,
+          }}
           containerStyle={{
             width: '70%',
             margin: 5,
           }}
+          dropDownContainerStyle={{
+            backgroundColor: Colors.DD_CREAM,
+          }}
         />
         <BoxButton title={'Filter'} onPress={handleFilterPress} />
+      </View>
+      <View style={styles.calendarButtons}>
+        <TouchableOpacity onPress={handleSelectAll}>
+          <Text style={styles.calendarTextButton}>See All</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('NewCalModal')}>
+          <Text style={styles.calendarTextButton}>+ New Calendar</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -363,7 +381,19 @@ const styles = StyleSheet.create({
   calendarFeaturesStyling: {
     flexDirection: 'row',
     // justifyContent: 'space-evenly',
-    margin: 15,
+    marginTop: 15,
+    marginHorizontal: 15,
+  },
+  calendarButtons: {
+    flexDirection: 'row',
+    marginLeft: 15,
+    justifyContent: 'space-between',
+    width: '65%',
+  },
+  calendarTextButton: {
+    fontSize: 20,
+    color: Colors.DD_CREAM,
+    margin: 5,
   },
 });
 
