@@ -240,7 +240,7 @@ export async function calendarDeleteEvent(event) {
     body: JSON.stringify({id: event.id}),
   })
     .then(data => {
-      console.log('CAPIHANDLING - data:');
+      console.log('CAPIHANDLING - calendarDeleteEvent data:');
       console.log(JSON.stringify(data, undefined, 2));
       if (data.ok) {
         return true;
@@ -315,25 +315,38 @@ export async function calendarGetCalendars() {
     });
 }
 
-// export async function calendarGetCalen() {
-//   console.log('(CAPIHandling) Beginning of CalendarGetCalendars');
-//   let user = await getUserInfo();
-//   try {
-//     const response = await fetch(`${URL}/CalendarModels/GetCalendars`, {
-//       method: 'GET',
-//       headers: {
-//         Authorization: `Bearer ${user.token}`,
-//       },
-//     });
-
-//     // console.log('await response');
-//     const result = await response.json();
-//     console.log('(CAPIHandling) calendarGetCalendars result:');
-//     console.log(JSON.stringify(result, undefined, 2));
-//     return result;
-//   } catch (err) {
-//     console.log('something went wrong with calendarGetCalendars: ' + err);
-//     // throw err;
-//     return bareBonesUsersCalendars;
-//   }
-// }
+/**
+ * API call to delete an event
+ * @param {eventObject} event - event object to be deleted
+ * @returns OK response??
+ */
+export async function calendarCreateNewCalendar(newCalendar) {
+  console.log('(CAPIHandling) Beginning of CalendarCreateNewCalendar');
+  let user = await getUserInfo();
+  console.log('Calendar:' + JSON.stringify(newCalendar, undefined, 2));
+  return fetch(`${URL}/CalendarModels/Create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`,
+    },
+    body: JSON.stringify({
+      Name: newCalendar.Name,
+      Description: newCalendar.Description,
+      Color: newCalendar.Color,
+    }),
+  })
+    .then(data => {
+      console.log('CAPIHANDLING - CalendarCreateNewCalendar data:');
+      console.log(JSON.stringify(data, undefined, 2));
+      if (data.ok) {
+        return true;
+      } else {
+        throw Error(data.statusText);
+      }
+    })
+    .catch(e => {
+      console.log('something went wrong with CalendarCreateNewCalendar: ' + e);
+      return false;
+    });
+}

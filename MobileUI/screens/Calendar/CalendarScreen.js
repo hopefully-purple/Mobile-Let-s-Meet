@@ -111,12 +111,12 @@ const CalendarScreen = ({navigation}) => {
   useEffect(() => {
     console.log('~~~~~~~~~~~~~~~CalendarScreen.useEffect call getEvents');
     let mounted = true;
-    // calendarGetEvents().then(data => {
-    //   if (mounted) {
-    //     console.log('CalendarScreen mounted! setEvents');
-    //     setEvents(data);
-    //   }
-    // });
+    calendarGetEvents().then(data => {
+      if (mounted) {
+        console.log('CalendarScreen mounted! setEvents');
+        setEvents(data);
+      }
+    });
     return () => {
       console.log('CalendarScreen mounted = false');
       mounted = false;
@@ -127,14 +127,14 @@ const CalendarScreen = ({navigation}) => {
   useEffect(() => {
     console.log('~~~~~~~~~~~~~FilterCalendarModal.useEffect call getCalendars');
     let mounted = true;
-    // calendarGetCalendars().then(data => {
-    //   if (mounted) {
-    //     console.log('FilterCalendarModal mounted! setCalendars');
-    //     // data.push({calendarID: -1, name: 'Select All'});
-    //     // data.push({calendarID: -2, name: '+ New Calendar'});
-    //     setCalendars(data);
-    //   }
-    // });
+    calendarGetCalendars().then(data => {
+      if (mounted) {
+        console.log('FilterCalendarModal mounted! setCalendars');
+        // data.push({calendarID: -1, name: 'Select All'});
+        // data.push({calendarID: -2, name: '+ New Calendar'});
+        setCalendars(data);
+      }
+    });
     return () => {
       console.log('FilterCalendarModal mounted = false');
       mounted = false;

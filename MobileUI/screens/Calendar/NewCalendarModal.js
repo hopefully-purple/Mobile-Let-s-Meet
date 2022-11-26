@@ -10,11 +10,14 @@ import {
   Button,
   Alert,
 } from 'react-native';
-// import {SmallBoxButton} from '../../assets/components/CustomButtons';
 import {TextInput} from 'react-native-paper';
 import Colors from '../../assets/styles/colors';
-import {ColorPicker} from 'react-native-color-picker';
-import MyColorPicker from '../../assets/components/ColorPicker';
+import {BoxButton} from '../../assets/components/CustomButtons';
+import {ColorPicker, fromHsv} from 'react-native-color-picker';
+import {calendarCreateNewCalendar} from '../../API/CalendarAPIHandling';
+import {LogBox} from 'react-native';
+// LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 // import SelectMultiple from 'react-native-select-multiple';
 // https://stackoverflow.com/questions/48992961/react-navigation-modal-height
 
@@ -30,6 +33,28 @@ export default function NewCalendarModal({navigation}) {
 
   this.nameInput = React.createRef();
   this.descriptionInput = React.createRef();
+
+  async function handleCreate() {
+    console.log('NewCalendarModal create new calendar object');
+    const newC = {
+      Name: name,
+      Description: description,
+      Color: fromHsv(color),
+    };
+
+    let result = await calendarCreateNewCalendar(newC);
+
+    if (result) {
+      Alert.alert('Success!');
+      this.nameInput.current.clear();
+      this.descriptionInput.current.clear();
+      setName('');
+      setDescription('');
+      setColor('');
+    } else {
+      Alert.alert('Failed to create calendar');
+    }
+  }
 
   return (
     <View style={styles.screenContainer}>
@@ -61,12 +86,17 @@ export default function NewCalendarModal({navigation}) {
               ref={this.descriptionInput}
             />
             {/* <MyColorPicker /> */}
-            <Text style={styles.mainHeaderText}>Selected color: {color.h}</Text>
+            <Text style={styles.mainHeaderText}>
+              Selected color: {fromHsv(color)}
+            </Text>
             <ColorPicker
-              onColorChange={color => setColor(color)}
-              onColorSelected={color => Alert.alert(`Selected: ${color}`)}
+              onColorChange={c => setColor(c)}
+              onColorSelected={c => Alert.alert(`Selected: ${c}`)}
               style={styles.colorContainer}
             />
+            <View style={{alignSelf: 'center'}}>
+              <BoxButton title={'Create'} onPress={handleCreate} />
+            </View>
           </ScrollView>
         </View>
       </SafeAreaView>
