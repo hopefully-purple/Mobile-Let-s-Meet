@@ -1,8 +1,8 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {View, Text, Button, StyleSheet} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
-import CalendarScreen from './CalendarScreen';
-import AddEventModal from './AddEventModal';
+import CalendarScreen from '../Calendar/CalendarScreen';
+import AddEventModal from '../Calendar/AddEventModal';
 import Colors from '../../assets/styles/colors';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
 import GroupsContext from '../../contexts/Groups';
@@ -24,7 +24,7 @@ import {
 } from '../../API/FriendsAPIHandling';
 import FriendRequestModal from '../Friends/FriendRequestsModal';
 import IsCameraOpenContext from '../../contexts/IsCameraOpen';
-import NewCalendarModal from './NewCalendarModal';
+import NewCalendarModal from '../Calendar/NewCalendarModal';
 import {StackActions} from '@react-navigation/native';
 import {MiniBoxButton} from '../../assets/components/CustomButtons';
 import {roundToNearestPixel} from 'react-native/Libraries/Utilities/PixelRatio';

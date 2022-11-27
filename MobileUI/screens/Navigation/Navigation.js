@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import CalendarScreen from '../Calendar/CalendarScreen';
-import HomeRootStackScreen from '../Calendar/HomeRootStackScreen';
+import HomeRootStackScreen from './HomeRootStackScreen';
 import LoginScreen from '../LoginScreen';
 import {Text, StyleSheet} from 'react-native';
 import Colors from '../../assets/styles/colors';
