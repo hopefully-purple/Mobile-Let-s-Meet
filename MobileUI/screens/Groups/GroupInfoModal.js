@@ -9,10 +9,11 @@ import {
   Button,
   Alert,
 } from 'react-native';
-import {SmallBoxButton} from '../../assets/components/CustomButtons';
+import {BoxButton, SmallBoxButton} from '../../assets/components/CustomButtons';
 import Colors from '../../assets/styles/colors';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {
+  groupLeaveGroup,
   groupsGenerateLink,
   groupsGenerateQRCode,
 } from '../../API/GroupsAPIHandling';
@@ -49,6 +50,19 @@ export default function GroupInfoModal({navigation}) {
     return <Item name={`${item.firstName} ${item.lastName}`} />;
   };
 
+  function handleLeave() {
+    Alert.alert('Are you sure you want to leave this group?', '', [
+      {
+        text: 'Leave',
+        onPress: () => {
+          groupLeaveGroup(group.groupID);
+          navigation.navigate('Group');
+        },
+      },
+      {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+    ]);
+  }
+
   return (
     <View style={styles.screenContainer}>
       <SafeAreaView style={styles.innerContainer}>
@@ -74,6 +88,9 @@ export default function GroupInfoModal({navigation}) {
               <SmallBoxButton title={'Generate invite QR'} onPress={handleQR} />
             </View>
           </View>
+          <View style={{alignSelf: 'center', marginTop: 10, marginBottom: 20}}>
+            <BoxButton title={'Leave Group'} onPress={handleLeave} />
+          </View>
         </View>
       </SafeAreaView>
     </View>
@@ -86,7 +103,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   innerContainer: {
-    height: '50%',
+    height: '60%',
     width: '100%',
     backgroundColor: Colors.DD_RED_2,
     borderRadius: 10,

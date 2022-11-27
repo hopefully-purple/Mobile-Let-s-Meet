@@ -1,18 +1,22 @@
 import React, {useContext, useState, useEffect} from 'react';
-import {Text, StyleSheet, View, FlatList, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import Colors from '../../assets/styles/colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Card} from 'react-native-paper';
-import GroupsContext from '../../contexts/Groups';
 import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import {BoxButton} from '../../assets/components/CustomButtons';
 import {
+  groupLeaveGroup,
   groupsGetGroupMembers,
-  getRiverInformation,
   groupsGetGroups,
 } from '../../API/GroupsAPIHandling';
-import UserContext from '../../contexts/User';
-import PropTypes from 'prop-types';
 
 export default function GroupListScreen({navigation}) {
   // const {groups, setGroups} = useContext(GroupsContext);
@@ -72,8 +76,22 @@ export default function GroupListScreen({navigation}) {
       //navigate to calendar
       navigation.navigate('GroupCalendar');
     };
+    const handleLongPress = () => {
+      Alert.alert('Leave this group?', '', [
+        {
+          text: 'Leave',
+          onPress: () => {
+            groupLeaveGroup(group.groupID);
+            navigation.navigate('Group');
+          },
+        },
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+      ]);
+    };
     return (
-      <TouchableOpacity onPress={handleGroupPress}>
+      <TouchableOpacity
+        onPress={handleGroupPress}
+        onLongPress={handleLongPress}>
         <Card style={styles.cardStyle}>
           <Card.Content>
             <View>

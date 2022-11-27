@@ -196,28 +196,6 @@ export async function groupCreateNewGroup(newGroup) {
     });
 }
 
-// export async function groupCreateNewGrou(newGroup) {
-//   console.log('(GAPIHandling) Beginning of GroupCreateNewGroup');
-//   let user = await getUserInfo();
-//   try {
-//     console.log('New Group:' + JSON.stringify(newGroup, undefined, 2));
-//     const response = await fetch(`${URL}/GroupModels/CreateGroup`, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: `Bearer ${user.token}`,
-//       },
-//       body: {newGroup},
-//     });
-
-//     return response.ok;
-//   } catch (err) {
-//     console.log('something went wrong with groupCreateNewGroup: ' + err);
-//     // throw err;
-//     return false;
-//   }
-// }
-
 /**
  * API call to join a group
  * TO BE CALLED FROM HANDLE LINK SUBMIT
@@ -267,27 +245,6 @@ export async function groupJoinGroup(joinLink) {
       })
   );
 }
-// try {
-//   const response = await fetch(`${URL}/GroupModels/JoinGroup`, {
-//     method: 'POST',
-//     headers: {
-//       Accept: 'application/json',
-//       'Content-Type': 'application/json',
-//       Authorization: `Bearer ${user.token}`,
-//     },
-//     body: {joinCode: params.joinCode},
-//   });
-
-//   console.log('GAPIHandling: joingroup response status: ' + response.status);
-//   if (response.status !== 200) {
-//     console.log(JSON.stringify(response, undefined, 2));
-//   }
-//   return response.ok;
-// } catch (err) {
-//   console.log('something went wrong with groupJoinGroup: ' + err);
-//   // throw err;
-//   return false;
-// }
 
 /**
  * API call to generate join group link
@@ -358,5 +315,39 @@ export async function groupsLetsMeet(groupID) {
     .catch(e => {
       console.log('something went wrong with groupsLetsMeet: ' + e);
       return [];
+    });
+}
+
+/**
+ * API call to leave a group
+ * If something goes wrong, catches error and goes to hardcoded functionality
+ * @param {groupID} groupID - groupID to be left
+ * @returns OK = true
+ */
+export async function groupLeaveGroup(groupID) {
+  console.log('(GAPIHandling) Beginning of GroupDeleteGroup');
+  let user = await getUserInfo();
+  console.log('New Group:' + groupID);
+  return fetch(`${URL}/GroupModels/LeaveGroup?id=${groupID}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`,
+    },
+  })
+    .then(data => data.json())
+    .then(data => {
+      console.log('GAPIHANDLING - GroupDeleteGroup data:');
+      console.log(JSON.stringify(data, undefined, 2));
+      if (data.status === 'ok' && data.message === 'Left group') {
+        return true;
+      } else {
+        throw Error(data.message);
+      }
+    })
+    .catch(e => {
+      console.log('something went wrong with GroupDeleteGroup: ' + e);
+      Alert.alert('Unable to leave group');
+      return false;
     });
 }
