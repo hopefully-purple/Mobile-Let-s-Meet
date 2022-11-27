@@ -40,7 +40,11 @@ const CalendarTitle = props => {
       <Text style={styles.calendarTitleText}>{props.name} Schedule</Text>
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => props.navigation.navigate('AddEventModal')}>
+        onPress={() =>
+          props.navigation.navigate('AddEventModal', {
+            calendarID: props.calendarID,
+          })
+        }>
         {/* <Image
           //We are making FAB using TouchableOpacity with an image
           //We are using online image here
@@ -196,7 +200,11 @@ const GroupCalendarScreen = ({navigation, calendarName}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CalendarTitle name={currentGroup.groupName} navigation={navigation} />
+      <CalendarTitle
+        name={currentGroup.groupName}
+        navigation={navigation}
+        calendarID={currentGroup.calendarID}
+      />
       <CalendarStrip
         selectedDate={selectedDay}
         onDateSelected={handleDateSelected}

@@ -27,6 +27,7 @@ import IsCameraOpenContext from '../../contexts/IsCameraOpen';
 import NewCalendarModal from './NewCalendarModal';
 import {StackActions} from '@react-navigation/native';
 import {MiniBoxButton} from '../../assets/components/CustomButtons';
+import {roundToNearestPixel} from 'react-native/Libraries/Utilities/PixelRatio';
 
 const popAction = StackActions.pop(1);
 
@@ -66,17 +67,13 @@ function GroupCalendar({navigation}) {
   return <GroupCalendarScreen navigation={navigation} />;
 }
 
-function AddEventModalScreen({navigation}) {
-  // const [calendars, setCalendars] = useState([]);
-  // const user = useContext(UserContext);
-  // navigation.addListener('focus', async () => {
-  //   console.log('-------Navigation (For AddEventModal)-------------');
-  //   const data = await calendarGetCalendars();
-  //   // console.log(JSON.stringify(data, undefined, 2));
-  //   console.log('set calendars to data');
-  //   setCalendars(data);
-  // });
-  return <AddEventModal navigation={navigation} />;
+function AddEventModalScreen({navigation, route}) {
+  return (
+    <AddEventModal
+      navigation={navigation}
+      calendarID={route.params.calendarID}
+    />
+  );
 }
 
 function NewCalOverlay({navigation}) {
@@ -88,10 +85,6 @@ function AddGroupModalScreen({navigation}) {
 }
 
 function JoinGroupModalScreen({navigation}) {
-  // navigation.addListener('gestureCancel', e => {
-  //   console.log('{{{{{{{{{{{{{{{{????????????????');
-  //   navigation.navigate('JoinGroupModal');
-  // });
   return <JoinGroupModal navigation={navigation} />;
 }
 
@@ -104,39 +97,12 @@ function MeetModalOverlay({navigation}) {
 }
 
 function FriendScreen({navigation}) {
-  // const {friends, setFriends} = useContext(FriendsContext);
-  // const user = useContext(UserContext);
-  // useEffect(() => {
-  //   navigation.addListener('focus', async () => {
-  //     console.log('-------Navigation (For Friends)-------------');
-  //     const data = await friendsGetFriends(user.token);
-  //     // console.log(JSON.stringify(data, undefined, 2));
-  //     console.log('set friends to data');
-  //     setFriends(data);
-  //   });
-  // }, [navigation, setFriends, user.token]);
   return <FriendsScreen navigation={navigation} />;
 }
 
 function RequestsModalOverlay({navigation}) {
   const [sent, setSent] = useState([]);
   const [received, setReceived] = useState([]);
-  // const user = useContext(UserContext);
-  // useEffect(() => {
-  // navigation.addListener('focus', async () => {
-  //   console.log('-------Navigation (For RequestsOVerlay)-------------');
-  //   const dataSent = await friendsGetSentRequests();
-  //   const dataRec = await friendsGetReceivedRequests();
-  //   // console.log(JSON.stringify(data, undefined, 2));
-  //   console.log('set sent to dataSent and received to dataRec');
-  //   setSent(dataSent);
-  //   setReceived(dataRec);
-  // });
-  // // }, [navigation]);
-  // console.log('sent:');
-  // console.log(JSON.stringify(sent, undefined, 2));
-  // console.log('recieved:');
-  // console.log(JSON.stringify(received, undefined, 2));
   useEffect(() => {
     let mounted = true;
     console.log('~~~~~~~~~~~~~~RequestsModalOverlay.useEffect call getSent');

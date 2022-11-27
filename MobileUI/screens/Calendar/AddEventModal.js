@@ -61,7 +61,7 @@ import {BoxButton} from '../../assets/components/CustomButtons';
 //   return;
 // };
 
-export default function AddEventModal({navigation}) {
+export default function AddEventModal({navigation, calendarID}) {
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [startDate, setStartDate] = useState(new Date());
@@ -82,19 +82,31 @@ export default function AddEventModal({navigation}) {
 
   const [calendars, setCalendars] = useState([]);
   useEffect(() => {
-    console.log('~~~~~~~~~~~~~~~AddEventModal.useEffect call getEvents');
+    console.log('~~~~~~~~~~~~~~~AddEventModal.useEffect call getCalendars');
     let mounted = true;
-    calendarGetCalendars().then(data => {
-      if (mounted) {
-        console.log('AddEventModal mounted! setEvents');
-        setCalendars(data.filter(c => c.group === null));
-      }
-    });
+    if (calendarID !== null) {
+      console.log('ONLY SHOW GROUP CALENDAR!!');
+      calendarGetCalendars().then(data => {
+        if (mounted) {
+          console.log('AddEventModal mounted! setCalendars (group)');
+          const cal = data.filter(c => c.calendarID === calendarID);
+          setCalendars(cal);
+          // setSelectedCal(cal);
+        }
+      });
+    } else {
+      calendarGetCalendars().then(data => {
+        if (mounted) {
+          console.log('AddEventModal mounted! setCalendars');
+          setCalendars(data.filter(c => c.group === null));
+        }
+      });
+    }
     return () => {
       console.log('AddEventModal mounted = false');
       mounted = false;
     };
-  }, []);
+  }, [calendarID]);
 
   const doneHandler = async () => {
     // console.log(calendars)
@@ -173,16 +185,17 @@ export default function AddEventModal({navigation}) {
         setOpen={setOpen}
         setValue={setValue}
         onSelectItem={item => {
-          console.log(item);
+          console.log(JSON.stringify(item, undefined, 2));
           setSelectedCal(item);
         }}
         // setItems={setItems}
         dropDownDirection="BOTTOM"
         listMode="SCROLLVIEW"
         style={{
-          backgroundColor: selectedCal
+          borderColor: selectedCal
             ? selectedCal.color
             : Colors.DD_EXTRA_LIGHT_GRAY,
+          borderWidth: 5,
         }}
         containerStyle={{
           width: '95%',

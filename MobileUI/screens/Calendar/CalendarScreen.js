@@ -31,7 +31,11 @@ const CalendarTitle = props => {
       <Text style={styles.calendarTitleText}>{props.name} Schedule</Text>
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => props.navigation.navigate('AddEventModal')}>
+        onPress={() =>
+          props.navigation.navigate('AddEventModal', {
+            calendarID: null,
+          })
+        }>
         {/* <Image
           //We are making FAB using TouchableOpacity with an image
           //We are using online image here
