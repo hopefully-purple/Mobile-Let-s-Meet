@@ -21,38 +21,11 @@ import UserContext from '../../contexts/User';
 //https://reactnavigation.org/docs/drawer-based-navigation/
 //https://reactnavigation.org/docs/drawer-navigator/
 
-const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.DD_CREAM,
-    color: Colors.DD_RED_2,
-  },
-  defaultScreentext: {
-    fontSize: 25,
-    fontWeight: '500',
-    color: Colors.DD_RED_2,
-    textAlign: 'center',
-  },
-});
-
 function GroupsScreen({navigation}) {
   return <HomeRootStackScreen calendarName="Group" navigation={navigation} />;
 }
 
 function MyScheduleScreen({navigation}) {
-  // navigation.addListener('drawerItemPress', () => {
-  //   // console.log('FOCUSSSSSS');
-  //   // do something
-  //   console.log('-------Calendar Focus Listener-------------');
-
-  //   readEventData('My', user.name).then(data => {
-  //     // console.log(JSON.stringify(data, undefined, 2));
-  //     console.log('set events to data');
-  //     setEvents(data);
-  //   });
-  // });
   return <HomeRootStackScreen calendarName="My" navigation={navigation} />;
 }
 
@@ -130,27 +103,6 @@ export default function Navigation() {
                   options={{
                     headerShown: false,
                   }}
-                  // options={{
-                  //   headerStyle: {
-                  //     backgroundColor: Colors.DD_RED_2,
-                  //   },
-                  //   headerTitleStyle: {
-                  //     color: Colors.DD_CREAM,
-                  //     fontSize: 25,
-                  //     fontWeight: '500',
-                  //     marginBottom: 10,
-                  //   },
-                  //   headerBackVisible: false,
-                  // }}
-                />
-              )}
-              {isLoggedIn && (
-                <Drawer.Screen
-                  name="Settings"
-                  component={SettingsScreen}
-                  options={{
-                    headerShown: false,
-                  }}
                 />
               )}
               <Drawer.Screen
@@ -189,3 +141,19 @@ export default function Navigation() {
     </LogStateContext.Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.DD_CREAM,
+    color: Colors.DD_RED_2,
+  },
+  defaultScreentext: {
+    fontSize: 25,
+    fontWeight: '500',
+    color: Colors.DD_RED_2,
+    textAlign: 'center',
+  },
+});
