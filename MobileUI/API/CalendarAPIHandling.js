@@ -68,7 +68,7 @@ export async function calendarGetEvents() {
     },
   })
     .then(data => {
-      console.log('CAPIHANDLING - data:');
+      console.log('CAPIHANDLING - CalendarGetEvents data:');
       console.log(JSON.stringify(data, undefined, 2));
       if (data.ok) {
         return data.json();
@@ -77,9 +77,14 @@ export async function calendarGetEvents() {
       }
     })
     .then(jsonData => {
-      console.log('CAPIHANDLING - data.json():');
+      console.log('CAPIHANDLING - CalendarGetEvents data.json():');
       console.log(JSON.stringify(jsonData, undefined, 2));
-      return organizeIntoDates(jsonData);
+      // console.log(org['2022-11-26']);
+      const sorted_dates = [...jsonData].sort((a, b) =>
+        a.start > b.start ? 1 : -1,
+      );
+      // console.log(JSON.stringify(sorted_dates, undefined, 2));
+      return organizeIntoDates(sorted_dates);
     })
     .catch(e => {
       console.log('something went wrong with calendarGetEvents: ' + e);
