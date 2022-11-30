@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   innerContainer: {
-    height: '50%',
+    //height: '50%', //Removing this made it somewhat scroll on android, but not completely flawlessly
     width: '100%',
     backgroundColor: Colors.DD_RED_2,
     borderRadius: 10,
