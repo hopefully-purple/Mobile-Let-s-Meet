@@ -184,6 +184,7 @@ const GroupCalendarScreen = ({navigation, calendarName}) => {
         dateNameStyle: {
           backgroundColor: Colors.DD_RED_2,
           color: Colors.DD_CREAM,
+          paddingHorizontal: 3,
         },
         // dateNumberStyle: {color: 'purple'},
         // dateContainerStyle: {backgroundColor: Colors.DD_RED_3_LIGHT},
@@ -218,8 +219,19 @@ const GroupCalendarScreen = ({navigation, calendarName}) => {
         dateNameStyle={{color: Colors.DD_RED_2, fontSize: 15}}
         dateNumberStyle={{color: Colors.DD_LIGHT_GRAY, fontSize: 15}}
         markedDatesStyle={{height: 5, width: 5}}
-        highlightDateNumberStyle={{color: Colors.DD_RED_3, fontSize: 15}}
-        highlightDateNameStyle={{color: Colors.DD_RED_3, fontSize: 15}}
+        highlightDateNumberStyle={{
+          // backgroundColor: Colors.DD_RED_3,
+          // color: Colors.DD_CREAM,
+          color: Colors.DD_RED_3,
+          fontSize: 15,
+          // paddingHorizontal: 7,
+        }}
+        highlightDateNameStyle={{
+          backgroundColor: Colors.DD_RED_3,
+          color: Colors.DD_CREAM,
+          fontSize: 15,
+          paddingHorizontal: 3,
+        }}
         iconContainer={{flex: 0.1}}
         ref={this.calendarStrip}
       />
