@@ -1,5 +1,12 @@
 import React, {useState, useContext, createContext, useEffect} from 'react';
-import {Text, SafeAreaView, StyleSheet, View, TextInput} from 'react-native';
+import {
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  View,
+  TextInput,
+  Alert,
+} from 'react-native';
 import Colors from '../../assets/styles/colors';
 import {GreyPillButton} from '../../assets/components/CustomButtons';
 import {storeUserLoginInfo} from '../../miscHelpers/AsyncStorageMethods';
@@ -27,7 +34,7 @@ const RegistrationScreen = ({navigation}) => {
     // console.log('setisloading to true');
     setIsLoading(true);
     const result1 = await registerAPICall(name, firstN, lastN, email, password);
-    if (result1.status === 'Success') {
+    if (result1 !== null) {
       // Store info in async storage
       await storeUserLoginInfo(name, password, result1);
 
@@ -38,12 +45,20 @@ const RegistrationScreen = ({navigation}) => {
       user.password = password;
 
       setIsLoading(false);
-    }
+      if (!isLoading) {
+        // console.log('no longer loading, set logged in true, pull up my schedule');
+        // setIsLoggedIn(true);
+        this.nameInput.current.clear();
+        this.firstNInput.current.clear();
+        this.lastNInput.current.clear();
+        this.passwordInput.current.clear();
+        this.emailInput.current.clear();
 
-    if (!isLoading) {
-      // console.log('no longer loading, set logged in true, pull up my schedule');
-      // setIsLoggedIn(true);
-      navigation.navigate('BaseRegistration');
+        navigation.navigate('BaseRegistration');
+      }
+    } else {
+      Alert.alert('Something went wrong');
+      setIsLoading(false);
     }
   };
 
