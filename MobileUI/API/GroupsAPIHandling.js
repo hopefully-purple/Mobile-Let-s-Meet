@@ -271,13 +271,12 @@ export function groupsGenerateLink(joinCode) {
  * @param {string} userName The name of current user for extraction of token
  * @returns QR thing?
  */
-export function groupsGenerateQRCode(joinCode) {
-  console.log('(GAPIHandling) Beginning of groupsGenerateQRCode');
-  const link = `LINK!! ${URL}/GroupModels/JoinGroupRedirect?joinCode=${joinCode}`;
-  console.log(link);
-  console.log('need to transform into a qr picture');
-  return '';
-}
+// export function groupsGenerateQRCode(joinCode) {
+//   console.log('(GAPIHandling) Beginning of groupsGenerateQRCode');
+//   const link = `LINK!! ${URL}/GroupModels/JoinGroupRedirect?joinCode=${joinCode}`;
+//   console.log(link);
+//   return link;
+// }
 
 /**
  * API call to start Let's Meet algorithm

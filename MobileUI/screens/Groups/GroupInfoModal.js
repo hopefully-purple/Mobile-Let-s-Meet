@@ -21,6 +21,7 @@ import {bareBonesFriendsList} from '../../assets/data/HardCodedFriends';
 import {accurateGetGroupResult} from '../../assets/data/HardCodedGroups';
 import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import UserContext from '../../contexts/User';
+import QRCode from 'react-native-qrcode-svg';
 // https://stackoverflow.com/questions/48992961/react-navigation-modal-height
 
 const Item = ({name}) => {
@@ -33,7 +34,8 @@ const Item = ({name}) => {
 
 export default function GroupInfoModal({navigation}) {
   const group = useContext(CurrentGroupObjectContext).currentGroup;
-  // const user = useContext(UserContext);
+  const [showQR, setShowQR] = useState(false);
+  const [qrValue, setQRValue] = useState('');
 
   const copyToClipboard = () => {
     const link = groupsGenerateLink(group.joinCode);
@@ -42,8 +44,9 @@ export default function GroupInfoModal({navigation}) {
   };
 
   const handleQR = () => {
-    const qr = groupsGenerateQRCode(group.joinCode);
-    Alert.alert('display QR code here: ' + qr);
+    const qr = groupsGenerateLink(group.joinCode);
+    setQRValue(qr);
+    setShowQR(true);
   };
 
   const renderItem = ({item}) => {
@@ -86,6 +89,16 @@ export default function GroupInfoModal({navigation}) {
                 onPress={copyToClipboard}
               />
               <SmallBoxButton title={'Generate invite QR'} onPress={handleQR} />
+              {showQR && (
+                <View style={{alignSelf: 'center'}}>
+                  <QRCode
+                    value={qrValue}
+                    size={100}
+                    color="black"
+                    backgroundColor="white"
+                  />
+                </View>
+              )}
             </View>
           </View>
           <View style={{alignSelf: 'center', marginTop: 10, marginBottom: 20}}>
@@ -135,7 +148,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     color: Colors.DD_MEDIUM_GRAY,
-    marginLeft: 120,
+    marginLeft: 90,
   },
   mainBody: {
     // backgroundColor: Colors.DD_WHITE,
