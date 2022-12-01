@@ -285,20 +285,23 @@ export function groupsGenerateLink(joinCode) {
  * @param {int} groupID Identifier for group
  * @returns List of suggested times?
  */
-export async function groupsLetsMeet(groupID) {
+export async function groupsLetsMeet(details) {
   console.log('(GAPIHandling) Beginning of groupsLetsMeet');
   let user = await getUserInfo();
-  console.log('New Group:' + JSON.stringify(groupID, undefined, 2));
-  return fetch(`${URL}/GroupModels/SuggestEvent`, {
+  console.log('Details object:' + JSON.stringify(details, undefined, 2));
+  let query = `calendarID=${details.calendarID}&duration=${details.duration}`;
+  query = query + `&withinDays=${details.withinDays}&title=${details.title}`;
+  query = query + `&location=${details.location}`;
+  return fetch(`${URL}/GroupModels/SuggestEvent?${query}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${user.token}`,
     },
-    body: JSON.stringify(groupID),
+    // body: JSON.stringify(details),
   })
     .then(data => {
-      console.log('GAPIHANDLING - data:');
+      console.log('GAPIHANDLING - groupsLetsMeet data:');
       console.log(JSON.stringify(data, undefined, 2));
       if (data.ok) {
         return data.json();
@@ -307,15 +310,26 @@ export async function groupsLetsMeet(groupID) {
       }
     })
     .then(jsonData => {
-      console.log('GAPIHANDLING - data.json():');
+      console.log('GAPIHANDLING - groupsLetsMeet data.json():');
       console.log(JSON.stringify(jsonData, undefined, 2));
-      return organizeGroups(jsonData);
+      if (jsonData.length === 0) {
+        return [{id: -1, value: ' No suggested times available'}];
+      }
+      return jsonData;
     })
     .catch(e => {
       console.log('something went wrong with groupsLetsMeet: ' + e);
-      return [];
+      // console.log(JSON.stringify(DUMMY_SUGGESTIONS, undefined, 2));
+      return [{id: -1, value: ' No suggested times available'}];
+      // return DUMMY_SUGGESTIONS;
     });
 }
+
+const DUMMY_SUGGESTIONS = [
+  {id: 0, value: 'Suggestion 1', start: 'blah', end: 'blah'},
+  {id: 1, value: 'Suggestion 2', start: 'blah', end: 'blah'},
+  {id: 2, value: 'Suggestion 3', start: 'blah', end: 'blah'},
+];
 
 /**
  * API call to leave a group

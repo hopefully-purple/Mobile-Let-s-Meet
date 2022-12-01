@@ -92,8 +92,13 @@ function InfoModalOverlay({navigation}) {
   return <GroupInfoModal navigation={navigation} />;
 }
 
-function MeetModalOverlay({navigation}) {
-  return <LetsMeetModal navigation={navigation} />;
+function MeetModalOverlay({navigation, route}) {
+  return (
+    <LetsMeetModal
+      navigation={navigation}
+      calendarID={route.params.calendarID}
+    />
+  );
 }
 
 function FriendScreen({navigation}) {

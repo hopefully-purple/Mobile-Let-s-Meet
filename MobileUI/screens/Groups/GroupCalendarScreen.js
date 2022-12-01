@@ -241,7 +241,11 @@ const GroupCalendarScreen = ({navigation, calendarName}) => {
         />
         <BoxButton
           title={`Let's Meet!`}
-          onPress={() => navigation.navigate('MeetModal')}
+          onPress={() =>
+            navigation.navigate('MeetModal', {
+              calendarID: currentGroup.calendarID,
+            })
+          }
         />
       </View>
     </SafeAreaView>
