@@ -1,22 +1,16 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   StyleSheet,
   View,
   ScrollView,
   SafeAreaView,
-  FlatList,
-  TouchableOpacity,
-  Button,
   Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
-import {
-  BoxButton,
-  SmallBoxButton,
-  MiniBoxButton,
-} from '../../assets/components/CustomButtons';
+import {BoxButton, MiniBoxButton} from '../../assets/components/CustomButtons';
 import {Picker} from '@react-native-picker/picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 import Colors from '../../assets/styles/colors';
 import {groupsLetsMeet} from '../../API/GroupsAPIHandling';
 import {calendarCreateNewEvent} from '../../API/CalendarAPIHandling';
@@ -30,11 +24,44 @@ const TIME_FRAMES = [
   {value: 6, label: 'Within 6 days from now'},
   {value: 7, label: 'Within 7 days from now'},
 ];
-
+// 30 minutes, 45 minnutes, 1 hour, 2 hour, 3 hour
 const DURATION_OPTIONS = [
-  {value: '01:00:00', id: 1},
-  {value: '00:30:00', id: 2},
+  {value: '00:30:00', label: '30 minutes'},
+  {value: '00:45:00', label: '45 minutes'},
+  {value: '01:00:00', label: '1 hour'},
+  {value: '02:00:00', label: '2 hours'},
+  {value: '03:00:00', label: '3 hours'},
 ];
+
+function makeReadable(s) {
+  const sDate = new Date(s.startTime);
+  // console.log(sDate.toLocaleDateString()); //12/4/2022
+  const sString = sDate.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    // hour: 'numeric',
+    // minute: 'numeric',
+  });
+  const start = sDate.toLocaleTimeString('en-US', {
+    timeZone: 'UTC',
+    hour12: true,
+    hour: 'numeric',
+    minute: 'numeric',
+  }); // 7:30 AM
+  // console.log(start);
+  const end = new Date(s.endTime).toLocaleTimeString('en-US', {
+    timeZone: 'UTC',
+    hour12: true,
+    hour: 'numeric',
+    minute: 'numeric',
+  }); // 7:30 AM
+
+  let readable = `${sString}\nfrom ${start} to ${end}`;
+
+  return readable;
+}
 
 export default function LetsMeetModal({navigation, groupID}) {
   const [reason, setReason] = useState('');
@@ -44,63 +71,17 @@ export default function LetsMeetModal({navigation, groupID}) {
   const [isLoading, setIsLoading] = useState(false);
   const [suggested, setSuggested] = useState([]);
   const [areNoSuggestions, setAreNoSuggestions] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
 
   this.reasonInput = React.createRef();
   this.locationInput = React.createRef();
-  // this.scrollView = React.createRef();
-
-  function makeReadable(s) {
-    // "startTime": "2022-12-06T06:30:33.0088089Z",
-    // "endTime": "2022-12-06T07:30:33.0088089Z",
-
-    // var localStartDate = new Date(i.start); //.toLocaleTimeString('en-US', {
-    //   timeZone: 'UTC',
-    //   hour12: true,
-    //   hour: 'numeric',
-    //   minute: 'numeric',
-    // });
-    const sDate = new Date(s.startTime);
-    // console.log(sDate.toLocaleDateString()); //12/4/2022
-    const sString = sDate.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      // hour: 'numeric',
-      // minute: 'numeric',
-    });
-    // console.log(sDate.toLocaleString()); //12/5/2022, 10:30:33 PM
-    // console.log('!!');
-    const start = sDate.toLocaleTimeString('en-US', {
-      timeZone: 'UTC',
-      hour12: true,
-      hour: 'numeric',
-      minute: 'numeric',
-    }); // 7:30 AM
-    // console.log(start);
-    const end = new Date(s.endTime).toLocaleTimeString('en-US', {
-      timeZone: 'UTC',
-      hour12: true,
-      hour: 'numeric',
-      minute: 'numeric',
-    }); // 7:30 AM
-
-    let readable = `${sString}\nfrom ${start} to ${end}`;
-
-    return readable;
-  }
 
   const handleLetsMeet = () => {
     setIsLoading(true);
     this.reasonInput.current.blur();
     this.locationInput.current.blur();
-    // this.scrollView.scrollToEnd({animated: true});
-    // setTimeout(() => {
-    //   setIsLoading(false);
-    //   setSuggested(DUMMY_SUGGESTIONS);
-    // }, 3000);
-    // console.log('selected time frame: ');
-    // console.log(JSON.stringify(selectedTimeFrame, undefined, 2));
+
     const details = {
       groupID: groupID,
       duration: duration,
@@ -134,11 +115,6 @@ export default function LetsMeetModal({navigation, groupID}) {
 
     async function handleAccept() {
       console.log('NEW EVENT MADE > Post API call');
-      // API call to post new event
-      // console.log('New Event:' + JSON.stringify(newEvent, undefined, 2));
-      // var result = jsObjects.find(obj => {
-      //   return obj.b === 6
-      // })
       console.log(s.calendar.calendarID);
       const newE = {
         title: s.title,
@@ -169,13 +145,11 @@ export default function LetsMeetModal({navigation, groupID}) {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          // alignSelf: 'flex-start',
           width: '80%',
         }}>
         <Text
           style={{
             ...styles.infoText,
-            // alignSelf: 'center',
             marginRight: 20,
             fontSize: 18,
           }}>
@@ -223,7 +197,6 @@ export default function LetsMeetModal({navigation, groupID}) {
             itemStyle={styles.timeFrameItem}
             onValueChange={itemValue => {
               setSelectedTimeFrame(itemValue);
-              // console.log(itemValue);
             }}>
             {TIME_FRAMES.map(item => (
               <Picker.Item
@@ -233,7 +206,36 @@ export default function LetsMeetModal({navigation, groupID}) {
               />
             ))}
           </Picker>
-          <Text style={styles.infoText}>Meeting duration: 1 hour</Text>
+          <View style={{flexDirection: 'row', marginVertical: 10}}>
+            <Text style={styles.infoText}>Meeting duration:</Text>
+            <DropDownPicker
+              placeholder="30 minutes"
+              schema={{
+                label: 'label',
+                value: 'value',
+              }}
+              open={open}
+              value={value}
+              items={DURATION_OPTIONS}
+              setOpen={setOpen}
+              setValue={setValue}
+              onSelectItem={item => {
+                console.log(JSON.stringify(item, undefined, 2));
+                console.log(item.value);
+                setDuration(item.value);
+              }}
+              dropDownDirection="TOP"
+              listMode="SCROLLVIEW"
+              style={{
+                borderColor: Colors.DD_RED_2,
+                borderWidth: 2,
+              }}
+              containerStyle={{
+                width: '40%',
+                margin: 10,
+              }}
+            />
+          </View>
           <View style={styles.button}>
             <BoxButton title={`Let's Meet!`} onPress={handleLetsMeet} />
           </View>
