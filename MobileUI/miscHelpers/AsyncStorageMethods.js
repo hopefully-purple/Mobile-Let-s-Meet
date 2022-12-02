@@ -5,7 +5,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
  */
 export const clearAll = async () => {
   try {
-    await AsyncStorage.clear();
+    await AsyncStorage.getAllKeys()
+      .then(keys => AsyncStorage.multiRemove(keys))
+      .then(() => console.log('success'));
+    // await AsyncStorage.clear();
   } catch (e) {
     // clear error
     console.log('!!!! Error with clearing! > ' + e);
