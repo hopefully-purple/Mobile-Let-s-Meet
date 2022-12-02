@@ -81,13 +81,13 @@ const LoginScreen = ({navigation}) => {
   //   navigation.navigate('My Schedule');
   // };
 
-  let title = "Let's Meet";
+  let title = "Let's\n    Meet";
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.screenContainer}>
-        <Text style={styles.defaultScreentext}>{title}</Text>
+        <Text style={styles.titleText}>{title}</Text>
         <Text
-          style={styles.defaultScreentext}
+          style={{...styles.defaultScreentext}}
           onPress={() => navigation.navigate('Registration')}>
           No account? Click to sign up
         </Text>
@@ -128,6 +128,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: Colors.DD_CREAM,
     color: Colors.DD_RED_2,
+  },
+  titleText: {
+    fontFamily: 'Sansita Swashed',
+    fontSize: 72,
+    fontWeight: '700',
+    color: Colors.DD_RED_3,
+    marginBottom: 46,
   },
   defaultScreentext: {
     fontSize: 25,
