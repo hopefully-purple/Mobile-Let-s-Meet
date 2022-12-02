@@ -204,15 +204,15 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: Colors.DD_RED_2,
     textAlign: 'center',
-    marginTop: 60,
-    marginBottom: 46,
+    marginTop: 20,
+    marginBottom: 20,
   },
   qrLinkText: {
     fontSize: 40,
     fontWeight: '500',
     color: Colors.DD_RED_1,
     textAlign: 'center',
-    marginBottom: 46,
+    marginBottom: 10,
     padding: 20,
   },
   joinButtons: {
