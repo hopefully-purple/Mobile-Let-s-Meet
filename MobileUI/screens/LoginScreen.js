@@ -106,6 +106,7 @@ const LoginScreen = ({navigation}) => {
           onChangeText={newText => setPassword(newText)}
           ref={this.passwordInput}
           autoCapitalize="none"
+          secureTextEntry={true}
         />
         <GreyPillButton title="Go!" onPress={() => handleLogInButton()} />
         {/* <GreyPillButton
