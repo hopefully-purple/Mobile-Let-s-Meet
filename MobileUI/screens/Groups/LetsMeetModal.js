@@ -82,7 +82,7 @@ export default function LetsMeetModal({navigation, calendarID}) {
 
   const Suggestion = ({s}) => {
     function confirmAccept() {
-      Alert.alert(`Accept ${s.start} - ${s.end} ?`, '', [
+      Alert.alert(`Accept ${s.startTime} - ${s.endTime} ?`, '', [
         {
           text: 'Accept',
           onPress: () => handleAccept(),
@@ -92,18 +92,13 @@ export default function LetsMeetModal({navigation, calendarID}) {
     }
 
     async function handleAccept() {
-      Alert.alert(`Accepted ${s.value}. Adding event to calendar`);
-      const newEvent = {
-        title: reason,
-        startTime: s.start, //startDate.toISOString(), //yyyy-MM-dd'T'HH:mm:ss.fff'Z' <whatever this is
-        endTime: s.end, //endDate.toISOString(),
-        location: location,
-        calendarID: calendarID,
-      };
+      Alert.alert(
+        `Accepted ${s.startTime} - ${s.endTime}. Adding event to calendar`,
+      );
       console.log('NEW EVENT MADE > Post API call');
       // API call to post new event
       // console.log('New Event:' + JSON.stringify(newEvent, undefined, 2));
-      let result = await calendarCreateNewEvent(newEvent);
+      let result = await calendarCreateNewEvent(s);
       //Clear inputs
       this.reasonInput.current.clear();
       this.locationInput.current.clear();
@@ -125,7 +120,7 @@ export default function LetsMeetModal({navigation, calendarID}) {
         }}>
         <Text
           style={{...styles.infoText, alignSelf: 'center', marginRight: 20}}>
-          {s.start} - {s.end}
+          {s.startTime} - {s.endTime}
         </Text>
         <MiniBoxButton title={'Accept'} onPress={confirmAccept} />
       </View>

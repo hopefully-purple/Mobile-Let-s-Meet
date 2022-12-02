@@ -329,7 +329,7 @@ export async function calendarCreateNewCalendar(newCalendar) {
   console.log('(CAPIHandling) Beginning of CalendarCreateNewCalendar');
   let user = await getUserInfo();
   console.log('Calendar:' + JSON.stringify(newCalendar, undefined, 2));
-  return fetch(`${URL}/CalendarModels/Create`, {
+  return fetch(`${URL}/CalendarModels/CreateCalendar`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -233,7 +233,7 @@ export async function groupJoinGroup(joinLink) {
       .then(data => {
         console.log('GAPIHANDLING - GroupJoinGroup data:');
         console.log(JSON.stringify(data, undefined, 2));
-        if (data.status === 'ok' && data.message === 'User joined group') {
+        if (data.ok) {
           return true;
         } else {
           throw Error(data.message);
@@ -326,11 +326,37 @@ export async function groupsLetsMeet(details) {
 }
 
 const DUMMY_SUGGESTIONS = [
-  {id: 0, value: 'Suggestion 1', start: 'blah', end: 'blah'},
-  {id: 1, value: 'Suggestion 2', start: 'blah', end: 'blah'},
-  {id: 2, value: 'Suggestion 3', start: 'blah', end: 'blah'},
+  {
+    id: 0,
+    title: 'Suggestion 1',
+    startTime: 'blah',
+    endTime: 'blah',
+    location: 'blah',
+    calendarID: 10,
+  },
+  {
+    id: 1,
+    title: 'Suggestion 2',
+    startTime: 'blah',
+    endTime: 'blah',
+    location: 'blah',
+    calendarID: 11,
+  },
+  {
+    id: 2,
+    title: 'Suggestion 3',
+    startTime: 'blah',
+    endTime: 'blah',
+    location: 'blah',
+    calendarID: 12,
+  },
 ];
 
+// title,
+// startTime: startDate.toISOString(), //yyyy-MM-dd'T'HH:mm:ss.fff'Z' <whatever this is
+// endTime: endDate.toISOString(),
+// location,
+// calendarID:
 /**
  * API call to leave a group
  * If something goes wrong, catches error and goes to hardcoded functionality
