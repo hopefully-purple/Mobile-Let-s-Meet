@@ -1,7 +1,5 @@
-import React, {useState, useContext, useEffect, cloneElement} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
-  Button,
-  Image,
   Text,
   SafeAreaView,
   View,
@@ -11,22 +9,15 @@ import {
   Alert,
 } from 'react-native';
 import Colors from '../../assets/styles/colors';
-import {calendarTheme} from '../../assets/styles/calendarTheme';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card} from 'react-native-paper';
-import {getAllKeys} from '../LoginScreen';
-import CalendarEventsContext from '../../contexts/CalendarEvents';
-import {readEventData, deleteEvent} from '../../API/APIControllers';
-import {classScheduleList} from '../../assets/data/HardCodedEvents';
 import CalendarStrip from 'react-native-calendar-strip';
-import {
-  constructDateString,
-  formatEventTime,
-} from '../../miscHelpers/DateParsing';
+import {formatEventTime} from '../../miscHelpers/DateParsing';
 import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import {BoxButton, MiniBoxButton} from '../../assets/components/CustomButtons';
-import UserContext from '../../contexts/User';
-import {calendarGetCalendarEvents} from '../../API/CalendarAPIHandling';
+import {
+  calendarDeleteEvent,
+  calendarGetCalendarEvents,
+} from '../../API/CalendarAPIHandling';
 
 const CalendarTitle = props => {
   return (
@@ -45,16 +36,6 @@ const CalendarTitle = props => {
             calendarID: props.calendarID,
           })
         }>
-        {/* <Image
-          //We are making FAB using TouchableOpacity with an image
-          //We are using online image here
-          source={{
-            uri: 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png',
-          }}
-          //You can use you project image Example below
-          //source={require('./images/float-add-icon.png')}
-          style={styles.floatingButtonStyle}
-        /> */}
         <Text style={styles.floatingButtonStyle}>+</Text>
       </TouchableOpacity>
     </View>
@@ -66,12 +47,12 @@ const Empty = ({item}) => {
 };
 
 const Item = ({i, itemColor, time}) => {
-  const {events, setEvents} = useContext(CalendarEventsContext);
+  // const {events, setEvents} = useContext(CalendarEventsContext);
   // const user = useContext(UserContext);
 
   async function deleteItemInEvents() {
     // console.log('(calendarScreen.deleteItem) user = ' + user.name);
-    if (await deleteEvent(i, events, setEvents)) {
+    if (await calendarDeleteEvent(i)) {
       console.log('(groupCalendarScreen.deleteItemInEvents) delete succeeded');
       const selected = this.calendarStrip.current.getSelectedDate();
       this.calendarStrip.current.setSelectedDate(selected);
@@ -106,7 +87,7 @@ const Item = ({i, itemColor, time}) => {
 
 // https://openbase.com/js/react-native-calendar-strip
 // There's stuff in there that talks about localization for datetimes!
-const GroupCalendarScreen = ({navigation, calendarName}) => {
+const GroupCalendarScreen = ({navigation}) => {
   this.calendarStrip = React.createRef();
 
   const nowDate = new Date();

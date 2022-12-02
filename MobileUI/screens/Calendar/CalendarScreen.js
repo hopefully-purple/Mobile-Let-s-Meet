@@ -1,7 +1,5 @@
-import React, {useState, useContext, useEffect, cloneElement} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
-  Button,
-  Image,
   Text,
   SafeAreaView,
   View,
@@ -12,8 +10,6 @@ import {
 } from 'react-native';
 import Colors from '../../assets/styles/colors';
 import {Card} from 'react-native-paper';
-import CalendarEventsContext from '../../contexts/CalendarEvents';
-import {deleteEvent} from '../../API/APIControllers';
 import CalendarStrip from 'react-native-calendar-strip';
 import {formatEventTime} from '../../miscHelpers/DateParsing';
 import {BoxButton} from '../../assets/components/CustomButtons';
@@ -36,16 +32,6 @@ const CalendarTitle = props => {
             calendarID: null,
           })
         }>
-        {/* <Image
-          //We are making FAB using TouchableOpacity with an image
-          //We are using online image here
-          source={{
-            uri: 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png',
-          }}
-          //You can use you project image Example below
-          //source={require('./images/float-add-icon.png')}
-          style={styles.floatingButtonStyle}
-        /> */}
         <Text style={styles.floatingButtonStyle}>+</Text>
       </TouchableOpacity>
     </View>
