@@ -7,29 +7,6 @@ import UserContext from '../contexts/User';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Button} from 'react-native-paper';
 
-const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.DD_CREAM,
-    color: Colors.DD_RED_2,
-  },
-  defaultScreentext: {
-    fontSize: 25,
-    fontWeight: '500',
-    color: Colors.DD_RED_2,
-    textAlign: 'center',
-  },
-  clearButton: {
-    backgroundColor: Colors.DD_LIGHT_GRAY,
-    borderRadius: 12,
-    width: 200,
-    alignSelf: 'center',
-    margin: 10,
-  },
-});
-
 export default function SettingsScreen({navigation}) {
   const user = useContext(UserContext);
   const [output, setOutput] = useState('');
@@ -47,6 +24,18 @@ export default function SettingsScreen({navigation}) {
   //     }
   //   };
 
+  const getCurrentUser = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('User');
+      console.log(jsonValue);
+      // return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // read error
+    }
+
+    console.log('Done.');
+  };
+
   const getAllKeys = async () => {
     let keys = [];
     try {
@@ -57,7 +46,7 @@ export default function SettingsScreen({navigation}) {
       throw e;
     }
 
-    setOutput(keys[0] + ', ' + keys[1]);
+    setOutput(JSON.stringify(keys, undefined, 2));
     // return keys;
     console.log(JSON.stringify(keys));
     // return [];
@@ -103,9 +92,8 @@ export default function SettingsScreen({navigation}) {
         <Button
           style={styles.clearButton}
           textColor={Colors.TEST_CREAM}
-          //   onPress={() => getCurrentLData()}
-        >
-          LIST CURRENT EVENT STORAGE
+          onPress={() => getCurrentUser()}>
+          LIST CURRENT USER OBJECT
         </Button>
         <Button
           style={styles.clearButton}
@@ -121,3 +109,26 @@ export default function SettingsScreen({navigation}) {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.DD_CREAM,
+    color: Colors.DD_RED_2,
+  },
+  defaultScreentext: {
+    fontSize: 25,
+    fontWeight: '500',
+    color: Colors.DD_RED_2,
+    textAlign: 'center',
+  },
+  clearButton: {
+    backgroundColor: Colors.DD_LIGHT_GRAY,
+    borderRadius: 12,
+    width: 230,
+    alignSelf: 'center',
+    margin: 10,
+  },
+});

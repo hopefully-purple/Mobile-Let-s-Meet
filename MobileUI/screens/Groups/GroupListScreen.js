@@ -1,46 +1,58 @@
 import React, {useContext, useState, useEffect} from 'react';
-import {Text, StyleSheet, View, FlatList, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import Colors from '../../assets/styles/colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Card} from 'react-native-paper';
-import GroupsContext from '../../contexts/Groups';
-import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
+import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import {BoxButton} from '../../assets/components/CustomButtons';
-
-// https://bobbyhadz.com/blog/react-sort-array-of-objects
-function organizeGroups(groups) {
-  let newG = {};
-  newG = [...groups].sort((a, b) => a.id - b.id);
-  return newG;
-}
+import {
+  groupLeaveGroup,
+  groupsGetGroupMembers,
+  groupsGetGroups,
+} from '../../API/GroupsAPIHandling';
 
 export default function GroupListScreen({navigation}) {
-  const {groups, setGroups} = useContext(GroupsContext);
-  const {currentCalendarName, setCurrentCalendarName} = useContext(
-    CurrentCalendarNameContext,
-  );
+  // const {groups, setGroups} = useContext(GroupsContext);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const {currentGroup, setcurrentGroup} = useContext(CurrentGroupObjectContext);
+  // const user = useContext(UserContext);
 
-  const GroupBox = ({group}) => {
-    const handleGroupPress = () => {
-      //Grab group name
-      // console.log(group.name + ' selected');
-      console.log('pulling up ' + group.name + ' calendar (eventually . . .)');
-      setCurrentCalendarName(group.name);
-      //Set things up to trigger a correct event grab and calendar name change
-      //navigate to calendar
-      navigation.navigate('Home');
+  const [groupsList, setGroupsList] = useState([]);
+  useEffect(() => {
+    console.log('~~~~~~~~~~~~~~~GroupListScreen.useEffect call getGroups');
+    let mounted = true;
+    groupsGetGroups().then(data => {
+      if (mounted) {
+        console.log('GroupListScreen mounted! setGroupsList');
+        setGroupsList(data);
+      }
+    });
+    return () => {
+      console.log('GroupListScreen mounted = false');
+      mounted = false;
     };
-    return (
-      <TouchableOpacity onPress={handleGroupPress}>
-        <Card style={styles.cardStyle}>
-          <Card.Content>
-            <View>
-              <Text style={styles.defaultScreentext}>{group.name}</Text>
-            </View>
-          </Card.Content>
-        </Card>
-      </TouchableOpacity>
-    );
+  }, []);
+
+  const onRefresh = async () => {
+    //set isRefreshing to true
+    setIsRefreshing(true);
+    console.log('GroupListScreen REFRESHING FLAT LIST!!!!!!');
+    await groupsGetGroups().then(data => {
+      console.log('setGroupsList to data');
+      //setGroupsList to new data
+      setGroupsList(data);
+    });
+
+    console.log('set refreshing to false');
+    // and set isRefreshing to false
+    setIsRefreshing(false);
   };
 
   const renderItem = ({item}) => {
@@ -49,14 +61,75 @@ export default function GroupListScreen({navigation}) {
     return <GroupBox group={item} />;
   };
 
-  const [flatList, setFlatList] = useState([]);
-  useEffect(
-    function createFlatList() {
-      const newFlatL = organizeGroups(groups);
-      setFlatList(newFlatL);
-    },
-    [groups],
-  );
+  const GroupBox = ({group}) => {
+    const handleGroupPress = async () => {
+      //Grab group name
+      // console.log(group.name + ' selected');
+      console.log(
+        'pulling up ' + group.groupName + ' calendar (eventually . . .)',
+      );
+      // Call getGroup API to get full group object
+      const detailedGroup = await groupsGetGroupMembers(group.groupID);
+      // console.log(JSON.stringify(detailedGroup, undefined, 2));
+      setcurrentGroup(detailedGroup);
+      //Set things up to trigger a correct event grab and calendar name change
+      //navigate to calendar
+      navigation.navigate('GroupCalendar');
+    };
+    const handleLongPress = () => {
+      Alert.alert('Leave this group?', '', [
+        {
+          text: 'Leave',
+          onPress: () => {
+            groupLeaveGroup(group.groupID);
+            navigation.navigate('Group');
+          },
+        },
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+      ]);
+    };
+    return (
+      <TouchableOpacity
+        onPress={handleGroupPress}
+        onLongPress={handleLongPress}>
+        <Card style={styles.cardStyle}>
+          <Card.Content>
+            <View>
+              <Text key={group.groupID} style={styles.defaultScreentext}>
+                {group?.groupName}
+              </Text>
+            </View>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
+    );
+  };
+
+  // const [flatList, setFlatList] = useState([]);
+  // useEffect(
+  //   function createFlatList() {
+  //     const newFlatL = organizeGroups(groups);
+  //     setFlatList(newFlatL);
+  //   },
+  //   [groups],
+  // );
+
+  // const [riverInformation, setRiverInformation] = useState();
+
+  // useEffect(() => {
+  //   let mounted = true;
+  //   console.log(
+  //     'GroupListScreen.useEffect call getRiverInformation on ' + name,
+  //   );
+  //   getRiverInformation(name).then(data => {
+  //     if (mounted) {
+  //       setRiverInformation(data);
+  //     }
+  //   });
+  //   return () => {
+  //     mounted = false;
+  //   };
+  // }, [name]);
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -71,14 +144,20 @@ export default function GroupListScreen({navigation}) {
         />
       </View>
       <FlatList
-        data={flatList}
+        data={groupsList}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
-        style={{marginTop: 40}}
+        keyExtractor={item => item.groupID}
+        style={{marginTop: 15}}
+        onRefresh={onRefresh}
+        refreshing={isRefreshing}
       />
     </SafeAreaView>
   );
 }
+
+// GroupListScreen.propTypes = {
+//   name: PropTypes.string.isRequired,
+// };
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -95,7 +174,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: 'row',
-    position: 'absolute',
+    //position: 'absolute',
     margin: 10,
     // alignContent: 'center',
   },

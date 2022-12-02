@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import Colors from '../../assets/styles/colors';
 import {
   ScrollView,
@@ -7,90 +7,126 @@ import {
   Keyboard,
   Button,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DatePicker from 'react-native-date-picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 import {SliderPicker, HuePicker} from 'react-color';
 import CalendarEventsContext from '../../contexts/CalendarEvents';
-import {calendarCreateNewEvent} from '../../API/CalendarAPIHandling';
+import {
+  calendarCreateNewEvent,
+  calendarGetCalendars,
+} from '../../API/CalendarAPIHandling';
+import UserContext from '../../contexts/User';
+import {BoxButton} from '../../assets/components/CustomButtons';
 
 // https://casesandberg.github.io/react-color/
 // Doesn't work! Throws Text errors :`(
-const CalendarThing = (calColor, setCalColor) => {
-  return (
-    <HuePicker
-      color={calColor}
-      onChangeComplete={setCalColor}
-      width={50}
-      height={20}
-    />
-  );
-};
+// const CalendarThing = (calColor, setCalColor) => {
+//   return (
+//     <HuePicker
+//       color={calColor}
+//       onChangeComplete={setCalColor}
+//       width={50}
+//       height={20}
+//     />
+//   );
+// };
 
-const storeNewEvent = async (title, location, start, end, color) => {
-  const newEvent = {
-    title,
-    start,
-    end,
-    location,
-    color,
-  };
-  // console.log(newEvent);
-  try {
-    // Attempt to keep keys unique: Key= "Event title" + " - start"
-    // bc not going to have two Bio discussions at the same time
-    // but two bio discussions can exist
-    await AsyncStorage.setItem(
-      `Event ${title} - ${start}`,
-      JSON.stringify(newEvent),
-    );
-  } catch (e) {
-    // print error
-    console.log('storing event error: ' + e);
-    throw e;
-  }
+// const storeNewEvent = async (title, location, start, end, color) => {
+//   const newEvent = {
+//     title,
+//     start,
+//     end,
+//     location,
+//     color,
+//   };
+//   // console.log(newEvent);
+//   try {
+//     // Attempt to keep keys unique: Key= "Event title" + " - start"
+//     // bc not going to have two Bio discussions at the same time
+//     // but two bio discussions can exist
+//     await AsyncStorage.setItem(
+//       `Event ${title} - ${start}`,
+//       JSON.stringify(newEvent),
+//     );
+//   } catch (e) {
+//     // print error
+//     console.log('storing event error: ' + e);
+//     throw e;
+//   }
 
-  return;
-};
+//   return;
+// };
 
-export default function AddEventModal({navigation}) {
+export default function AddEventModal({navigation, calendarID}) {
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [calColor, setCalColor] = useState('#0D852F');
-  const {events, setEvents} = useContext(CalendarEventsContext);
+  const [selectedCal, setSelectedCal] = useState(null);
+  // const {events, setEvents} = useContext(CalendarEventsContext);
+  // const user = useContext(UserContext);
+
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  // const [items, setItems] = useState([
+  //   {label: 'Apple', value: 'apple'},
+  //   {label: 'Banana', value: 'banana'},
+  // ]);
 
   this.titleInput = React.createRef();
   this.locationInput = React.createRef();
 
-  const saveData = async newEvent => {
-    try {
-      const newE = events;
-      newE.push(newEvent);
-      await AsyncStorage.setItem('Events', JSON.stringify(newE));
-      console.log('(saveData) Data successfully saved');
-      return true;
-    } catch (e) {
-      console.log('(saveData) Failed to save the data to the storage');
-      throw e;
+  const [calendars, setCalendars] = useState([]);
+  useEffect(() => {
+    console.log('~~~~~~~~~~~~~~~AddEventModal.useEffect call getCalendars');
+    let mounted = true;
+    if (calendarID !== null) {
+      console.log('ONLY SHOW GROUP CALENDAR!!');
+      calendarGetCalendars().then(data => {
+        if (mounted) {
+          console.log('AddEventModal mounted! setCalendars (group)');
+          const cal = data.filter(c => c.calendarID === calendarID);
+          setCalendars(cal);
+          // setSelectedCal(cal);
+        }
+      });
+    } else {
+      calendarGetCalendars().then(data => {
+        if (mounted) {
+          console.log('AddEventModal mounted! setCalendars');
+          setCalendars(data.filter(c => c.group === null));
+        }
+      });
     }
-  };
+    return () => {
+      console.log('AddEventModal mounted = false');
+      mounted = false;
+    };
+  }, [calendarID]);
 
   const doneHandler = async () => {
-    // console.log(title);
-    // console.log(location);
-    // console.log(startDate);
-    // console.log(endDate);
-    // console.log(calColor);
+    // console.log(calendars)
+    if (title === '' && location === '' && selectedCal === null) {
+      Alert.alert('Title, Location, and Calendar must be set');
+      // console.log(
+      //   'go back, no saving to async since title and location were empty',
+      // );
+      // navigation.goBack();
+      return;
+    }
+
+    // console.log(selectedCal);
+
     const newEvent = {
-      id: `${events.length + 1} ${title}`,
       title,
-      start: startDate, //.toUTCString(),
-      end: endDate, //.toUTCString(),
+      startTime: startDate.toISOString(), //yyyy-MM-dd'T'HH:mm:ss.fff'Z' <whatever this is
+      endTime: endDate.toISOString(),
       location,
-      color: calColor,
+      calendarID: selectedCal.calendarID,
     };
     // console.log('NEW EVENT MADE, events context:');
 
@@ -98,12 +134,8 @@ export default function AddEventModal({navigation}) {
       'NEW EVENT MADE > Post API call > result: <not rn, dev server broken>',
     );
     // API call to post new event
-    // await calendarCreateNewEvent(newEvent);
-    // console.log(JSON.stringify(result, undefined, 2));
-    //To trigger reload of Events and new GET API call, update the events context
-    // const newE = events;
-    // newE.push(newEvent);
-    // setEvents(newE);
+    // console.log('New Event:' + JSON.stringify(newEvent, undefined, 2));
+    let result = await calendarCreateNewEvent(newEvent);
 
     //Clear inputs
     this.titleInput.current.clear();
@@ -111,12 +143,12 @@ export default function AddEventModal({navigation}) {
     setTitle('');
     setLocation('');
 
-    //Save to async storage (for now until dev server is fixed)
-    const result = await saveData(newEvent);
     if (result) {
       //Go back to schedule
       console.log('go back');
       navigation.goBack();
+    } else {
+      Alert.alert('Unable to create event');
     }
   };
 
@@ -143,6 +175,35 @@ export default function AddEventModal({navigation}) {
         autoCorrect={false}
         ref={this.locationInput}
       />
+      <DropDownPicker
+        placeholder="Select a calendar"
+        schema={{
+          label: 'name',
+          value: 'calendarID',
+        }}
+        open={open}
+        value={value}
+        items={calendars}
+        setOpen={setOpen}
+        setValue={setValue}
+        onSelectItem={item => {
+          console.log(JSON.stringify(item, undefined, 2));
+          setSelectedCal(item);
+        }}
+        // setItems={setItems}
+        dropDownDirection="BOTTOM"
+        listMode="SCROLLVIEW"
+        style={{
+          borderColor: selectedCal
+            ? selectedCal.color
+            : Colors.DD_EXTRA_LIGHT_GRAY,
+          borderWidth: 5,
+        }}
+        containerStyle={{
+          width: '95%',
+          margin: 10,
+        }}
+      />
       <Text style={styles.text}>
         Start: {startDate.toLocaleDateString()} {startDate.toLocaleTimeString()}
       </Text>
@@ -155,15 +216,20 @@ export default function AddEventModal({navigation}) {
         End: {endDate.toLocaleDateString()} {endDate.toLocaleTimeString()}
       </Text>
       <DatePicker date={endDate} onDateChange={setEndDate} minuteInterval={5} />
-      <Text style={styles.text}>Pick color aka calendar soon</Text>
       {/* <CalendarThing calColor={calColor} setCalColor={setCalColor} /> */}
-      <Button onPress={doneHandler} title="Done" style={{margin: 100}} />
+      <View style={styles.doneStyle}>
+        <BoxButton onPress={doneHandler} title="Done" />
+      </View>
       <Text> </Text>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  doneStyle: {
+    margin: 15,
+    alignSelf: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: Colors.DD_CREAM,

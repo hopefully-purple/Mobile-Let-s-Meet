@@ -11,14 +11,20 @@ import React from 'react';
 export function formatEventTime(s, e) {
   let finalTimeString = '';
   let date = new Date(s);
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  finalTimeString = `${hours}:${minutes}`;
+  var options = {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  };
+  var timeStringS = date.toLocaleString('en-US', options);
+  // console.log(timeString);
+  // let hours = date.getHours();
+  // let minutes = date.getMinutes();
+  finalTimeString = `${timeStringS}`;
 
   date = new Date(e);
-  hours = date.getHours();
-  minutes = date.getMinutes();
-  finalTimeString += ` - ${hours}:${minutes}`;
+  var timeStringE = date.toLocaleString('en-US', options);
+  finalTimeString += ` - ${timeStringE}`;
 
   return finalTimeString;
 }

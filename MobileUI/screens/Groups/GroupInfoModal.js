@@ -3,15 +3,25 @@ import {
   Text,
   StyleSheet,
   View,
+  SafeAreaView,
   FlatList,
   TouchableOpacity,
   Button,
   Alert,
 } from 'react-native';
-import {SmallBoxButton} from '../../assets/components/CustomButtons';
+import {BoxButton, SmallBoxButton} from '../../assets/components/CustomButtons';
 import Colors from '../../assets/styles/colors';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {
+  groupLeaveGroup,
+  groupsGenerateLink,
+  groupsGenerateQRCode,
+} from '../../API/GroupsAPIHandling';
 import {bareBonesFriendsList} from '../../assets/data/HardCodedFriends';
+import {accurateGetGroupResult} from '../../assets/data/HardCodedGroups';
+import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
+import UserContext from '../../contexts/User';
+import QRCode from 'react-native-qrcode-svg';
 // https://stackoverflow.com/questions/48992961/react-navigation-modal-height
 
 const Item = ({name}) => {
@@ -23,22 +33,42 @@ const Item = ({name}) => {
 };
 
 export default function GroupInfoModal({navigation}) {
+  const group = useContext(CurrentGroupObjectContext).currentGroup;
+  const [showQR, setShowQR] = useState(false);
+  const [qrValue, setQRValue] = useState('');
+
   const copyToClipboard = () => {
-    Clipboard.setString('hello world');
-    Alert.alert('hello world has been copied to your clipboard!');
+    const link = groupsGenerateLink(group.joinCode);
+    Clipboard.setString(link);
+    Alert.alert('The join link has been copied to your clipboard!');
   };
 
   const handleQR = () => {
-    Alert.alert('display QR code here');
+    const qr = groupsGenerateLink(group.joinCode);
+    setQRValue(qr);
+    setShowQR(true);
   };
 
   const renderItem = ({item}) => {
-    return <Item name={item.name} />;
+    return <Item name={`${item.firstName} ${item.lastName}`} />;
   };
+
+  function handleLeave() {
+    Alert.alert('Are you sure you want to leave this group?', '', [
+      {
+        text: 'Leave',
+        onPress: () => {
+          groupLeaveGroup(group.groupID);
+          navigation.navigate('Group');
+        },
+      },
+      {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+    ]);
+  }
 
   return (
     <View style={styles.screenContainer}>
-      <View style={styles.innerContainer}>
+      <SafeAreaView style={styles.innerContainer}>
         <View style={styles.creamKnob} />
         <View style={styles.bodyContainer}>
           <View style={styles.mainHeader}>
@@ -48,9 +78,9 @@ export default function GroupInfoModal({navigation}) {
           <View style={styles.mainBody}>
             <View style={styles.flatListStyle}>
               <FlatList
-                data={bareBonesFriendsList}
+                data={group.users}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item.userID}
               />
             </View>
             <View style={styles.generationSide}>
@@ -59,10 +89,23 @@ export default function GroupInfoModal({navigation}) {
                 onPress={copyToClipboard}
               />
               <SmallBoxButton title={'Generate invite QR'} onPress={handleQR} />
+              {showQR && (
+                <View style={{alignSelf: 'center'}}>
+                  <QRCode
+                    value={qrValue}
+                    size={100}
+                    color="black"
+                    backgroundColor="white"
+                  />
+                </View>
+              )}
             </View>
           </View>
+          <View style={{alignSelf: 'center', marginTop: 10, marginBottom: 20}}>
+            <BoxButton title={'Leave Group'} onPress={handleLeave} />
+          </View>
         </View>
-      </View>
+      </SafeAreaView>
     </View>
   );
 }
@@ -73,7 +116,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   innerContainer: {
-    height: '50%',
+    height: '60%',
     width: '100%',
     backgroundColor: Colors.DD_RED_2,
     borderRadius: 10,
@@ -105,7 +148,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     color: Colors.DD_MEDIUM_GRAY,
-    marginLeft: 120,
+    marginLeft: 90,
   },
   mainBody: {
     // backgroundColor: Colors.DD_WHITE,

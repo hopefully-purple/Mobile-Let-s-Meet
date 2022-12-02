@@ -1,7 +1,5 @@
-import React, {useState, useContext, useEffect, cloneElement} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
-  Button,
-  Image,
   Text,
   SafeAreaView,
   View,
@@ -11,24 +9,17 @@ import {
   Alert,
 } from 'react-native';
 import Colors from '../../assets/styles/colors';
-import {calendarTheme} from '../../assets/styles/calendarTheme';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card} from 'react-native-paper';
-import {getAllKeys} from '../LoginScreen';
-import CalendarEventsContext from '../../contexts/CalendarEvents';
+import CalendarStrip from 'react-native-calendar-strip';
+import {formatEventTime} from '../../miscHelpers/DateParsing';
+import {BoxButton} from '../../assets/components/CustomButtons';
 import {
   calendarGetEvents,
+  calendarGetCalendars,
+  calendarGetCalendarEvents,
   calendarDeleteEvent,
 } from '../../API/CalendarAPIHandling';
-import {classScheduleList} from '../../assets/data/HardCodedEvents';
-import CalendarStrip from 'react-native-calendar-strip';
-import {
-  constructDateString,
-  formatEventTime,
-} from '../../parsingHelpers/DateParsing';
-import CurrentCalendarNameContext from '../../contexts/CurrentCalendarName';
-import {BoxButton} from '../../assets/components/CustomButtons';
-import GroupsContext from '../../contexts/Groups';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const CalendarTitle = props => {
   return (
@@ -36,94 +27,35 @@ const CalendarTitle = props => {
       <Text style={styles.calendarTitleText}>{props.name} Schedule</Text>
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => props.navigation.navigate('AddEventModal')}>
-        {/* <Image
-          //We are making FAB using TouchableOpacity with an image
-          //We are using online image here
-          source={{
-            uri: 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png',
-          }}
-          //You can use you project image Example below
-          //source={require('./images/float-add-icon.png')}
-          style={styles.floatingButtonStyle}
-        /> */}
+        onPress={() =>
+          props.navigation.navigate('AddEventModal', {
+            calendarID: null,
+          })
+        }>
         <Text style={styles.floatingButtonStyle}>+</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-function organizeIntoDates(events) {
-  let newFL = {};
-  // console.log(JSON.stringify(events, undefined, 2));
-  console.log('calendarScreen.organizeIntoDates events=' + events.length);
-  if (events.length === 0) {
-    console.log('events currently empty, return {}');
-    return newFL;
-  }
+const Empty = ({item}) => {
+  return <Text style={styles.emptyText}>No events on this day</Text>;
+};
 
-  for (let i of events) {
-    // console.log('i.start=' + i.start);
-    // let iMonth = constructMonth(i.start);
-    // let iDay = constructDay(i.start);
-    let iDateString = constructDateString(i.start);
-    // console.log('iDateString=' + iDateString);
-    // if (month.month === iMonth) {
-    // console.log('iMonth= ' + iMonth + ' iDay= ' + iDay);
-    if (!newFL[iDateString]) {
-      // console.log('add iDateString to array');
-      newFL[iDateString] = [];
-      // console.log('newFL size=' + newFL.length);
+const Item = props => {
+  const {i, itemColor, time} = props;
+  // const {events, setEvents} = useContext(CalendarEventsContext);
+  // const user = useContext(UserContext);
+
+  async function deleteItemInEvents() {
+    // console.log('(calendarScreen.deleteItem) user = ' + user.name);
+    if (await calendarDeleteEvent(i)) {
+      console.log('(calendarScreen.deleteItemInEvents) delete succeeded');
+      const selected = this.calendarStrip.current.getSelectedDate();
+      this.calendarStrip.current.setSelectedDate(selected);
+    } else {
+      Alert.alert('Delete did not succeed');
     }
-    // console.log('month.day =' + month.day + '');
-    if (!newFL[iDateString].includes(i)) {
-      // console.log('push: ' + i.title + ' ' + i.start);
-      var localStartDate = new Date(i.start); //.toLocaleTimeString('en-US', {
-      //   timeZone: 'UTC',
-      //   hour12: true,
-      //   hour: 'numeric',
-      //   minute: 'numeric',
-      // });
-      var localEndDate = new Date(i.end);
-      console.log('##################' + localStartDate + '  ' + localEndDate);
-      const convertedI = {
-        ...i,
-        start: localStartDate,
-        end: localEndDate,
-      };
-      newFL[iDateString].push(convertedI);
-    }
-  }
-
-  // console.log('newFL:');
-  // console.log(JSON.stringify(newFL, undefined, 2));
-
-  return newFL;
-}
-
-const Item = ({i, itemColor, time}) => {
-  const {events, setEvents} = useContext(CalendarEventsContext);
-  function deleteItemInEvents() {
-    // Filter condition
-    function excludeItem(it) {
-      return it.id !== i.id;
-    }
-    const newEvents = events.filter(excludeItem);
-    // console.log(words);
-    setEvents(newEvents);
-    const saveData = async () => {
-      try {
-        await AsyncStorage.setItem('Events', JSON.stringify(newEvents));
-        console.log('(calnedarscreen.saveData) Data successfully saved');
-      } catch (e) {
-        console.log(
-          '(calendarscreen.saveData) Failed to save the data to the storage',
-        );
-        throw e;
-      }
-    };
-
-    saveData();
   }
 
   const changeItemAlert = () => {
@@ -135,13 +67,14 @@ const Item = ({i, itemColor, time}) => {
       {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
     ]);
   };
+  const group = i.groupName === null ? '' : `Group: ${i.groupName}\n`;
   return (
     <TouchableOpacity style={styles.item} onLongPress={() => changeItemAlert()}>
       <Card style={{...styles.cardStyle, borderColor: itemColor}}>
         <Card.Content>
           <View>
             <Text style={styles.itemText}>
-              {`${time}\n${i.title}\n${i.location}`}
+              {`${group}${time}\n${i.title}\n${i.location}`}
             </Text>
           </View>
         </Card.Content>
@@ -152,24 +85,90 @@ const Item = ({i, itemColor, time}) => {
 
 // https://openbase.com/js/react-native-calendar-strip
 // There's stuff in there that talks about localization for datetimes!
-const CalendarScreen = ({navigation, calendarName}) => {
-  const nowDate = new Date();
-  const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
-  const [items, setItems] = useState({});
-  const {events, setEvents} = useContext(CalendarEventsContext);
-  const {currentCalendarName, setCurrentCalendarName} = useContext(
-    CurrentCalendarNameContext,
-  );
-
+const CalendarScreen = ({navigation}) => {
   this.calendarStrip = React.createRef();
 
-  navigation.addListener('drawerItemPress', () => {
-    console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
-    setCurrentCalendarName('My');
-  });
+  const nowDate = new Date();
+  const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
+  const [items, setItems] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedCals, setSelectedCals] = useState([]);
+  const [areAllCalsSelected, setAreAllCalsSelected] = useState(false);
+  // const [colors, setColors] = useState([]);
+  // const {events, setEvents} = useContext(CalendarEventsContext);
+  // const user = useContext(UserContext);
+
+  const [events, setEvents] = useState([]);
+  useEffect(() => {
+    console.log('~~~~~~~~~~~~~~~CalendarScreen.useEffect call getEvents');
+    let mounted = true;
+    calendarGetEvents().then(data => {
+      if (mounted) {
+        console.log('CalendarScreen mounted! setEvents');
+        setEvents(data);
+      }
+    });
+    return () => {
+      console.log('CalendarScreen mounted = false');
+      mounted = false;
+    };
+  }, []);
+
+  const [calendars, setCalendars] = useState([]);
+  useEffect(() => {
+    console.log('~~~~~~~~~~~~~FilterCalendarModal.useEffect call getCalendars');
+    let mounted = true;
+    calendarGetCalendars().then(data => {
+      if (mounted) {
+        console.log('FilterCalendarModal mounted! setCalendars');
+        // data.push({calendarID: -1, name: 'Select All'});
+        // data.push({calendarID: -2, name: '+ New Calendar'});
+        setCalendars(data);
+      }
+    });
+    return () => {
+      console.log('FilterCalendarModal mounted = false');
+      mounted = false;
+    };
+  }, []);
+
+  const onRefresh = async flag => {
+    //set isRefreshing to true
+    setIsRefreshing(true);
+    console.log('REFRESHING FLAT LIST!!!!!!');
+    if (flag === 'all') {
+      setAreAllCalsSelected(false);
+      setSelectedCals([]);
+      await calendarGetEvents().then(data => {
+        console.log('setEvents to data');
+        //setEvents to new data
+        setEvents(data);
+      });
+      await calendarGetCalendars().then(data => {
+        console.log('setCalendars to data');
+        setCalendars(data);
+      });
+    } else if (flag === 'filtered') {
+      await calendarGetCalendarEvents(selectedCals).then(data => {
+        console.log('!!!!!handleFilterPress!!!!! setEvents to new event data');
+        setEvents(data);
+      });
+    }
+    //Try updating calendar strip
+    console.log('On refresh, getSelectedDate()');
+    const selected = this.calendarStrip.current.getSelectedDate();
+    // this.calendarStrip.current.updateWeekView('2022-11-07T19:00:00.000Z');
+    // this.calendarStrip.current.updateWeekView(selected);
+    this.calendarStrip.current.setSelectedDate(selected);
+    // and set isRefreshing to false
+    setIsRefreshing(false);
+  };
 
   const renderItem = ({item}) => {
     // console.log(items.length);
+    // console.log('RENDERITEM::: item below');
+    // console.log(item);
     const itemColor = item.color;
     const time = formatEventTime(item.start, item.end);
     // console.log('rendering ' + item.id);
@@ -178,18 +177,24 @@ const CalendarScreen = ({navigation, calendarName}) => {
 
   const handleDateSelected = date => {
     setSelectedDay(date);
-    //date is a moment object
     // Set items to the array in Flatlist corresponding to date
+    console.log('handleDateSelected: ' + date);
+    // createItemsList(date, flatList);
+    //date is a moment object
     const dateKey = date.format('YYYY-MM-DD');
     // console.log(flatList[dateKey]);
-    const dayEvents = flatList[dateKey];
+    const dayEvents = events[dateKey];
     if (dayEvents !== undefined) {
       setItems(dayEvents);
     } else {
-      setItems({});
+      console.log(
+        'createItemsList: events[' + dateKey + '] undefined, setItems([])',
+      );
+      setItems([]);
     }
-    // console.log(dateKey);
   };
+
+  // const createItemsList = ({date, list}) => {};
 
   const customDatesStylesFunc = date => {
     if (date.format('ddd MMM DD YYYY') === nowDate.toDateString()) {
@@ -197,6 +202,7 @@ const CalendarScreen = ({navigation, calendarName}) => {
         dateNameStyle: {
           backgroundColor: Colors.DD_RED_2,
           color: Colors.DD_CREAM,
+          paddingHorizontal: 3,
         },
         // dateNumberStyle: {color: 'purple'},
         // dateContainerStyle: {backgroundColor: Colors.DD_RED_3_LIGHT},
@@ -205,34 +211,42 @@ const CalendarScreen = ({navigation, calendarName}) => {
   };
 
   const markedDatesFunc = date => {
-    if (flatList[date.format('YYYY-MM-DD')]) {
+    if (events[date.format('YYYY-MM-DD')]) {
       return {dots: [{color: Colors.DD_RED_1}]};
     }
     return {};
   };
 
-  const [flatList, setFlatList] = useState([]);
-  useEffect(
-    function createFlatList() {
-      const newFlatL = organizeIntoDates(events);
-      setFlatList(newFlatL);
-    },
-    [events],
-  );
+  async function handleFilterPress() {
+    console.log('HANDLE FILTER PRESS > ' + selectedCals);
+    // await calendarGetCalendarEvents(selectedCals).then(data => {
+    //   console.log('!!!!!handleFilterPress!!!!! setEvents to new event data');
+    //   setEvents(data);
+    // });
+    onRefresh('filtered');
+    console.log('!!!!! done handleFilterPress');
+  }
 
-  // useEffect(() => {
-  //   if (selectedDay !== undefined) {
-  //     this.calendarStrip.current.updateWeekView(selectedDay);
-  //   }
-  // }, [selectedDay]);
-  const isPersonalSchedule = currentCalendarName === 'My';
+  function handleSelectAll() {
+    console.log('Select all press');
+    // console.log(JSON.stringify(selectedCals, undefined, 2));
+    if (areAllCalsSelected) {
+      setSelectedCals([]);
+      setAreAllCalsSelected(false);
+    } else {
+      let c = [];
+      calendars.map(i => c.push(i.calendarID));
+      console.log(JSON.stringify(c, undefined, 2));
+      setSelectedCals(c);
+      setAreAllCalsSelected(true);
+    }
+  }
+
+  const selectAll = 'Select All';
+  const deselectAll = 'Deselect All';
   return (
     <SafeAreaView style={styles.container}>
-      <CalendarTitle
-        name={currentCalendarName}
-        navigation={navigation}
-        isPersonal={isPersonalSchedule}
-      />
+      <CalendarTitle name={'My'} navigation={navigation} />
       <CalendarStrip
         selectedDate={selectedDay}
         onDateSelected={handleDateSelected}
@@ -246,31 +260,91 @@ const CalendarScreen = ({navigation, calendarName}) => {
         dateNameStyle={{color: Colors.DD_RED_2, fontSize: 15}}
         dateNumberStyle={{color: Colors.DD_LIGHT_GRAY, fontSize: 15}}
         markedDatesStyle={{height: 5, width: 5}}
-        highlightDateNumberStyle={{color: Colors.DD_RED_3, fontSize: 15}}
-        highlightDateNameStyle={{color: Colors.DD_RED_3, fontSize: 15}}
+        highlightDateNumberStyle={{
+          // backgroundColor: Colors.DD_RED_3,
+          // color: Colors.DD_CREAM,
+          color: Colors.DD_RED_3,
+          fontSize: 15,
+          // paddingHorizontal: 7,
+        }}
+        highlightDateNameStyle={{
+          backgroundColor: Colors.DD_RED_3,
+          color: Colors.DD_CREAM,
+          fontSize: 15,
+          paddingHorizontal: 3,
+        }}
         iconContainer={{flex: 0.1}}
         ref={this.calendarStrip}
       />
       <View
-        style={{backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY, height: '70%'}}>
+        style={{backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY, height: '65%'}}>
         <FlatList
           data={items}
           renderItem={renderItem}
           keyExtractor={item => item.id}
+          onRefresh={() => onRefresh('all')}
+          ListEmptyComponent={Empty}
+          refreshing={isRefreshing}
         />
       </View>
-      {!isPersonalSchedule && (
-        <View style={styles.groupScheduleButtons}>
-          <BoxButton
-            title={'Info'}
-            onPress={() => navigation.navigate('InfoModal')}
-          />
-          <BoxButton
-            title={`Let's Meet!`}
-            onPress={() => navigation.navigate('MeetModal')}
-          />
-        </View>
-      )}
+      <View style={styles.calendarFeaturesStyling}>
+        <DropDownPicker
+          placeholder="Select a calendar"
+          schema={{
+            label: 'name',
+            value: 'calendarID',
+            color: 'color',
+          }}
+          mode="BADGE"
+          // extendableBadgeContainer={true}
+          // badgeDotColors={colors}
+          showBadgeDot={false}
+          // renderBadgeItem={(item, props) => <Badge item={item} props={...props} />}
+          multiple={true}
+          items={calendars}
+          value={selectedCals}
+          open={open}
+          min={0}
+          setOpen={setOpen}
+          setValue={setSelectedCals}
+          onSelectItem={item => {
+            console.log(JSON.stringify(item, undefined, 2));
+            // if (item.name === 'Select All') {
+            // }
+            // // setColors([...colors, item.color]);
+            // item.map(i => {
+            //   !colors.includes(i.color)
+            //     ? colors.push(i)
+            //     : console.log('remove ' + i);
+            // });
+            // console.log('colors: ' + JSON.stringify(colors, undefined, 2));
+          }}
+          // setItems={setItems}
+          dropDownDirection="TOP"
+          listMode="SCROLLVIEW"
+          style={{
+            backgroundColor: Colors.DD_CREAM,
+          }}
+          containerStyle={{
+            width: '70%',
+            margin: 5,
+          }}
+          dropDownContainerStyle={{
+            backgroundColor: Colors.DD_CREAM,
+          }}
+        />
+        <BoxButton title={'Filter'} onPress={handleFilterPress} />
+      </View>
+      <View style={styles.calendarButtons}>
+        <TouchableOpacity onPress={handleSelectAll}>
+          <Text style={styles.calendarTextButton}>
+            {areAllCalsSelected ? deselectAll : selectAll}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('NewCalModal')}>
+          <Text style={styles.calendarTextButton}>+ New Calendar</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -290,6 +364,13 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     marginTop: 17,
+  },
+  emptyText: {
+    color: Colors.DD_MEDIUM_GRAY,
+    fontSize: 20,
+    padding: 10,
+    fontStyle: 'italic',
+    alignSelf: 'center',
   },
   cardStyle: {
     backgroundColor: Colors.DD_CREAM_LIGHT,
@@ -317,10 +398,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'baseline',
   },
-  groupScheduleButtons: {
+  calendarFeaturesStyling: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    margin: 15,
+    // justifyContent: 'space-evenly',
+    marginTop: 15,
+    marginHorizontal: 15,
+  },
+  calendarButtons: {
+    flexDirection: 'row',
+    marginLeft: 15,
+    justifyContent: 'space-between',
+    width: '65%',
+  },
+  calendarTextButton: {
+    fontSize: 20,
+    color: Colors.DD_CREAM,
+    margin: 5,
   },
 });
 
