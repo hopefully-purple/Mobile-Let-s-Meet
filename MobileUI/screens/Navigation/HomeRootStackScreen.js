@@ -94,10 +94,7 @@ function InfoModalOverlay({navigation}) {
 
 function MeetModalOverlay({navigation, route}) {
   return (
-    <LetsMeetModal
-      navigation={navigation}
-      calendarID={route.params.calendarID}
-    />
+    <LetsMeetModal navigation={navigation} groupID={route.params.groupID} />
   );
 }
 

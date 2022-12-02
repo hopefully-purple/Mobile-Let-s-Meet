@@ -236,7 +236,7 @@ const GroupCalendarScreen = ({navigation}) => {
           title={`Let's Meet!`}
           onPress={() =>
             navigation.navigate('MeetModal', {
-              calendarID: currentGroup.calendarID,
+              groupID: currentGroup.groupID,
             })
           }
         />

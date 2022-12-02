@@ -36,7 +36,7 @@ const DURATION_OPTIONS = [
   {value: '00:30:00', id: 2},
 ];
 
-export default function LetsMeetModal({navigation, calendarID}) {
+export default function LetsMeetModal({navigation, groupID}) {
   const [reason, setReason] = useState('');
   const [location, setLocation] = useState('');
   const [selectedTimeFrame, setSelectedTimeFrame] = useState({});
@@ -61,7 +61,7 @@ export default function LetsMeetModal({navigation, calendarID}) {
     // console.log('selected time frame: ');
     // console.log(JSON.stringify(selectedTimeFrame, undefined, 2));
     const details = {
-      calendarID: calendarID,
+      groupID: groupID,
       duration: duration,
       withinDays: selectedTimeFrame,
       title: reason,

@@ -289,16 +289,23 @@ export async function groupsLetsMeet(details) {
   console.log('(GAPIHandling) Beginning of groupsLetsMeet');
   let user = await getUserInfo();
   console.log('Details object:' + JSON.stringify(details, undefined, 2));
-  let query = `calendarID=${details.calendarID}&duration=${details.duration}`;
-  query = query + `&withinDays=${details.withinDays}&title=${details.title}`;
-  query = query + `&location=${details.location}`;
-  return fetch(`${URL}/GroupModels/SuggestEvent?${query}`, {
-    method: 'GET',
+  // let query = `calendarID=${details.calendarID}&duration=${details.duration}`;
+  // query = query + `&withinDays=${details.withinDays}&title=${details.title}`;
+  // query = query + `&location=${details.location}`;
+  // 30 minutes, 45 minnutes, 1 hour, 2 hour, 3 hour
+  return fetch(`${URL}/EventModels/SuggestEvent`, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${user.token}`,
     },
-    // body: JSON.stringify(details),
+    body: JSON.stringify({
+      groupID: details.groupID,
+      duration: details.duration,
+      withinDays: details.withinDays,
+      title: details.title,
+      location: details.location,
+    }),
   })
     .then(data => {
       console.log('GAPIHANDLING - groupsLetsMeet data:');
