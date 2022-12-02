@@ -39,7 +39,7 @@ const DURATION_OPTIONS = [
 export default function LetsMeetModal({navigation, groupID}) {
   const [reason, setReason] = useState('');
   const [location, setLocation] = useState('');
-  const [selectedTimeFrame, setSelectedTimeFrame] = useState({});
+  const [selectedTimeFrame, setSelectedTimeFrame] = useState(1);
   const [duration, setDuration] = useState('01:00:00');
   const [isLoading, setIsLoading] = useState(false);
   const [suggested, setSuggested] = useState([]);
@@ -48,6 +48,47 @@ export default function LetsMeetModal({navigation, groupID}) {
   this.reasonInput = React.createRef();
   this.locationInput = React.createRef();
   // this.scrollView = React.createRef();
+
+  function makeReadable(s) {
+    // "startTime": "2022-12-06T06:30:33.0088089Z",
+    // "endTime": "2022-12-06T07:30:33.0088089Z",
+
+    // var localStartDate = new Date(i.start); //.toLocaleTimeString('en-US', {
+    //   timeZone: 'UTC',
+    //   hour12: true,
+    //   hour: 'numeric',
+    //   minute: 'numeric',
+    // });
+    const sDate = new Date(s.startTime);
+    // console.log(sDate.toLocaleDateString()); //12/4/2022
+    const sString = sDate.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      // hour: 'numeric',
+      // minute: 'numeric',
+    });
+    // console.log(sDate.toLocaleString()); //12/5/2022, 10:30:33 PM
+    // console.log('!!');
+    const start = sDate.toLocaleTimeString('en-US', {
+      timeZone: 'UTC',
+      hour12: true,
+      hour: 'numeric',
+      minute: 'numeric',
+    }); // 7:30 AM
+    // console.log(start);
+    const end = new Date(s.endTime).toLocaleTimeString('en-US', {
+      timeZone: 'UTC',
+      hour12: true,
+      hour: 'numeric',
+      minute: 'numeric',
+    }); // 7:30 AM
+
+    let readable = `${sString}\nfrom ${start} to ${end}`;
+
+    return readable;
+  }
 
   const handleLetsMeet = () => {
     setIsLoading(true);
@@ -80,9 +121,9 @@ export default function LetsMeetModal({navigation, groupID}) {
     });
   };
 
-  const Suggestion = ({s}) => {
+  const Suggestion = ({s, r}) => {
     function confirmAccept() {
-      Alert.alert(`Accept ${s.startTime} - ${s.endTime} ?`, '', [
+      Alert.alert(`Accept ${r} ?`, '', [
         {
           text: 'Accept',
           onPress: () => handleAccept(),
@@ -92,13 +133,21 @@ export default function LetsMeetModal({navigation, groupID}) {
     }
 
     async function handleAccept() {
-      Alert.alert(
-        `Accepted ${s.startTime} - ${s.endTime}. Adding event to calendar`,
-      );
       console.log('NEW EVENT MADE > Post API call');
       // API call to post new event
       // console.log('New Event:' + JSON.stringify(newEvent, undefined, 2));
-      let result = await calendarCreateNewEvent(s);
+      // var result = jsObjects.find(obj => {
+      //   return obj.b === 6
+      // })
+      console.log(s.calendar.calendarID);
+      const newE = {
+        title: s.title,
+        startTime: new Date(s.startTime).toISOString(),
+        endTime: new Date(s.endTime).toISOString(),
+        location: s.location,
+        calendarID: s.calendar.calendarID,
+      };
+      let result = await calendarCreateNewEvent(newE);
       //Clear inputs
       this.reasonInput.current.clear();
       this.locationInput.current.clear();
@@ -106,8 +155,11 @@ export default function LetsMeetModal({navigation, groupID}) {
 
       if (result) {
         //Go back to schedule
+        Alert.alert(`Accepted ${r}. Adding event to calendar`);
         console.log('go back');
         navigation.goBack();
+      } else {
+        Alert.alert('Unable to add event');
       }
     }
 
@@ -117,10 +169,17 @@ export default function LetsMeetModal({navigation, groupID}) {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
+          // alignSelf: 'flex-start',
+          width: '80%',
         }}>
         <Text
-          style={{...styles.infoText, alignSelf: 'center', marginRight: 20}}>
-          {s.startTime} - {s.endTime}
+          style={{
+            ...styles.infoText,
+            // alignSelf: 'center',
+            marginRight: 20,
+            fontSize: 18,
+          }}>
+          {r}
         </Text>
         <MiniBoxButton title={'Accept'} onPress={confirmAccept} />
       </View>
@@ -185,7 +244,10 @@ export default function LetsMeetModal({navigation, groupID}) {
           {areNoSuggestions ? (
             <Text style={styles.infoText}>No suggestions</Text>
           ) : (
-            suggested.map(s => <Suggestion s={s} />)
+            suggested.map(s => {
+              const readable = makeReadable(s);
+              return <Suggestion s={s} r={readable} />;
+            })
           )}
           <Text> </Text>
         </ScrollView>

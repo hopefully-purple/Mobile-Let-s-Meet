@@ -67,13 +67,14 @@ const Item = props => {
       {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
     ]);
   };
+  const group = i.groupName === null ? '' : `Group: ${i.groupName}\n`;
   return (
     <TouchableOpacity style={styles.item} onLongPress={() => changeItemAlert()}>
       <Card style={{...styles.cardStyle, borderColor: itemColor}}>
         <Card.Content>
           <View>
             <Text style={styles.itemText}>
-              {`${time}\n${i.title}\n${i.location}`}
+              {`${group}${time}\n${i.title}\n${i.location}`}
             </Text>
           </View>
         </Card.Content>

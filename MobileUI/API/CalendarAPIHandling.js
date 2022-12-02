@@ -193,11 +193,12 @@ export async function calendarCreateNewEvent(newEvent) {
     .then(jsonData => {
       console.log('CAPIHANDLING - CalendarCreateNewEvent data.json():');
       console.log(JSON.stringify(jsonData, undefined, 2));
-      return jsonData;
+      // return jsonData;
+      return true;
     })
     .catch(e => {
       console.log('something went wrong with calendarCreateNewEvent: ' + e);
-      return [];
+      return false;
     });
 }
 

@@ -76,7 +76,7 @@ const Item = ({i, itemColor, time}) => {
         <Card.Content>
           <View>
             <Text style={styles.itemText}>
-              {`${time}\n${i.title}\n${i.location}`}
+              {`Group: ${i.groupName}\n${time}\n${i.title}\n${i.location}`}
             </Text>
           </View>
         </Card.Content>

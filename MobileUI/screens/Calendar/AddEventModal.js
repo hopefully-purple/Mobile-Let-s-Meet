@@ -147,6 +147,8 @@ export default function AddEventModal({navigation, calendarID}) {
       //Go back to schedule
       console.log('go back');
       navigation.goBack();
+    } else {
+      Alert.alert('Unable to create event');
     }
   };
 
