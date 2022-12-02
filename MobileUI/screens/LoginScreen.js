@@ -87,7 +87,7 @@ const LoginScreen = ({navigation}) => {
       <View style={styles.screenContainer}>
         <Text style={styles.titleText}>{title}</Text>
         <Text
-          style={{...styles.defaultScreentext}}
+          style={styles.registrationText}
           onPress={() => navigation.navigate('Registration')}>
           No account? Click to sign up
         </Text>
@@ -135,6 +135,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: Colors.DD_RED_3,
     marginBottom: 46,
+  },
+  registrationText: {
+    fontFamily: 'Roboto',
+    fontSize: 24,
+    fontWeight: '400',
+    color: Colors.DD_RED_3,
+    marginVertical: 30,
   },
   defaultScreentext: {
     fontSize: 25,

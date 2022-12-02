@@ -62,11 +62,12 @@ const RegistrationScreen = ({navigation}) => {
     }
   };
 
+  let title = "Let's\n    Meet";
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.screenContainer}>
-        <Text style={styles.defaultScreentext}>Sign up for</Text>
-        <Text style={styles.defaultScreentext}> Let's Meet</Text>
+        <Text style={styles.registrationText}>Sign up for</Text>
+        <Text style={styles.titleText}>{title}</Text>
         <TextInput
           placeholder="Username"
           style={styles.userInput}
@@ -134,6 +135,22 @@ const styles = StyleSheet.create({
     color: Colors.DD_RED_3,
     textAlign: 'center',
     marginBottom: 46,
+  },
+  titleText: {
+    fontFamily: 'Sansita Swashed',
+    fontSize: 72,
+    fontWeight: '700',
+    color: Colors.DD_RED_3,
+    marginBottom: 46,
+  },
+  registrationText: {
+    fontFamily: 'Roboto',
+    fontSize: 24,
+    fontWeight: '400',
+    color: Colors.DD_RED_3,
+    marginVertical: 30,
+    marginLeft: 70,
+    alignSelf: 'flex-start',
   },
   userInput: {
     height: 51,
