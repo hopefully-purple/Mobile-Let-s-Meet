@@ -102,8 +102,8 @@ import LogStateContext from '../../contexts/LoginState';
 const Step22 = ({onClick}) => {
   return (
     <View style={styles.screenContainer}>
-      <Text style={styles.defaultScreentext}>Sucess!</Text>
-      <Text style={styles.defaultScreentext} onPress={onClick}>
+      <Text style={styles.titleText}>Sucess!</Text>
+      <Text style={styles.registrationText} onPress={onClick}>
         Click to return to login page
       </Text>
     </View>
@@ -219,6 +219,20 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: Colors.DD_RED_3,
     textAlign: 'center',
+    marginBottom: 46,
+  },
+  registrationText: {
+    fontFamily: 'Roboto',
+    fontSize: 24,
+    fontWeight: '400',
+    color: Colors.DD_RED_3,
+    marginVertical: 30,
+  },
+  titleText: {
+    fontFamily: 'Sansita Swashed',
+    fontSize: 72,
+    fontWeight: '700',
+    color: Colors.DD_RED_3,
     marginBottom: 46,
   },
   userInput: {
