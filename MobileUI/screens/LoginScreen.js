@@ -6,6 +6,7 @@ import {
   View,
   TextInput,
   Alert,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Colors from '../assets/styles/colors';
 import {GreyPillButton} from '../assets/components/CustomButtons';
@@ -83,7 +84,8 @@ const LoginScreen = ({navigation}) => {
 
   let title = "Let's\n    Meet";
   return (
-    <SafeAreaView style={styles.screenContainer}>
+    <KeyboardAvoidingView style={styles.screenContainer} behavior="padding">
+      {/* <SafeAreaView style={styles.screenContainer}> */}
       <View style={styles.screenContainer}>
         <Text style={styles.titleText}>{title}</Text>
         <Text
@@ -117,7 +119,8 @@ const LoginScreen = ({navigation}) => {
           <Text style={styles.defaultScreentext}>Loading...</Text>
         )}
       </View>
-    </SafeAreaView>
+      {/* </SafeAreaView> */}
+    </KeyboardAvoidingView>
   );
 };
 
