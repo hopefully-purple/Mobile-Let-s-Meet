@@ -5,14 +5,10 @@ import {
   ScrollView,
   View,
   Text,
-  Keyboard,
-  Button,
   StyleSheet,
   Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import DatePicker from 'react-native-date-picker';
 import {
   Camera,
   useCameraDevices,
@@ -20,11 +16,8 @@ import {
   useFrameProcessor,
 } from 'react-native-vision-camera';
 import {BoxButton} from '../../assets/components/CustomButtons';
-import {CaptureButton} from './views/CaptureButton';
-import UserContext from '../../contexts/User';
 import {groupJoinGroup} from '../../API/GroupsAPIHandling';
 import QRCodeScanner from 'react-native-qrcode-scanner'; //TODO uninstall
-// import { Camera, useCameraDevices, useFrameProcessor } from 'react-native-vision-camera';
 import {
   DBRConfig,
   decode,
@@ -32,8 +25,21 @@ import {
 } from 'vision-camera-dynamsoft-barcode-reader';
 import * as REA from 'react-native-reanimated';
 import IsCameraOpenContext from '../../contexts/IsCameraOpen';
+import {DCVBarcodeReader} from 'dynamsoft-capture-vision-react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-
+// class App extends React.Component {
+//   componentDidMount() {
+//     (async () => {
+//       try {
+//         await DynamsoftBarcodeReader.initLicense(
+//           'DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAxNTE2MDY4LVRYbE5iMkpwYkdWUWNtOXFYMlJpY2ciLCJvcmdhbml6YXRpb25JRCI6IjEwMTUxNjA2OCIsImNoZWNrQ29kZSI6LTM3NjkwNzg2N30=',
+//         );
+//       } catch (e) {
+//         console.log(e);
+//       }
+//     })();
+//   }
+// }
 const options = {
   enableVibrateFallback: true,
   ignoreAndroidSystemSettings: false,
@@ -46,8 +52,6 @@ export default function JoinGroupModal({navigation}) {
   const [qrJoinLink, setQRJoinLink] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isQRScanComplete, setIsQRScanComplete] = useState(false);
-  // const [isJoinSuccess, setIsJoinSuccess] = useState(false);
-  // const user = useContext(UserContext);
 
   const camera = useRef();
   const [cameraPermission, setCameraPermission] = useState();
@@ -56,6 +60,13 @@ export default function JoinGroupModal({navigation}) {
   const device = devices.back;
   const [barcodeResults, setBarcodeResults] = useState([]);
 
+  // useEffect(() => {
+  //   (async () => {
+  //     DCVBarcodeReader.initLicense(
+  //       'DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAxNTE2MDY4LVRYbE5iMkpwYkdWUWNtOXFYMlJpY2ciLCJvcmdhbml6YXRpb25JRCI6IjEwMTUxNjA2OCIsImNoZWNrQ29kZSI6LTM3NjkwNzg2N30=',
+  //     );
+  //   })();
+  // }, []);
   const newCameraPermission = Camera.requestCameraPermission();
 
   const frameProcessor = useFrameProcessor(frame => {
@@ -79,7 +90,12 @@ export default function JoinGroupModal({navigation}) {
   this.joinGroupLinkInput = React.createRef();
 
   useEffect(() => {
-    Camera.getCameraPermissionStatus().then(setCameraPermission);
+    (async () => {
+      Camera.getCameraPermissionStatus().then(setCameraPermission);
+      await DCVBarcodeReader.initLicense(
+        'DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAxNTE2MDY4LVRYbE5iMkpwYkdWUWNtOXFYMlJpY2ciLCJvcmdhbml6YXRpb25JRCI6IjEwMTUxNjA2OCIsImNoZWNrQ29kZSI6LTM3NjkwNzg2N30=',
+      );
+    })();
   }, []);
 
   let devNu = device == null;
