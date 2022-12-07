@@ -47,11 +47,7 @@ const Empty = ({item}) => {
 };
 
 const Item = ({i, itemColor, time}) => {
-  // const {events, setEvents} = useContext(CalendarEventsContext);
-  // const user = useContext(UserContext);
-
   async function deleteItemInEvents() {
-    // console.log('(calendarScreen.deleteItem) user = ' + user.name);
     if (await calendarDeleteEvent(i)) {
       console.log('(groupCalendarScreen.deleteItemInEvents) delete succeeded');
       const selected = this.calendarStrip.current.getSelectedDate();
@@ -94,9 +90,7 @@ const GroupCalendarScreen = ({navigation}) => {
   const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
   const [items, setItems] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  // const {events, setEvents} = useContext(CalendarEventsContext);
   const {currentGroup, setcurrentGroup} = useContext(CurrentGroupObjectContext);
-  // const user = useContext(UserContext);
 
   const [events, setEvents] = useState([]);
   useEffect(() => {
@@ -137,10 +131,8 @@ const GroupCalendarScreen = ({navigation}) => {
   };
 
   const renderItem = ({item}) => {
-    // console.log(items.length);
     const itemColor = item.color;
     const time = formatEventTime(item.start, item.end);
-    // console.log('rendering ' + item.id);
     return <Item i={item} itemColor={itemColor} time={time} />;
   };
 
@@ -149,14 +141,12 @@ const GroupCalendarScreen = ({navigation}) => {
     //date is a moment object
     // Set items to the array in Flatlist corresponding to date
     const dateKey = date.format('YYYY-MM-DD');
-    // console.log(flatList[dateKey]);
     const dayEvents = events[dateKey];
     if (dayEvents !== undefined) {
       setItems(dayEvents);
     } else {
       setItems([]);
     }
-    // console.log(dateKey);
   };
 
   const customDatesStylesFunc = date => {
@@ -167,8 +157,6 @@ const GroupCalendarScreen = ({navigation}) => {
           color: Colors.DD_CREAM,
           paddingHorizontal: 3,
         },
-        // dateNumberStyle: {color: 'purple'},
-        // dateContainerStyle: {backgroundColor: Colors.DD_RED_3_LIGHT},
       };
     }
   };
@@ -201,11 +189,8 @@ const GroupCalendarScreen = ({navigation}) => {
         dateNumberStyle={{color: Colors.DD_LIGHT_GRAY, fontSize: 15}}
         markedDatesStyle={{height: 5, width: 5}}
         highlightDateNumberStyle={{
-          // backgroundColor: Colors.DD_RED_3,
-          // color: Colors.DD_CREAM,
           color: Colors.DD_RED_3,
           fontSize: 15,
-          // paddingHorizontal: 7,
         }}
         highlightDateNameStyle={{
           backgroundColor: Colors.DD_RED_3,
@@ -249,8 +234,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.DD_RED_2,
-    // justifyContent: 'space-evenly',
-    // marginBottom: 100,
   },
   itemText: {
     color: Colors.DD_DARK_GRAY,
