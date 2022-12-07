@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Colors from '../../assets/styles/colors';
 import {
   SafeAreaView,
@@ -17,29 +17,12 @@ import {
 } from 'react-native-vision-camera';
 import {BoxButton} from '../../assets/components/CustomButtons';
 import {groupJoinGroup} from '../../API/GroupsAPIHandling';
-import QRCodeScanner from 'react-native-qrcode-scanner'; //TODO uninstall
-import {
-  DBRConfig,
-  decode,
-  TextResult,
-} from 'vision-camera-dynamsoft-barcode-reader';
+// import QRCodeScanner from 'react-native-qrcode-scanner'; //TODO uninstall
+import {decode} from 'vision-camera-dynamsoft-barcode-reader';
 import * as REA from 'react-native-reanimated';
-import IsCameraOpenContext from '../../contexts/IsCameraOpen';
 import {DCVBarcodeReader} from 'dynamsoft-capture-vision-react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-// class App extends React.Component {
-//   componentDidMount() {
-//     (async () => {
-//       try {
-//         await DynamsoftBarcodeReader.initLicense(
-//           'DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAxNTE2MDY4LVRYbE5iMkpwYkdWUWNtOXFYMlJpY2ciLCJvcmdhbml6YXRpb25JRCI6IjEwMTUxNjA2OCIsImNoZWNrQ29kZSI6LTM3NjkwNzg2N30=',
-//         );
-//       } catch (e) {
-//         console.log(e);
-//       }
-//     })();
-//   }
-// }
+
 const options = {
   enableVibrateFallback: true,
   ignoreAndroidSystemSettings: false,
@@ -52,21 +35,15 @@ export default function JoinGroupModal({navigation}) {
   const [qrJoinLink, setQRJoinLink] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isQRScanComplete, setIsQRScanComplete] = useState(false);
+  this.joinGroupLinkInput = React.createRef();
 
   const camera = useRef();
   const [cameraPermission, setCameraPermission] = useState();
-  const {isCameraOpen, setIsCameraOpen} = useContext(IsCameraOpenContext);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const devices = useCameraDevices('wide-angle-camera');
   const device = devices.back;
   const [barcodeResults, setBarcodeResults] = useState([]);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     DCVBarcodeReader.initLicense(
-  //       'DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAxNTE2MDY4LVRYbE5iMkpwYkdWUWNtOXFYMlJpY2ciLCJvcmdhbml6YXRpb25JRCI6IjEwMTUxNjA2OCIsImNoZWNrQ29kZSI6LTM3NjkwNzg2N30=',
-  //     );
-  //   })();
-  // }, []);
   const newCameraPermission = Camera.requestCameraPermission();
 
   const frameProcessor = useFrameProcessor(frame => {
@@ -77,6 +54,9 @@ export default function JoinGroupModal({navigation}) {
 
     const results = decode(frame, config);
 
+    REA.runOnJS(DCVBarcodeReader.initLicense)(
+      'DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAxNTE2MDY4LVRYbE5iMkpwYkdWUWNtOXFYMlJpY2ciLCJvcmdhbml6YXRpb25JRCI6IjEwMTUxNjA2OCIsImNoZWNrQ29kZSI6LTM3NjkwNzg2N30=',
+    );
     if (results[0] !== undefined) {
       console.log(results[0].barcodeText);
       REA.runOnJS(ReactNativeHapticFeedback.trigger)('impactHeavy', options);
@@ -87,15 +67,8 @@ export default function JoinGroupModal({navigation}) {
     REA.runOnJS(setBarcodeResults)(results);
   }, []);
 
-  this.joinGroupLinkInput = React.createRef();
-
   useEffect(() => {
-    (async () => {
-      Camera.getCameraPermissionStatus().then(setCameraPermission);
-      await DCVBarcodeReader.initLicense(
-        'DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAxNTE2MDY4LVRYbE5iMkpwYkdWUWNtOXFYMlJpY2ciLCJvcmdhbml6YXRpb25JRCI6IjEwMTUxNjA2OCIsImNoZWNrQ29kZSI6LTM3NjkwNzg2N30=',
-      );
-    })();
+    Camera.getCameraPermissionStatus().then(setCameraPermission);
   }, []);
 
   let devNu = device == null;
@@ -119,7 +92,6 @@ export default function JoinGroupModal({navigation}) {
     } else {
       setIsQRScanComplete(false);
       setIsLoading(false);
-      // setIsJoinSuccess(false);
       Alert.alert('Failed to join group :(');
       this.joinGroupLinkInput.current.clear();
       setJoinGroupLink('');
@@ -196,7 +168,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.DD_CREAM,
-    // justifyContent: 'space-evenly',
   },
   input: {
     margin: 10,
@@ -213,7 +184,6 @@ const styles = StyleSheet.create({
   qrResultsWrapper: {
     marginTop: 60,
     marginBottom: 30,
-    // justifyContent: 'center',
   },
   joinQuestion: {
     fontSize: 50,
@@ -232,15 +202,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   joinButtons: {
-    // justifyContent: 'center',
-    // alignContent: 'center',
     flexDirection: 'row',
     alignSelf: 'center',
-    // alignItems: 'center',
   },
   camera: {
     height: '70%',
   },
 });
-
-// https://github.com/henninghall/react-native-date-picker
