@@ -18,11 +18,13 @@ import {
   groupsGetGroups,
 } from '../../API/GroupsAPIHandling';
 
+const Empty = ({item}) => {
+  return <Text style={styles.emptyText}>Not in any groups yet</Text>;
+};
+
 export default function GroupListScreen({navigation}) {
-  // const {groups, setGroups} = useContext(GroupsContext);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const {currentGroup, setcurrentGroup} = useContext(CurrentGroupObjectContext);
-  // const user = useContext(UserContext);
 
   const [groupsList, setGroupsList] = useState([]);
   useEffect(() => {
@@ -56,21 +58,17 @@ export default function GroupListScreen({navigation}) {
   };
 
   const renderItem = ({item}) => {
-    // console.log(items.length);
-    // console.log('rendering ' + item.id);
     return <GroupBox group={item} />;
   };
 
   const GroupBox = ({group}) => {
     const handleGroupPress = async () => {
       //Grab group name
-      // console.log(group.name + ' selected');
       console.log(
         'pulling up ' + group.groupName + ' calendar (eventually . . .)',
       );
       // Call getGroup API to get full group object
       const detailedGroup = await groupsGetGroupMembers(group.groupID);
-      // console.log(JSON.stringify(detailedGroup, undefined, 2));
       setcurrentGroup(detailedGroup);
       //Set things up to trigger a correct event grab and calendar name change
       //navigate to calendar
@@ -105,32 +103,6 @@ export default function GroupListScreen({navigation}) {
     );
   };
 
-  // const [flatList, setFlatList] = useState([]);
-  // useEffect(
-  //   function createFlatList() {
-  //     const newFlatL = organizeGroups(groups);
-  //     setFlatList(newFlatL);
-  //   },
-  //   [groups],
-  // );
-
-  // const [riverInformation, setRiverInformation] = useState();
-
-  // useEffect(() => {
-  //   let mounted = true;
-  //   console.log(
-  //     'GroupListScreen.useEffect call getRiverInformation on ' + name,
-  //   );
-  //   getRiverInformation(name).then(data => {
-  //     if (mounted) {
-  //       setRiverInformation(data);
-  //     }
-  //   });
-  //   return () => {
-  //     mounted = false;
-  //   };
-  // }, [name]);
-
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.buttons}>
@@ -150,33 +122,26 @@ export default function GroupListScreen({navigation}) {
         style={{marginTop: 15}}
         onRefresh={onRefresh}
         refreshing={isRefreshing}
+        ListEmptyComponent={Empty}
       />
     </SafeAreaView>
   );
 }
-
-// GroupListScreen.propTypes = {
-//   name: PropTypes.string.isRequired,
-// };
 
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     alignItems: 'center',
     backgroundColor: Colors.DD_CREAM,
-    // color: Colors.DD_RED_2,
   },
   defaultScreentext: {
     fontSize: 25,
-    // fontWeight: '500',
     color: Colors.DD_RED_2,
     textAlign: 'center',
   },
   buttons: {
     flexDirection: 'row',
-    //position: 'absolute',
     margin: 10,
-    // alignContent: 'center',
   },
   cardStyle: {
     backgroundColor: Colors.DD_CREAM,
@@ -186,16 +151,12 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     marginVertical: 10,
     marginHorizontal: 40,
-    // alignContent: 'space-around',
   },
-  // itemText: {
-  //   color: Colors.DD_DARK_GRAY,
-  // },
-  // item: {
-  //   flex: 1,
-  //   // borderRadius: 5,
-  //   // padding: 10,
-  //   marginRight: 10,
-  //   marginTop: 17,
-  // },
+  emptyText: {
+    color: Colors.DD_MEDIUM_GRAY,
+    fontSize: 20,
+    padding: 10,
+    fontStyle: 'italic',
+    alignSelf: 'center',
+  },
 });

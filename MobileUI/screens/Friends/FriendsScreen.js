@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   StyleSheet,
@@ -10,20 +10,19 @@ import {
 import Colors from '../../assets/styles/colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Card, TextInput} from 'react-native-paper';
-import FriendsContext from '../../contexts/Friends';
 import {BoxButton} from '../../assets/components/CustomButtons';
 import {
-  friendsGetSentRequests,
   friendsCreateFriendRequestByEmail,
   friendsGetFriends,
 } from '../../API/FriendsAPIHandling';
-import UserContext from '../../contexts/User';
+
+const Empty = ({item}) => {
+  return <Text style={styles.emptyText}>No friends yet</Text>;
+};
 
 export default function FriendsScreen({navigation}) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [newFriendEmail, setNewFriendEmail] = useState('');
-  // const {friends, setFriends} = useContext(FriendsContext);
-  // const user = useContext(UserContext);
 
   this.friendEmailInput = React.createRef();
 
@@ -34,7 +33,6 @@ export default function FriendsScreen({navigation}) {
     friendsGetFriends().then(data => {
       if (mounted) {
         console.log('FriendsScreen mounted! setFriendsList');
-        // let d = organizeGroups(data);
         setFriendsList(data);
       }
     });
@@ -60,8 +58,6 @@ export default function FriendsScreen({navigation}) {
   };
 
   const renderItem = ({item}) => {
-    // console.log(items.length);
-    // console.log('rendering ' + item.id);
     return (
       <FriendBox friend={item} name={`${item.firstName} ${item.lastName}`} />
     );
@@ -83,15 +79,6 @@ export default function FriendsScreen({navigation}) {
       </TouchableOpacity>
     );
   };
-
-  // const [existingFriendsList, setExistingFriendsList] = useState([]);
-  // useEffect(
-  //   function createExistingFriendsList() {
-  //     const newFlatL = organizeFriends(friends);
-  //     setExistingFriendsList(newFlatL);
-  //   },
-  //   [friends],
-  // );
 
   const addFriendHandler = async () => {
     if (newFriendEmail !== '') {
@@ -122,6 +109,7 @@ export default function FriendsScreen({navigation}) {
         style={{marginTop: 10}}
         onRefresh={onRefresh}
         refreshing={isRefreshing}
+        ListEmptyComponent={Empty}
       />
       <View style={styles.buttons}>
         <TextInput
@@ -161,7 +149,6 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   buttons: {
-    // backgroundColor: Colors.DD_RED_2,
     borderTopColor: Colors.DD_RED_2,
     borderTopWidth: 10,
     width: '100%',
@@ -177,5 +164,12 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     marginVertical: 10,
     marginHorizontal: 40,
+  },
+  emptyText: {
+    color: Colors.DD_MEDIUM_GRAY,
+    fontSize: 20,
+    padding: 10,
+    fontStyle: 'italic',
+    alignSelf: 'center',
   },
 });
