@@ -44,11 +44,8 @@ const Empty = ({item}) => {
 
 const Item = props => {
   const {i, itemColor, time} = props;
-  // const {events, setEvents} = useContext(CalendarEventsContext);
-  // const user = useContext(UserContext);
 
   async function deleteItemInEvents() {
-    // console.log('(calendarScreen.deleteItem) user = ' + user.name);
     if (await calendarDeleteEvent(i)) {
       console.log('(calendarScreen.deleteItemInEvents) delete succeeded');
       const selected = this.calendarStrip.current.getSelectedDate();
@@ -89,15 +86,12 @@ const CalendarScreen = ({navigation}) => {
   this.calendarStrip = React.createRef();
 
   const nowDate = new Date();
-  const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString()); //why utc? i don't like it. confused
+  const [selectedDay, setSelectedDay] = useState(nowDate.toUTCString());
   const [items, setItems] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedCals, setSelectedCals] = useState([]);
   const [areAllCalsSelected, setAreAllCalsSelected] = useState(false);
-  // const [colors, setColors] = useState([]);
-  // const {events, setEvents} = useContext(CalendarEventsContext);
-  // const user = useContext(UserContext);
 
   const [events, setEvents] = useState([]);
   useEffect(() => {
@@ -122,8 +116,6 @@ const CalendarScreen = ({navigation}) => {
     calendarGetCalendars().then(data => {
       if (mounted) {
         console.log('FilterCalendarModal mounted! setCalendars');
-        // data.push({calendarID: -1, name: 'Select All'});
-        // data.push({calendarID: -2, name: '+ New Calendar'});
         setCalendars(data);
       }
     });
@@ -166,12 +158,8 @@ const CalendarScreen = ({navigation}) => {
   };
 
   const renderItem = ({item}) => {
-    // console.log(items.length);
-    // console.log('RENDERITEM::: item below');
-    // console.log(item);
     const itemColor = item.color;
     const time = formatEventTime(item.start, item.end);
-    // console.log('rendering ' + item.id);
     return <Item i={item} itemColor={itemColor} time={time} />;
   };
 
@@ -193,8 +181,6 @@ const CalendarScreen = ({navigation}) => {
       setItems([]);
     }
   };
-
-  // const createItemsList = ({date, list}) => {};
 
   const customDatesStylesFunc = date => {
     if (date.format('ddd MMM DD YYYY') === nowDate.toDateString()) {
@@ -219,10 +205,6 @@ const CalendarScreen = ({navigation}) => {
 
   async function handleFilterPress() {
     console.log('HANDLE FILTER PRESS > ' + selectedCals);
-    // await calendarGetCalendarEvents(selectedCals).then(data => {
-    //   console.log('!!!!!handleFilterPress!!!!! setEvents to new event data');
-    //   setEvents(data);
-    // });
     onRefresh('filtered');
     console.log('!!!!! done handleFilterPress');
   }
@@ -261,11 +243,8 @@ const CalendarScreen = ({navigation}) => {
         dateNumberStyle={{color: Colors.DD_LIGHT_GRAY, fontSize: 15}}
         markedDatesStyle={{height: 5, width: 5}}
         highlightDateNumberStyle={{
-          // backgroundColor: Colors.DD_RED_3,
-          // color: Colors.DD_CREAM,
           color: Colors.DD_RED_3,
           fontSize: 15,
-          // paddingHorizontal: 7,
         }}
         highlightDateNameStyle={{
           backgroundColor: Colors.DD_RED_3,

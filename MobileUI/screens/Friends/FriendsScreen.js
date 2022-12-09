@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Colors from '../../assets/styles/colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -98,7 +99,7 @@ export default function FriendsScreen({navigation}) {
   };
 
   return (
-    <SafeAreaView style={styles.screenContainer}>
+    <KeyboardAvoidingView style={styles.screenContainer} behavior="padding">
       <Text style={{...styles.defaultScreentext, marginTop: 10}}>
         My Friends:
       </Text>
@@ -129,7 +130,7 @@ export default function FriendsScreen({navigation}) {
           onPress={() => navigation.navigate('RequestsModal')}
         />
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -155,6 +156,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     padding: 10,
+    marginBottom: 30,
   },
   cardStyle: {
     backgroundColor: Colors.DD_CREAM,

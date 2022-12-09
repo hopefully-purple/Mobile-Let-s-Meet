@@ -1,14 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   StyleSheet,
   View,
   SafeAreaView,
   ScrollView,
-  FlatList,
-  TouchableOpacity,
-  Button,
   Alert,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import Colors from '../../assets/styles/colors';
@@ -57,7 +55,7 @@ export default function NewCalendarModal({navigation}) {
   }
 
   return (
-    <View style={styles.screenContainer}>
+    <KeyboardAvoidingView behavior="padding" style={styles.screenContainer}>
       <SafeAreaView style={styles.innerContainer}>
         <View style={styles.creamKnob} />
         <View style={styles.bodyContainer}>
@@ -100,7 +98,7 @@ export default function NewCalendarModal({navigation}) {
           </ScrollView>
         </View>
       </SafeAreaView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
