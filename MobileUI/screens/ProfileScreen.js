@@ -11,10 +11,6 @@ export default function ProfileScreen({navigation}) {
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.screenContainer}>
         <Text style={styles.defaultScreentext}> Username: {user.name}</Text>
-        {/* <Text style={styles.defaultScreentext}> Password: {user.password}</Text> */}
-        {/* <Text style={styles.defaultScreentext}>
-          Swipe from the left to open navigation tool
-        </Text> */}
       </View>
     </SafeAreaView>
   );
@@ -25,7 +21,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'flex-start',
-    // justifyContent: 'center',
     backgroundColor: Colors.DD_CREAM,
     color: Colors.DD_RED_2,
     padding: 20,

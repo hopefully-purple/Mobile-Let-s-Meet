@@ -9,7 +9,6 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import Colors from '../../assets/styles/colors';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {Card, TextInput} from 'react-native-paper';
 import {BoxButton} from '../../assets/components/CustomButtons';
 import {

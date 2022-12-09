@@ -1,28 +1,13 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {View, ScrollView} from 'react-native';
 import {Text, StyleSheet} from 'react-native';
 import Colors from '../assets/styles/colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import UserContext from '../contexts/User';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Button} from 'react-native-paper';
 
 export default function SettingsScreen({navigation}) {
-  const user = useContext(UserContext);
   const [output, setOutput] = useState('');
-
-  //   const getCurrentEventData = async () => {
-  //     console.log(languageObj.language);
-  //     try {
-  //       const result = await AsyncStorage.getItem(languageObj.language);
-  //       let itemCount = JSON.parse(result).length;
-  //       setOutput('ITEMCOUNT=' + itemCount + '\n' + result);
-  //     } catch (e) {
-  //       // clear error
-  //       console.log('getCurrentData storage threw error ' + e);
-  //       throw e;
-  //     }
-  //   };
 
   const getCurrentUser = async () => {
     try {
@@ -47,35 +32,8 @@ export default function SettingsScreen({navigation}) {
     }
 
     setOutput(JSON.stringify(keys, undefined, 2));
-    // return keys;
     console.log(JSON.stringify(keys));
-    // return [];
-    // example console.log result:
-    // ['@MyApp_user', '@MyApp_key']
   };
-
-  //   const deleteCertainData = async () => {
-  //     setOutput('Deleted words from context and storage that are missing an id');
-
-  //     // Filter condition
-  //     function excludeItems(i) {
-  //       return i.id !== undefined;
-  //     }
-  //     const words = languageObj.words.filter(excludeItems);
-  //     // console.log(words);
-  //     setLanguageObj({...languageObj, words: words});
-  //     const saveData = async () => {
-  //       try {
-  //         await AsyncStorage.setItem(languageObj.language, JSON.stringify(words));
-  //         console.log('(saveData) Data successfully saved');
-  //       } catch (e) {
-  //         console.log('(saveData) Failed to save the data to the storage');
-  //         throw e;
-  //       }
-  //     };
-
-  //     saveData();
-  //   };
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -95,11 +53,7 @@ export default function SettingsScreen({navigation}) {
           onPress={() => getCurrentUser()}>
           LIST CURRENT USER OBJECT
         </Button>
-        <Button
-          style={styles.clearButton}
-          textColor={Colors.TEST_CREAM}
-          //   onPress={() => deleteCertainData()}
-        >
+        <Button style={styles.clearButton} textColor={Colors.TEST_CREAM}>
           RUN CUSTOM DELETE METHOD
         </Button>
         <ScrollView>

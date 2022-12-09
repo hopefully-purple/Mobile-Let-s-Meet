@@ -1,7 +1,6 @@
 import React, {useState, useContext} from 'react';
 import {
   Text,
-  SafeAreaView,
   StyleSheet,
   View,
   TextInput,
@@ -31,7 +30,6 @@ const LoginScreen = ({navigation}) => {
       this.passwordInput.current.clear();
       this.nameInput.current.clear();
       this.passwordInput.current.blur();
-      // this.nameInput.current.blur();
       await clearAll();
       user.name = '';
       user.first = '';
@@ -53,8 +51,6 @@ const LoginScreen = ({navigation}) => {
       console.log('set is loading false. Send an alert');
       Alert.alert('Username or password is not correct, try again');
       setIsLoading(false);
-      // this.passwordInput.current.clear();
-      // this.nameInput.current.clear();
     } else {
       console.log('(4) response is good, log in');
       // Store info in async storage
@@ -85,7 +81,6 @@ const LoginScreen = ({navigation}) => {
   let title = "Let's\n    Meet";
   return (
     <KeyboardAvoidingView style={styles.screenContainer} behavior="padding">
-      {/* <SafeAreaView style={styles.screenContainer}> */}
       <View style={styles.screenContainer}>
         <Text style={styles.titleText}>{title}</Text>
         <Text
@@ -119,7 +114,6 @@ const LoginScreen = ({navigation}) => {
           <Text style={styles.defaultScreentext}>Loading...</Text>
         )}
       </View>
-      {/* </SafeAreaView> */}
     </KeyboardAvoidingView>
   );
 };

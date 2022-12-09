@@ -282,11 +282,9 @@ const styles = StyleSheet.create({
     height: '80%',
     backgroundColor: Colors.DD_CREAM,
     paddingHorizontal: 20,
-    // justifyContent: 'space-evenly',
   },
   infoText: {
     fontSize: 25,
-    // fontWeight: 'bold',
     color: Colors.DD_MEDIUM_GRAY,
     padding: 10,
   },
@@ -303,7 +301,6 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-    // flexDirection: 'row',
   },
   defaultScreentext: {
     fontSize: 25,

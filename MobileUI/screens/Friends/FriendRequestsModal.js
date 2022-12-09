@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -10,13 +10,10 @@ import {
 import {MiniBoxButton} from '../../assets/components/CustomButtons';
 import Colors from '../../assets/styles/colors';
 import {
-  friendsGetSentRequests,
-  friendsGetReceivedRequests,
   friendsAcceptRequest,
   friendsRejectRequest,
 } from '../../API/FriendsAPIHandling';
 import PropTypes from 'prop-types';
-import UserContext from '../../contexts/User';
 // https://stackoverflow.com/questions/48992961/react-navigation-modal-height
 
 const SentItem = ({name}) => {
@@ -32,11 +29,6 @@ export default function FriendRequestModal({
   sentRequests,
   receivedRequests,
 }) {
-  // console.log('sentRequests = ' + JSON.stringify(sentRequests, undefined, 2));
-  // const [sentReqs, setSentReqs] = useState(sentRequests);
-  // const [receivedReqs, setReceivedReqs] = useState(receivedRequests);
-  // const user = useContext(UserContext);
-
   const renderSentItem = ({item}) => {
     return (
       <SentItem
@@ -176,10 +168,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.DD_CREAM,
     padding: 5,
     marginBottom: 100,
-    // justifyContent: 'space-evenly',
   },
   header: {
-    // backgroundColor: Colors.DD_LIGHT_GRAY,
     flexDirection: 'row',
   },
   headerText: {
@@ -189,18 +179,15 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
   },
   flatListWrapper: {
-    // backgroundColor: Colors.DD_WHITE,
     flexDirection: 'row',
     height: '40%',
     width: '90%',
   },
   flatListStyle: {
-    // backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY,
     paddingHorizontal: 10,
     paddingTop: 10,
   },
   item: {
-    // backgroundColor: '#f9c2ff',
     paddingVertical: 5,
     marginVertical: 3,
   },
@@ -210,7 +197,6 @@ const styles = StyleSheet.create({
     color: Colors.DD_MEDIUM_GRAY,
   },
   acceptRejectButtons: {
-    // flexDirection: 'row',
     marginRight: 10,
   },
 });

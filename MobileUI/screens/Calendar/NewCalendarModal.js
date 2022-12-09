@@ -83,7 +83,6 @@ export default function NewCalendarModal({navigation}) {
               autoCorrect={false}
               ref={this.descriptionInput}
             />
-            {/* <MyColorPicker /> */}
             <Text style={styles.mainHeaderText}>
               Selected color: {fromHsv(color)}
             </Text>

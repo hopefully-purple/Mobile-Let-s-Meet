@@ -1,26 +1,17 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState} from 'react';
 import {
   Text,
   StyleSheet,
   View,
   SafeAreaView,
   FlatList,
-  TouchableOpacity,
-  Button,
   Alert,
 } from 'react-native';
 import {BoxButton, SmallBoxButton} from '../../assets/components/CustomButtons';
 import Colors from '../../assets/styles/colors';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {
-  groupLeaveGroup,
-  groupsGenerateLink,
-  groupsGenerateQRCode,
-} from '../../API/GroupsAPIHandling';
-import {bareBonesFriendsList} from '../../assets/data/HardCodedFriends';
-import {accurateGetGroupResult} from '../../assets/data/HardCodedGroups';
+import {groupLeaveGroup, groupsGenerateLink} from '../../API/GroupsAPIHandling';
 import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
-import UserContext from '../../contexts/User';
 import QRCode from 'react-native-qrcode-svg';
 // https://stackoverflow.com/questions/48992961/react-navigation-modal-height
 
@@ -135,7 +126,6 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   mainHeader: {
-    // backgroundColor: Colors.DD_LIGHT_GRAY,
     flexDirection: 'row',
   },
   membersHeaderText: {
@@ -151,12 +141,10 @@ const styles = StyleSheet.create({
     marginLeft: 90,
   },
   mainBody: {
-    // backgroundColor: Colors.DD_WHITE,
     flexDirection: 'row',
     height: '90%',
   },
   generationSide: {
-    // backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY,
     flexDirection: 'column',
     borderLeftWidth: 5,
     borderColor: Colors.DD_LIGHT_GRAY,
@@ -173,12 +161,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   flatListStyle: {
-    // backgroundColor: Colors.DD_EXTRA_LIGHT_GRAY,
     paddingHorizontal: 10,
     paddingTop: 10,
   },
   item: {
-    // backgroundColor: '#f9c2ff',
     paddingVertical: 5,
     marginVertical: 5,
   },

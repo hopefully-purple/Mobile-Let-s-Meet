@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import Colors from '../../assets/styles/colors';
 import {GreyPillButton} from '../../assets/components/CustomButtons';
-// import {LogStateContext} from '../../App';
 import LogStateContext from '../../contexts/LoginState';
 
 // Step 1.1

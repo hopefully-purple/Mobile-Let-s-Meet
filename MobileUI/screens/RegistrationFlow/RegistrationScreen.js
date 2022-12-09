@@ -1,7 +1,6 @@
-import React, {useState, useContext, createContext, useEffect} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   Text,
-  SafeAreaView,
   StyleSheet,
   View,
   TextInput,
@@ -13,7 +12,6 @@ import {GreyPillButton} from '../../assets/components/CustomButtons';
 import {storeUserLoginInfo} from '../../miscHelpers/AsyncStorageMethods';
 import UserContext from '../../contexts/User';
 import {registerAPICall} from '../../API/LoginAndRegistrationAPIHandling.js';
-// import LogStateContext from '../../contexts/LoginState';
 
 const RegistrationScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -23,7 +21,6 @@ const RegistrationScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const user = useContext(UserContext);
-  // const {isLoggedIn, setIsLoggedIn} = useContext(LogStateContext);
 
   this.nameInput = React.createRef();
   this.firstNInput = React.createRef();
@@ -32,7 +29,6 @@ const RegistrationScreen = ({navigation}) => {
   this.emailInput = React.createRef();
 
   const handleCreateAccountButton = async () => {
-    // console.log('setisloading to true');
     setIsLoading(true);
     const result1 = await registerAPICall(name, firstN, lastN, email, password);
     if (result1 !== null) {
@@ -47,8 +43,6 @@ const RegistrationScreen = ({navigation}) => {
 
       setIsLoading(false);
       if (!isLoading) {
-        // console.log('no longer loading, set logged in true, pull up my schedule');
-        // setIsLoggedIn(true);
         this.nameInput.current.clear();
         this.firstNInput.current.clear();
         this.lastNInput.current.clear();

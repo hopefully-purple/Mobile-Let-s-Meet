@@ -1,11 +1,8 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {View} from 'react-native';
+import React, {useState} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
-import CalendarScreen from '../Calendar/CalendarScreen';
 import HomeRootStackScreen from './HomeRootStackScreen';
 import LoginScreen from '../LoginScreen';
-import {Text, StyleSheet} from 'react-native';
 import Colors from '../../assets/styles/colors';
 import RegistrationScreen from '../RegistrationFlow/RegistrationScreen';
 import BaseRegistration from '../RegistrationFlow/BaseRegistration';
@@ -13,9 +10,6 @@ import LogStateContext from '../../contexts/LoginState';
 import FriendsContext from '../../contexts/Friends';
 import CurrentGroupObjectContext from '../../contexts/CurrentGroupObjectContext';
 import ProfileScreen from '../ProfileScreen';
-import SettingsScreen from '../SettingsScreen';
-import {readEventData, readGroupData} from '../../API/APIControllers';
-import UserContext from '../../contexts/User';
 
 //Important links
 //https://reactnavigation.org/docs/drawer-based-navigation/
@@ -43,7 +37,6 @@ export default function Navigation() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [friends, setFriends] = useState([]);
   const [currentGroup, setcurrentGroup] = useState({});
-  // console.log('~~~~~~~~~~~' + currentGroup + '~~~~~~~~~~');
 
   let logScreenLabel = isLoggedIn ? 'Log Out' : 'Log In';
   let landing = isLoggedIn ? 'My Schedule' : 'Login';
@@ -141,19 +134,3 @@ export default function Navigation() {
     </LogStateContext.Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.DD_CREAM,
-    color: Colors.DD_RED_2,
-  },
-  defaultScreentext: {
-    fontSize: 25,
-    fontWeight: '500',
-    color: Colors.DD_RED_2,
-    textAlign: 'center',
-  },
-});

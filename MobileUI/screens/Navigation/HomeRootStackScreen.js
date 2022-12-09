@@ -18,7 +18,6 @@ import {
   friendsGetReceivedRequests,
 } from '../../API/FriendsAPIHandling';
 import FriendRequestModal from '../Friends/FriendRequestsModal';
-import IsCameraOpenContext from '../../contexts/IsCameraOpen';
 import NewCalendarModal from '../Calendar/NewCalendarModal';
 import {StackActions} from '@react-navigation/native';
 import {MiniBoxButton} from '../../assets/components/CustomButtons';
@@ -81,7 +80,6 @@ function RequestsModalOverlay({navigation}) {
     friendsGetSentRequests().then(data => {
       if (mounted) {
         console.log('RequestsModalOverlay (sent) mounted! setSent');
-        // let d = organizeGroups(data);
         setSent(data);
       }
     });
@@ -97,7 +95,6 @@ function RequestsModalOverlay({navigation}) {
     friendsGetReceivedRequests().then(data => {
       if (mounted) {
         console.log('RequestsModalOverlay (rec) mounted! setRecieved');
-        // let d = organizeGroups(data);
         setReceived(data);
       }
     });
@@ -120,7 +117,6 @@ const RootStack = createStackNavigator();
 export default function HomeRootStackScreen(props) {
   const [events, setEvents] = useState([]);
   const [groups, setGroups] = useState([]);
-  // const [isCameraOpen, setIsCameraOpen] = useState(false);
   console.log(
     '(HomeRootStackScreen)-------------------' +
       props.calendarName +
@@ -129,7 +125,6 @@ export default function HomeRootStackScreen(props) {
   return (
     <GroupsContext.Provider value={{groups, setGroups}}>
       <CalendarEventsContext.Provider value={{events, setEvents}}>
-        {/* <IsCameraOpenContext.Provider value={{isCameraOpen, setIsCameraOpen}}> */}
         <RootStack.Navigator>
           <RootStack.Group>
             {props.calendarName === 'Group' && (
@@ -329,7 +324,6 @@ export default function HomeRootStackScreen(props) {
             />
           </RootStack.Group>
         </RootStack.Navigator>
-        {/* </IsCameraOpenContext.Provider> */}
       </CalendarEventsContext.Provider>
     </GroupsContext.Provider>
   );
